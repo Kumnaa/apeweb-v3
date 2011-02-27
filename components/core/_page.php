@@ -28,6 +28,7 @@
 require('bl/core/erep_user_bl.php');
 require('bl/core/user_bl.php');
 require('bl/core/forum_bl.php');
+require('bl/core/images_bl.php');
 require('bl/core/install.php');
 require('components/core/_erep_user_class.php');
 require('components/core/_templates.php');

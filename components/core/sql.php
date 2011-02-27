@@ -39,6 +39,7 @@ class db_connector {
     public $error;
     public $file;
     public $debug;
+    private $transaction = false;
 
     public function __construct() {
         $this->query_list = array();
@@ -86,16 +87,19 @@ class db_connector {
     public function begin_transaction() {
         $this->sql_db->beginTransaction();
         $this->add_debug_info('begin transaction', null, null, true);
+        $this->transaction = true;
     }
 
     public function rollback_transaction() {
         $this->sql_db->rollBack();
         $this->add_debug_info('rollback transaction', null, null, true);
+        $this->transaction = false;
     }
 
     public function end_transaction() {
         $this->sql_db->commit();
         $this->add_debug_info('end transaction', null, null, true);
+        $this->transaction = false;
     }
 
     protected function prepare($statement, $arguments) {
@@ -157,7 +161,12 @@ class db_connector {
             $this->error = true;
             $colour = 'red';
             $this->log_error($statement, $arguments, $message);
+            if ($this->transaction == true) {
+                $this->transaction = false;
+                throw new Exception("Transaction error.");
+            }
         }
+
         $this->query_list[] = '<br />
             <span style="color:' . $colour . '">' . html::clean_text($statement) . '</span><br />
             ' . print_r($arguments, true) . '<br />

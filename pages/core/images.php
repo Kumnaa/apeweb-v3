@@ -36,7 +36,7 @@ if (file_exists('components/page.php')) {
 
 class images_page extends page {
 
-    private $forum_bl;
+    private $images_bl;
     protected $image_manager;
     protected $page_id;
     protected $image_id;
@@ -48,7 +48,7 @@ class images_page extends page {
         $this->image_id = input::validate('image_id', 'string');
         $this->image_manager = new image_manager(forum_config::image_warehouse_filesystem(), forum_config::image_warehouse_filesystem() . 'thumb/', null, null, 75, 75);
         $this->image_manager->set_filename_length(8);
-        $this->forum_bl = new forum_bl($this->db);
+        $this->images_bl = new images_bl($this->db);
         $this->add_text('title', 'Images');
         $this->paging = new paging();
         $this->paging->items_per_page = forum_config::$page_limit;
@@ -85,7 +85,7 @@ class images_page extends page {
     }
 
     protected function delete() {
-        $image = $this->forum_bl->get_image($this->image_id);
+        $image = $this->images_bl->get_image($this->image_id);
         if (is_array($image) && count($image) > 0) {
             if ($this->user->get_level() >= userlevels::$moderator || $this->user->get_user_id() == $image[0]['owner_id']) {
                 if ($this->confirm == "confirm") {
@@ -95,7 +95,7 @@ class images_page extends page {
                     $image_t_fs = forum_config::image_warehouse_filesystem() . 'thumb/' . $this->image_id . '.' . $extension;
                     @unlink($image_fs);
                     @unlink($image_t_fs);
-                    $this->forum_bl->delete_image($this->image_id);
+                    $this->images_bl->delete_image($this->image_id);
                     $this->notice("Image deleted.");
                 } else {
                     $this->notice('
@@ -117,7 +117,7 @@ class images_page extends page {
     }
 
     protected function view() {
-        $image = $this->forum_bl->get_image($this->image_id);
+        $image = $this->images_bl->get_image($this->image_id);
         if (is_array($image) && count($image) > 0) {
             $current_tag = $image[0]['tag'];
             $current_description = $image[0]['description'];
@@ -134,12 +134,12 @@ class images_page extends page {
     }
 
     protected function browse() {
-        $your_images = $this->forum_bl->get_image_count($this->user->get_user_id());
+        $your_images = $this->images_bl->get_image_count($this->user->get_user_id());
         $this->paging->total_items = $your_images;
         $this->paging->url_arguments = array('action' => 'browse');
         $this->add_text('main', $this->paging->display());
 
-        $images = $this->forum_bl->get_images($this->page_id, $this->user->get_user_id());
+        $images = $this->images_bl->get_images($this->page_id, $this->user->get_user_id());
         if (is_array($images) && count($images) > 0) {
             $this->list_images($images);
         } else {
@@ -150,12 +150,12 @@ class images_page extends page {
     }
 
     protected function browse_all() {
-        $your_images = $this->forum_bl->get_image_count();
+        $your_images = $this->images_bl->get_image_count();
         $this->paging->total_items = $your_images;
         $this->paging->url_arguments = array('action' => 'browseall');
         $this->add_text('main', $this->paging->display());
 
-        $images = $this->forum_bl->get_images($this->page_id);
+        $images = $this->images_bl->get_images($this->page_id);
         if (is_array($images) && count($images) > 0) {
             $this->list_images($images);
         } else {
@@ -230,7 +230,7 @@ class images_page extends page {
                 if ($image === false) {
                     $this->notice("Failed to upload image.");
                 } else {
-                    $this->forum_bl->add_image($image->ImageName(), $image->ImageFileName(), $this->user->get_user_id(), time(), $image->ImageType(), $image->ImageSize());
+                    $this->images_bl->add_image($image->ImageName(), $image->ImageFileName(), $this->user->get_user_id(), time(), $image->ImageType(), $image->ImageSize());
                 }
             }
 
@@ -244,7 +244,6 @@ class images_page extends page {
             throw new Exception('Access denied.');
         }
     }
-
 }
 
 ?>

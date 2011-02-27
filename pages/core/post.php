@@ -103,7 +103,44 @@ class post_page extends page {
     }
 
     private function edit_post() {
-        
+       $details = $this->forum_bl->get_post_details($this->post_id);
+        if (count($details) > 0) {
+            $security = new security_type();
+
+            if (($this->user->get_level() >= userlevels::$moderator || $this->user->get_user_id() == $details[0]['poster_id']) && $this->user->get_level() >= $details[0]['forum_level']) {
+                $security->AllowEdit(true);
+            }
+
+            if ($this->user->get_level() >= userlevels::$moderator && $this->user->get_level() >= $details[0]['forum_level']) {
+                $security->AllowDelete(true);
+            }
+
+            if ($this->user->get_level() >= $details[0]['forum_post_level']) {
+                $security->AllowAdd(true);
+            }
+            
+            if ($security->AllowEdit() == true) {
+                $this->forum_id = $details[0]['forum_id'];
+                $this->breadcrumb->add_crumb('Forums', html::gen_url('forums.php'));
+                $this->breadcrumb->add_crumb(html::clean_text($details[0]['forum_name']), html::gen_url('viewforum.php', array('forum_id' => $this->forum_id)));
+                $this->breadcrumb->add_crumb(html::clean_text($details[0]['topic_title']), html::gen_url('viewtopic.php', array('topic_id' => $this->topic_id)));
+                if ($_POST) {
+                    try {
+                        $this->update_post();
+                    } catch (Exception $ex) {
+                        $this->post = $details[0]['post_text'];
+                        $this->generate_html(html::gen_url('post.php', array('action' => 'edit', 'post_id' => $this->post_id)), false, $ex->getMessage());
+                    }
+                } else {
+                    $this->post = $details[0]['post_text'];
+                    $this->generate_html(html::gen_url('post.php', array('action' => 'edit', 'post_id' => $this->post_id)));
+                }
+            } else {
+                throw new Exception("Access denied.");
+            }
+        } else {
+            throw new Exception("Post does not exist.");
+        } 
     }
 
     private function new_post() {
@@ -178,7 +215,7 @@ class post_page extends page {
                 <br />
                 ');
         }
-        $page->add_text('post', html::clean_text($this->post));
+        $page->add_text('post', html::clean_text($this->post, false, false));
         $page->add_text('action', $action);
         $this->display_post_details();
         $this->add_text('main', $page->display());
@@ -194,6 +231,11 @@ class post_page extends page {
         $page->add_text('breadcrumb_trail', $this->breadcrumb->display());
         $this->add_text('main', $page->display());
         $this->notice("Post added.");
+    }
+    
+    private function update_post() {
+        $this->forum_bl->update_post($this->post_id, $this->post, time(), $this->user->get_user_id());
+        $this->notice("Post saved.");
     }
 
 }

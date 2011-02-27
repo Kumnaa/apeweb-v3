@@ -117,7 +117,7 @@ class portal_page extends page {
 	                        <img class="float" src="' . portal_images::news($this->user->get_style()) . '" alt="" />
 	                        ' . html::clean_text($wee['post_text'], true, true) . '<br /><br />
 	                        <span class="italic">
-	                            <a href="' . html::gen_url('index.php', array('page' => 'viewtopic', 't' => $wee['topic_id'])) . '">
+	                            <a href="' . html::gen_url('viewtopic.php', array('topic_id' => $wee['topic_id'])) . '">
 	                                View Whole Post/Comment
 	                            </a>
 	                        </span> - Posted by ' . html::clean_text($wee['username']) . '<br /><br />
