@@ -5,13 +5,13 @@
 
   @author Ben Bowtell
 
-  @date 22-Nov-2009
+  @date 27-Feb-2011
 
-  (c) 2009 by http://www.apetechnologies.net/
+  (c) 2011 by http://www.amplifycreative.net
 
-  contact: ben@apetechnologies.net
+  contact: ben@amplifycreative.net.net
 
-  ﻿   This program is free software: you can redistribute it and/or modify
+  This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
