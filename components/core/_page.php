@@ -25,12 +25,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require('bl/core/erep_user_bl.php');
 require('bl/core/user_bl.php');
 require('bl/core/forum_bl.php');
 require('bl/core/images_bl.php');
 require('bl/core/install.php');
-require('components/core/_erep_user_class.php');
 require('components/core/_templates.php');
 require('components/core/apetech.php');
 require('components/core/image_manager.php');
