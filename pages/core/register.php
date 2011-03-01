@@ -25,6 +25,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once('components/core/recaptcha.php');
+
 // for unit testing
 if (file_exists('components/page.php')) {
     require_once('components/page.php');
@@ -46,10 +48,12 @@ class register_page extends page {
     protected $error;
     protected $user_id;
     protected $recaptcha;
+    private $site_root;
 
     public function __construct() {
         try {
             parent::__construct();
+            $this->site_root = 'index.php';
             $this->recaptcha = new recaptcha();
             $this->username = input::validate('username', 'string');
             $this->password = input::validate('password', 'message');
@@ -72,6 +76,10 @@ class register_page extends page {
         $this->display();
     }
 
+    public function set_site_root($root) {
+        $this->site_root = $root;
+    }
+    
     protected function action() {
         try {
             switch ($this->action) {
@@ -97,13 +105,7 @@ class register_page extends page {
         $security = $ubl->get_user_by_security_code($this->user_id, $this->security_code);
         if (count($security) > 0) {
             $ubl->activate_user($security[0]['id']);
-            if ($message == null) {
-                $message = "<span class=\"reg_text\">User activated. You can now login.<br />
-            	<br />
-                <a href=\"" . html::gen_url('index.php') . "\">Click here to login.</a></span>";
-            }
-
-            return $message;
+            return $this->display_user_activated();
         } else {
             throw new Exception("Invalid Activation Details");
         }
@@ -114,6 +116,68 @@ class register_page extends page {
         $activation_code = apetech::random_string();
         $security_code = apetech::random_string();
         $ubl->add_registration_code($activation_code, $security_code);
+        return $this->display_reg_form($activation_code, $security_code);
+    }
+
+    protected function validate() {
+        if ($this->user->get_level() > userlevels::$guest) {
+            throw new Exception("You are already registered.");
+        } else {
+            if (config::allow_registration() == true) {
+                try {
+                    validator::validate_username_email($this->db, $this->username, $this->email);
+
+                    validator::validate_password($this->password, $this->confirm_password);
+
+                    validator::validate_email($this->email, $this->confirm_email);
+
+                    $this->recaptcha->validate();
+
+                    return $this->add_user(apetech::random_string());
+                } catch (Exception $ex) {
+                    $this->error = $ex->getMessage();
+                    return $this->gen_reg_form();
+                }
+            }
+        }
+    }
+
+    protected function add_user($security_code) {
+        $ubl = new user_bl($this->db);
+        $new_user_array = array(
+            'username' => array('value' => $this->username, 'type' => PDO::PARAM_STR),
+            'password' => array('value' => md5($this->password . config::salt()), 'type' => PDO::PARAM_STR),
+            'email' => array('value' => $this->email, 'type' => PDO::PARAM_STR),
+            'security' => array('value' => $security_code, 'type' => PDO::PARAM_STR),
+            'phone_number' => array('value' => $this->contact_number, 'type' => PDO::PARAM_STR),
+            'address' => array('value' => $this->address, 'type' => PDO::PARAM_STR)
+        );
+
+        $new_user = $ubl->add_user($new_user_array);
+        if ($new_user > 0) {
+            $click_url = html::build_registration_url(array('action' => 'activate', 'user_id' => $new_user, 'security_code' => $security_code));
+            $this->user->send_activation_email($this->email, $this->username, $new_user, $security_code, $click_url);
+            return $this->display_user_created();
+        } else {
+            throw new Exception("Error adding user. Contact " . config::smtp_sender());
+        }
+    }
+
+    protected function display_user_activated() {
+        return "<span class=\"reg_text\">User activated. You can now login.<br />
+            	<br />
+                <a href=\"" . html::gen_url($this->site_root) . "\">Click here to login.</a></span>";
+    }
+    
+    protected function display_user_created() {
+        return "Email sent to: ". html::clean_text($this->email) ."<br />
+            <br />
+            Click on the link in the email to continue.<br />
+            <br />
+            Remember to check your spam folder.";
+    }
+
+    protected function display_reg_form($activation_code, $security_code) {
         $form = '<form id="reg_form" action="' . html::gen_url('register.php', array('action' => 'validate')) . '" method="post">
                     <fieldset>
                         <legend>Registration Form</legend>
@@ -154,47 +218,6 @@ class register_page extends page {
                 </form>';
 
         return $form;
-    }
-
-    protected function validate() {
-        if ($this->user->get_level() > userlevels::$guest) {
-            throw new Exception("You are already registered.");
-        } else {
-            if (config::allow_registration() == true) {
-                try {
-                    validator::validate_username_email($this->db, $this->username, $this->email);
-
-                    validator::validate_password($this->password, $this->conf_password);
-
-                    validator::validate_email($this->email, $this->conf_email);
-
-                    $this->add_user($security);
-                } catch (Exception $ex) {
-                    $this->error = $ex->getMessage();
-                    return $this->gen_reg_form();
-                }
-            }
-        }
-    }
-
-    protected function add_user($security_code) {
-        $ubl = new user_bl($this->db);
-        $new_user_array = array(
-            'username' => array('value' => $this->username, 'type' => PDO::PARAM_STR),
-            'password' => array('value' => $this->password, 'type' => PDO::PARAM_STR),
-            'email' => array('value' => $this->email, 'type' => PDO::PARAM_STR),
-            'security' => array('value' => $security_code, 'type' => PDO::PARAM_STR),
-            'contact_number' => array('value' => $this->contact_number, 'type' => PDO::PARAM_STR),
-            'address' => array('value' => $this->address, 'type' => PDO::PARAM_STR)
-        );
-
-        $new_user = $ubl->add_user($new_user_array);
-        if ($new_user > 0) {
-            $click_url = html::build_registration_url($click_url = html::build_registration_url(array('action' => 'activate', 'user_id' => $new_user, 'security_code' => $security_code)));
-            return $this->user->send_activation_email($this->email, $this->username, $new_user, $security_code, $click_url);
-        } else {
-            throw new Exception("Error adding user. Contact " . config::smtp_sender());
-        }
     }
 
 }
