@@ -39,7 +39,7 @@ class breadcrumb {
     public function display() {
         $array = array();
         foreach ($this->trail AS $_array) {
-            if ($_array[1] == null) {
+            if ($_array[1] === null) {
                 $array[] = $_array[0];
             } else {
                 $array[] = '<a href="' . $_array[1] . '">' . $_array[0] . '</a>';

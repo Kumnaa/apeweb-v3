@@ -34,22 +34,22 @@ class socket_class {
 
     //create the old socket
     function create($ip, $port, $timeout_s = 5, $timeout_m = 0, $debug = FALSE) {
-        if ($debug == TRUE) {
+        if ($debug === true) {
             echo config::ip() . "\n";
         }
         $this->buffer = array();
         $this->socket_end = FALSE;
         $this->socket_error = FALSE;
-        if ($debug == TRUE) {
+        if ($debug === true) {
             echo "Timeout sec: " . $timeout_s . " Timeout usec: " . $timeout_m . "\n";
         }
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array("sec" => $timeout_s, "usec" => $timeout_m));
-        if ($debug == TRUE) {
+        if ($debug === true) {
             echo "Bind to " . IP_ADDRESS . "\n";
         }
         socket_bind($this->socket, config::ip());
-        if ($debug == TRUE) {
+        if ($debug === true) {
             echo "Connect to " . $ip . ":" . $port . "\n";
         }
         if ($socket = socket_connect($this->socket, $ip, $port)) {
@@ -64,10 +64,10 @@ class socket_class {
     function read($bytes = 1024, $debug = FALSE) {
         /* $data = socket_read($this->socket, $bytes, PHP_BINARY_READ);
           if ($data === '') */
-        if (@socket_recv($this->socket, $data, $bytes, MSG_WAITALL) == FALSE) {
+        if (@socket_recv($this->socket, $data, $bytes, MSG_WAITALL) === false) {
             $this->socket_end = TRUE;
             $this->socket_error = TRUE;
-            if ($debug == TRUE) {
+            if ($debug === true) {
                 echo "Error\n\n";
             }
         }
@@ -86,11 +86,11 @@ class socket_class {
             $this->buffer = array_reverse($this->buffer);
             $r_line = array_pop($this->buffer);
             $this->buffer = array_reverse($this->buffer);
-            if ($debug == TRUE) {
+            if ($debug === true) {
                 echo "Writing buffer:\n\n";
             }
             socket_write($this->socket, $r_line, strlen($r_line));
-            if ($debug == TRUE) {
+            if ($debug === true) {
                 echo "Sent:" . $r_line . "\n\n";
             }
         }

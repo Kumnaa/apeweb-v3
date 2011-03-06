@@ -74,10 +74,10 @@ class db_connector {
 
     //closes the db
     public function sql_close() {
-        if ($this->error == true) {
+        if ($this->error === true) {
             apetech::error_email('Error: ' . implode('<br />', $this->query_list) . '<br /><br />' . nl2br($this->extra_debug_info()));
         }
-        if ($this->debug == true) {
+        if ($this->debug === true) {
             return implode('<br />', $this->query_list);
         } else {
             return '';
@@ -161,7 +161,7 @@ class db_connector {
             $this->error = true;
             $colour = 'red';
             $this->log_error($statement, $arguments, $message);
-            if ($this->transaction == true) {
+            if ($this->transaction === true) {
                 $this->transaction = false;
                 throw new Exception("Transaction error.");
             }
@@ -386,7 +386,7 @@ class sql_db extends db_connector {
                     $_offset = $limits[0] + $limits[1];
                     $offset_string = array_keys($order);
                     $offset_order = array_values($order);
-                    if ($offset_string[0] == 'RAND' && $offset_order[0] == TRUE) {
+                    if ($offset_string[0] == 'RAND' && $offset_order[0] === true) {
                         $offset_select = '';
                         $for_order = $this->make_order(array($offset_string[0] => TRUE));
                         $rev_order = $this->make_order(array($offset_string[0] => TRUE));
@@ -414,7 +414,7 @@ class sql_db extends db_connector {
             $query = "SELECT " . $field_str . " FROM " . $tablename . $join_str . $where_str . $group_str . $order_str;
         }
 
-        if ($exec == TRUE) {
+        if ($exec === true) {
             $time_start = microtime(true);
             $_return = $this->sql_fetchresult($query);
             $time_end = microtime(true);
@@ -423,16 +423,16 @@ class sql_db extends db_connector {
                 $time = '<span style="color:red">' . $time . '</span>';
             }
             if ($_return === FALSE) {
-                if ($this->debug == true) {
+                if ($this->debug === true) {
                     $this->query_list[] = '<br /><span style="color:red">' . html::clean_text($query) . '</span> - ' . $time . '<br /><br />';
                 }
                 $_return = array();
             } else {
-                if ($this->debug == true) {
+                if ($this->debug === true) {
                     $this->query_list[] = '<br /><span style="color:green">' . html::clean_text($query) . '</span> - ' . $time . '<br /><br />';
                 }
             }
-            if ($this->debug == true) {
+            if ($this->debug === true) {
                 $this->query_list[] = '<br /><span style="color:blue">' . print_r($this->value_array, true) . '</span><br /><br />';
             }
         } else {
@@ -499,18 +499,18 @@ class sql_db extends db_connector {
         }
         if ($this->query === FALSE) {
             $this->log_error($_query, print_r($this->value_array, true));
-            if ($this->debug == true) {
+            if ($this->debug === true) {
                 $this->query_list[] = '<br /><span style="color:red">' . html::clean_text($_query) . '</span> - ' . $time . '<br /><br />';
             }
         } else {
-            if ($this->no_queries == false) {
+            if ($this->no_queries === false) {
                 $this->queries++;
             }
-            if ($this->debug == true) {
+            if ($this->debug === true) {
                 $this->query_list[] = '<br /><span style="color:green">' . html::clean_text($_query) . '</span> - ' . $time . '<br /><br />';
             }
         }
-        if ($this->debug == true) {
+        if ($this->debug === true) {
             $this->query_list[] = '<br /><span style="color:blue">' . print_r($this->value_array, true) . '</span><br /><br />';
         }
         $this->reset_value_array();
@@ -524,7 +524,7 @@ class sql_db extends db_connector {
         $this->prepare_value_array();
         if ($query = $this->sql_db->prepare($_query)) {
             if ($query->execute($this->value_array)) {
-                if ($this->no_queries == false) {
+                if ($this->no_queries === false) {
                     $this->queries++;
                 }
                 $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -544,7 +544,7 @@ class sql_db extends db_connector {
     public function insert_into_table($tablename, $data) {
         $_table = $this->prefix . $tablename;
         $return = array();
-        if ($this->created_tables[$_table] == TRUE) {
+        if ($this->created_tables[$_table] === true) {
             $_return = $this->sql_insert($tablename, $data);
             if ($_return[0] === TRUE) {
                 echo '<span style="color:green;">`' . $tablename . '` inserts complete</span><br />' . nl2br($_return[1]);
@@ -675,16 +675,16 @@ class sql_db extends db_connector {
                             $size = '';
                             break;
                     }
-                    if (array_key_exists('auto_inc', $data) && ($data['auto_inc'] == TRUE)) {
+                    if (array_key_exists('auto_inc', $data) && ($data['auto_inc'] === true)) {
                         $create .= '[' . $name . '] [' . $data['data_type'] . '] IDENTITY (1,1),' . $eol;
                     } else {
                         $create .= '[' . $name . '] [' . $data['data_type'] . ']' . $size;
-                        if ($default == TRUE) {
+                        if ($default === true) {
                             $create .= ' NOT NULL DEFAULT \'' . $data['default'] . '\'';
                         }
                         $create .= ',' . $eol;
                     }
-                    if (array_key_exists('is_primary', $data) && ($data['is_primary'] == TRUE)) {
+                    if (array_key_exists('is_primary', $data) && ($data['is_primary'] === true)) {
                         $keys[] = 'PRIMARY KEY (' . $this->escape_field($name) . '),' . $eol;
                     }
                 }
@@ -729,16 +729,16 @@ class sql_db extends db_connector {
                             $size = '';
                             break;
                     }
-                    if ($data['auto_inc'] == TRUE) {
+                    if ($data['auto_inc'] === true) {
                         $create .= '`' . $name . '` ' . $data['data_type'] . ' NOT NULL auto_increment,' . $eol;
                     } else {
                         $create .= '`' . $name . '` ' . $data['data_type'] . '' . $size;
-                        if ($default == TRUE) {
+                        if ($default === true) {
                             $create .= ' NOT NULL DEFAULT \'' . $data['default'] . '\'';
                         }
                         $create .= ',' . $eol;
                     }
-                    if ($data['is_primary'] == TRUE) {
+                    if ($data['is_primary'] === true) {
                         $keys[] = 'PRIMARY KEY(' . $this->escape_field($name) . '),' . $eol;
                     }
                 }
@@ -791,16 +791,16 @@ class sql_db extends db_connector {
                             $size = '';
                             break;
                     }
-                    if ($data['auto_inc'] == TRUE) {
+                    if ($data['auto_inc'] === true) {
                         $create .= '"' . $name . '" SERIAL,' . $eol;
                     } else {
                         $create .= '"' . $name . '" ' . $data['data_type'] . '' . $size;
-                        if ($default == TRUE) {
+                        if ($default === true) {
                             $create .= ' NOT NULL DEFAULT \'' . $data['default'] . '\'';
                         }
                         $create .= ',' . $eol;
                     }
-                    if ($data['is_primary'] == TRUE) {
+                    if ($data['is_primary'] === true) {
                         $keys[] = 'PRIMARY KEY(' . $this->escape_field($name) . '),' . $eol;
                     }
                 }
@@ -830,7 +830,7 @@ class sql_db extends db_connector {
                 break;
         }
         if (is_array($where) && sizeof($where) > 0) {
-            if ($first == TRUE) {
+            if ($first === true) {
                 $where_str = ' WHERE ';
             } else {
                 $where_str = ' (';
@@ -894,7 +894,7 @@ class sql_db extends db_connector {
                     }
                 }
             }
-            if ($first == TRUE) {
+            if ($first === true) {
                 
             } else {
                 $where_str .= ')';
@@ -909,7 +909,7 @@ class sql_db extends db_connector {
     }
 
     private function escape_table_name($tablename, $prefix) {
-        if ($prefix == TRUE) {
+        if ($prefix === true) {
             $_prefix = $this->prefix;
         } else {
             $_prefix = '';
@@ -1055,7 +1055,7 @@ class sql_db extends db_connector {
         $data = array();
         foreach ($result AS $value) {
             //'event_id' => array('data_type' => 'mediumint', 'size' => '', 'default' => '0', 'is_primary' => TRUE),
-            if ($value['CHARACTER_MAXIMUM_LENGTH'] == NULL) {
+            if ($value['CHARACTER_MAXIMUM_LENGTH'] === null) {
                 $value['CHARACTER_MAXIMUM_LENGTH'] = '';
             }
             switch (config::db_engine()) {
@@ -1112,7 +1112,7 @@ class sql_db extends db_connector {
     private function make_order($order, $reverse = FALSE) {
         $order_str = ' ORDER BY ';
         foreach ($order AS $field => $_order) {
-            if ($field == 'RAND' && $_order == TRUE) {
+            if ($field == 'RAND' && $_order === true) {
                 switch (config::db_engine()) {
                     case "mysql":
                     case "mssql":
@@ -1126,7 +1126,7 @@ class sql_db extends db_connector {
             } else {
                 $order_str .= $this->escape_field($field);
                 if (isset($_order)) {
-                    if ($reverse == TRUE) {
+                    if ($reverse === true) {
                         switch ($_order) {
                             case "DESC":
                                 $_order = 'ASC';
@@ -1138,7 +1138,7 @@ class sql_db extends db_connector {
                     }
                     $order_str .= ' ' . $_order . ',';
                 } else {
-                    if ($reverse == TRUE) {
+                    if ($reverse === true) {
                         $order_str .= ' ASC,';
                     } else {
                         $order_str .= ' DESC,';

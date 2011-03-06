@@ -135,7 +135,7 @@ class apetech {
     }
 
     public static function time_lapsed($units, $time) {
-        if ($units == null) {
+        if ($units === null) {
             $time = time() - $time;
             if ($time < 60) {
                 return $time . " seconds ago";
@@ -192,7 +192,7 @@ class apetech {
     }
 
     public static function mysqltime($time = null) {
-        if ($time == null) {
+        if ($time === null) {
             $time = time();
         }
         $date = new DateTime();

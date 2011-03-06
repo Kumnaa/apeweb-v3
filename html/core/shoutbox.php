@@ -28,7 +28,7 @@
 class shoutbox {
     
     private $shout_count = 10;
-    private $annonymouse = false;
+    private $anonymous = false;
     
     public function display_shoutbox() {
         $shout_bl = new portal_bl(page::$db_connection);
@@ -45,7 +45,7 @@ class shoutbox {
                     $output .= '<a href="'. html::gen_url('shoutbox.php', array('id' => $shout['post_id'])) .'"><img src="'. forum_images::edit_icon(page::$user->get_style()) .'" alt="e" /></a> ';
                 }
                 
-                if ($this->annonymouse == true)
+                if ($this->anonymous === true)
                 {
                     $output .= '&#8855; ';
                 }

@@ -123,7 +123,7 @@ class register_page extends page {
         if (page::$user->get_level() > userlevels::$guest) {
             throw new Exception("You are already registered.");
         } else {
-            if (config::allow_registration() == true) {
+            if (config::allow_registration() === true) {
                 try {
                     validator::validate_username_email($this->username, $this->email);
 
@@ -194,7 +194,7 @@ class register_page extends page {
                         <input id="email" type="text" name="email" value="' . html::clean_text($this->email) . '" />
                         Confirm: <input id="email_conf" type="text" name="confirm_email" value="' . html::clean_text($this->confirm_email) . '" /><br />';
         foreach (profile_config::profile_list() AS $key => $profile) {
-            if ($profile['registration'] == true && $key != 'username' && $key != 'password' && $key != 'email') {
+            if ($profile['registration'] === true && $key != 'username' && $key != 'password' && $key != 'email') {
                 $form .= '<label>' . $profile['hrtext'] . ':</label>';
                 switch ($profile['type']) {
                     case "text":

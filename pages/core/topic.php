@@ -220,15 +220,15 @@ class topic_page extends page {
         $this->add_profile_link($page, $post);
 
         // security
-        if ($security->AllowEdit() == true) {
+        if ($security->AllowEdit() === true) {
             $page->add_text('edit', html::gen_link(html::gen_url('post.php', array('action' => 'edit', 'post_id' => $post['post_id'])), html::gen_image(forum_images::edit_icon(page::$user->style))));
         }
 
-        if ($security->AllowAdd() == true) {
+        if ($security->AllowAdd() === true) {
             $page->add_text('quote', html::gen_link(html::gen_url('post.php', array('action' => 'quote', 'post_id' => $post['post_id'])), html::gen_image(forum_images::quote_icon(page::$user->style))));
         }
 
-        if ($security->AllowDelete() == true) {
+        if ($security->AllowDelete() === true) {
             $page->add_text('delete', html::gen_link(html::gen_url('post.php', array('action' => 'delete', 'post_id' => $post['post_id'])), html::gen_image(forum_images::delete_icon(page::$user->style))));
         }
 

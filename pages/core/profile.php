@@ -141,7 +141,7 @@ class profile_page extends page {
             $page->add_text('profile_url', html::gen_url('profile.php', array('user_id' => $this->user_id)));
 
             foreach ($this->profile_settings AS $key => $value) {
-                if ($value['enabled'] == true) {
+                if ($value['enabled'] === true) {
                     if ($value['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $value['self'] == 'auth' && $value[$value['self']] <= page::$user->get_level())) {
                         $page->add_text('profile', $this->display_profile_edit($key));
                     } else if ($value['view'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $value['self'] == 'view' && $value[$value['self']] <= page::$user->get_level())) {
@@ -149,7 +149,7 @@ class profile_page extends page {
                     }
                 }
             }
-            if ($this->is_submittable == true) {
+            if ($this->is_submittable === true) {
                 $page->add_text('profile', '<input type="submit" value="Save" />');
             }
             $this->add_text('main', $page->display());

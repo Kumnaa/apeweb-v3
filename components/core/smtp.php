@@ -81,7 +81,7 @@ class smtp_class {
                         }
                     } while (preg_match("/250 (.*?)\n/m", $contents) == 0 && $socket->socket_end === FALSE);
                     $output .= $contents;
-                    if ($authing == TRUE) {
+                    if ($authing === true) {
                         $time[microtime()] = 'Authing starting';
                         $contents = '';
                         $auth_text = base64_encode(config::smtp_login() . "\0" . config::smtp_login() . "\0" . config::smtp_password());
@@ -107,7 +107,7 @@ class smtp_class {
                             $access = FALSE;
                         }
                     }
-                    if ($access == TRUE) {
+                    if ($access === true) {
                         //server ok?
                         $time[microtime()] = 'Sending first header MAIL FROM';
                         $contents = '';

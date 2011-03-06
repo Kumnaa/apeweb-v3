@@ -112,7 +112,7 @@ class user_bl extends businesslogic_base {
     }
 
     public function insert_session($id, $session_username, $session_security, $user_ip, $session_random, $remember, $user_agent) {
-        if ($remember == null) {
+        if ($remember === null) {
             $remember = 0;
         }
         switch (config::db_engine()) {
@@ -833,7 +833,7 @@ class user_bl extends businesslogic_base {
     public function get_full_profile_details($user_id) {
         $array = array();
         foreach (profile_config::profile_list() AS $key => $value) {
-            if ($value['db'] == true) {
+            if ($value['db'] === true) {
                 $array[] = $key;
             }
         }

@@ -92,7 +92,7 @@ class table {
     }
 
     function v_display($head = 'tb_head') {
-        if ($this->style == true) {
+        if ($this->style === true) {
             $class = $head . ' tb_cell';
         } else {
             $class = '';
@@ -130,7 +130,7 @@ class table {
             foreach ($this->data AS $key => $_data) {
                 $row_style = ($row_count % 2) ? '2' : '1';
                 $row_count++;
-                if ($this->style == TRUE) {
+                if ($this->style === true) {
                     $class = 'tb_cell tb_row' . $row_style;
                 } else {
                     $class = '';
@@ -158,7 +158,7 @@ class table {
     }
 
     function h_display($head = 'tb_head') {
-        if ($this->style == true) {
+        if ($this->style === true) {
             $class = $headclass = $head . ' tb_cell';
         } else {
             $class = $headclass = '';
@@ -182,7 +182,7 @@ class table {
                 $n++;
                 $row_style = ($row_count % 2) ? '1' : '2';
                 $row_count++;
-                if ($this->style == TRUE) {
+                if ($this->style === true) {
                     $class = 'tb_cell tb_row' . $row_style;
                 } else {
                     $class = '';
