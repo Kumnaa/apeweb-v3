@@ -60,7 +60,6 @@ abstract class _page {
     protected $debug = false;
     protected $debug_list;
     protected $inner = false;
-    protected $db;
     public static $db_connection;
     public static $user;
     protected $template;
@@ -82,8 +81,7 @@ abstract class _page {
             $this->inner = true;
         } else {
             $this->template = new template();
-            $this->db = new sql_db();
-            _page::$db_connection = $this->db;
+            _page::$db_connection = new sql_db();
             $this->action = input::validate('action', 'string');
             $this->username = input::validate('username', 'message');
             $this->password = input::validate('password', 'message');
@@ -93,7 +91,7 @@ abstract class _page {
             $this->recaptcha_challenge_field = input::validate('recaptcha_challenge_field', 'message');
             $this->recaptcha_response_field = input::validate('recaptcha_response_field', 'message');
             $this->login_error = '';
-            $this->db->debug = config::debug();
+            _page::$db_connection->debug = config::debug();
             $this->perform_login = false;
             $this->initialise_bl();
         }
@@ -146,8 +144,8 @@ abstract class _page {
 
     public function display() {
         if ($this->inner === false) {
-            $debug = $this->db->debug;
-            $this->add_debug($this->db->sql_close());
+            $debug = _page::$db_connection->debug;
+            $this->add_debug(_page::$db_connection->sql_close());
             if ($debug == true) {
                 $this->replace_text['debug'] = $this->debug_list;
             }
