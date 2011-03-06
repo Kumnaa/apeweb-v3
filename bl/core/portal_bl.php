@@ -25,18 +25,50 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class portal_bl {
+class portal_bl extends businesslogic_base {
 
-    protected $db;
-
-    public function __construct($db) {
-        $this->db = $db;
+    public function get_shouts($limit = 10) {
+        return $this->db->sql_select('
+    		SELECT
+                    `p`.`post_id`,
+                    `p`.`poster_id`,
+                    `p`.`post_time`,
+                    `p`.`poster_ip`,
+                    `pt`.`post_text`,
+                    `u`.`username`,
+                    `u`.`user_level`,
+                    `u`.`colour`,
+                    `rank_colour`,
+                    `u`.`id`
+    		FROM
+                    `shoutbox` AS `p`
+                LEFT JOIN
+                    `users` AS `u`
+                    ON
+                    `id` = `p`.`poster_id`
+                LEFT JOIN
+                    `shoutbox_text` AS `pt`
+                    ON
+                    `pt`.`post_id` = `p`.`post_id`
+                LEFT JOIN
+                    `ranks`
+                    ON
+                    `ranks`.`level` = `u`.`user_level`    		
+    		WHERE
+                    `p`.`status` =  1
+    		ORDER BY 
+                    p.`post_time` DESC
+    		LIMIT
+                    :limit
+    		OFFSET
+    			0
+    		',
+                array(
+                    ':limit' => array('value' => $limit, 'type' => PDO::PARAM_INT)
+                )
+        );
     }
-
-    public function __destruct() {
-        $this->db = null;
-    }
-
+    
     public function get_latest_topics($user) {
         return $this->db->sql_select('
     		SELECT
@@ -59,26 +91,26 @@ class portal_bl {
     			`posts` AS `p`
     			ON
     			`p`.`post_id` = `topics`.`topic_last_post_id`
-			LEFT JOIN
-				`users`
-				ON
-				`id` = `p`.`poster_id`
-			LEFT JOIN
-				`forums`
-				ON
-				`forums`.`forum_id` = `topics`.`forum_id`
-			LEFT JOIN
-				`categories`
-				ON
-				`categories`.`cat_id` = `forums`.`cat_id`
-			LEFT JOIN
-				`post_icons`
-				ON
-				`post_icons`.`id` = `topic_icon`
-			LEFT JOIN
-				`ranks`
-				ON
-				`ranks`.`level` = `users`.`user_level`    		
+                LEFT JOIN
+                        `users`
+                        ON
+                        `id` = `p`.`poster_id`
+                LEFT JOIN
+                        `forums`
+                        ON
+                        `forums`.`forum_id` = `topics`.`forum_id`
+                LEFT JOIN
+                        `categories`
+                        ON
+                        `categories`.`cat_id` = `forums`.`cat_id`
+                LEFT JOIN
+                        `post_icons`
+                        ON
+                        `post_icons`.`id` = `topic_icon`
+                LEFT JOIN
+                        `ranks`
+                        ON
+                        `ranks`.`level` = `users`.`user_level`    		
     		WHERE
     			`forum_view_level` <= :user_level
     			AND

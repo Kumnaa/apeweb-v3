@@ -35,6 +35,7 @@ if (file_exists('components/page.php')) {
 require_once('bl/core/portal_bl.php');
 require_once('components/core/portal/portal_columns.php');
 require_once('config/portal_images.php');
+require_once('html/core/shoutbox.php');
 
 class portal_page extends page {
 
@@ -44,7 +45,7 @@ class portal_page extends page {
     public function __construct() {
         parent::__construct();
         $this->add_text('title', 'Portal');
-        $this->portal_bl = new portal_bl($this->db);
+        $this->portal_bl = new portal_bl();
         $this->set_template('default');
         $this->portal_template = new page($this->template);
         $this->portal_template->set_template('portal');
@@ -89,14 +90,14 @@ class portal_page extends page {
             case "text":
                 if (strlen($element['message']) > 0) {
                     if ($element['tag'] == 'main') {
-                        if (strlen(portal_images::news($this->user->get_style())) > 0) {
-                            $t_img = '<img class="float" src="' . portal_images::news($this->user->get_style()) . '" alt="" />';
+                        if (strlen(portal_images::news(page::$user->get_style())) > 0) {
+                            $t_img = '<img class="float" src="' . portal_images::news(page::$user->get_style()) . '" alt="" />';
                         } else {
                             $t_img = '';
                         }
                         $element_html .= $this->display_block($t_img . html::clean_text($element['message'], true, true), html::clean_text($element['title']));
                     } else {
-                        if ($this->user->get_level() >= $element['view_level']) {
+                        if (page::$user->get_level() >= $element['view_level']) {
                             $element_html .= $this->display_block(html::clean_text($element['message'], true, true), html::clean_text($element['title']));
                         }
                     }
@@ -114,7 +115,7 @@ class portal_page extends page {
                     foreach ($sql AS $wee) {
                         $content = '
 	                    <div class="auto" style="padding-bottom:3px;">
-	                        <img class="float" src="' . portal_images::news($this->user->get_style()) . '" alt="" />
+	                        <img class="float" src="' . portal_images::news(page::$user->get_style()) . '" alt="" />
 	                        ' . html::clean_text($wee['post_text'], true, true) . '<br /><br />
 	                        <span class="italic">
 	                            <a href="' . html::gen_url('viewtopic.php', array('topic_id' => $wee['topic_id'])) . '">
@@ -134,13 +135,13 @@ class portal_page extends page {
                     $icon = '';
                     $content = '';
                     foreach ($topics AS $_lt) {
-                        $mark_read = forum_images::post($this->user->get_style());
-                        $read_topics = $this->user->get_read_topics();
-                        if ($this->user->get_level() > userlevels::$guest && $_lt['post_time'] > $this->user->get_last_visit()) {
-                            $mark_read = forum_images::new_post($this->user->get_style());
+                        $mark_read = forum_images::post(page::$user->get_style());
+                        $read_topics = page::$user->get_read_topics();
+                        if (page::$user->get_level() > userlevels::$guest && $_lt['post_time'] > page::$user->get_last_visit()) {
+                            $mark_read = forum_images::new_post(page::$user->get_style());
                             if (isset($read_topics[$_lt['topic_id']])) {
                                 if ($read_topics[$_lt['topic_id']] >= $_lt['topic_last_post_id']) {
-                                    $mark_read = forum_images::post($this->user->get_style());
+                                    $mark_read = forum_images::post(page::$user->get_style());
                                 }
                             }
                         }
@@ -161,6 +162,8 @@ class portal_page extends page {
                 break;
 
             case "shoutbox":
+                $shoutbox = new shoutbox();
+                $element_html .= $this->display_block($shoutbox->display_shoutbox(), 'Shoutbox');
                 break;
         }
 

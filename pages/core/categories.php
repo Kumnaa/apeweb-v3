@@ -49,8 +49,8 @@ class category_page extends page {
 
     protected function action() {
         try {
-            $fbl = new forum_bl($this->db);
-            $this->display_forums($fbl->get_forum_list($this->user->get_level()));
+            $fbl = new forum_bl();
+            $this->display_forums($fbl->get_forum_list(page::$user->get_level()));
         } catch (Exception $ex) {
             $this->notice($ex->getMessage());
         }
@@ -82,10 +82,10 @@ class category_page extends page {
     protected function display_forum($forum) {
         $page = new page($this->template);
         $page->set_template('forums/forum');
-        if (isset($this->user->unread_forums[$forum['forum_id']])) {
-            $forum_icon = '<img src="' . forum_images::new_forum($this->user->get_style()) . '" alt="Unread" />';
+        if (isset(page::$user->unread_forums[$forum['forum_id']])) {
+            $forum_icon = '<img src="' . forum_images::new_forum(page::$user->get_style()) . '" alt="Unread" />';
         } else {
-            $forum_icon = '<img src="' . forum_images::forum($this->user->get_style()) . '" alt="Read" />';
+            $forum_icon = '<img src="' . forum_images::forum(page::$user->get_style()) . '" alt="Read" />';
         }
         $page->add_text('forum_icon', $forum_icon);
         $page->add_text('forum_title', html::clean_text($forum['forum_name']));

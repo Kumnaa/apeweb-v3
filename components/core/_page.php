@@ -25,6 +25,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require('components/core/businesslogic_base.php');
 require('bl/core/user_bl.php');
 require('bl/core/forum_bl.php');
 require('bl/core/images_bl.php');
@@ -60,6 +61,8 @@ abstract class _page {
     protected $debug_list;
     protected $inner = false;
     protected $db;
+    public static $db_connection;
+    public static $user;
     protected $template;
     protected $action;
     protected $confirm;
@@ -72,8 +75,7 @@ abstract class _page {
     protected $remember;
     protected $recaptcha_challenge_field;
     protected $recaptcha_response_field;
-    public $user;
-
+    
     public function __construct($template = false) {
         if ($template !== false) {
             $this->template = $template;
@@ -81,6 +83,7 @@ abstract class _page {
         } else {
             $this->template = new template();
             $this->db = new sql_db();
+            _page::$db_connection = $this->db;
             $this->action = input::validate('action', 'string');
             $this->username = input::validate('username', 'message');
             $this->password = input::validate('password', 'message');
@@ -200,17 +203,17 @@ abstract class _page {
         if ($this->perform_login == true && strlen($this->login) > 0) {
             if ($this->login == 'true') {
                 try {
-                    $this->user->login($this->username, $this->password, $this->remember);
+                    page::$user->login($this->username, $this->password, $this->remember);
                 } catch (Exception $ex) {
                     $this->login_error = $ex->getMessage();
                 }
             } else if ($this->login == 'logout') {
-                $this->user->logout();
+                page::$user->logout();
             } else {
-                $this->user->grab_info();
+                page::$user->grab_info();
             }
         } else {
-            $this->user->grab_info();
+            page::$user->grab_info();
         }
     }
 

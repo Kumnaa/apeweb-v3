@@ -61,7 +61,7 @@ class login_page extends page {
         switch ($this->action) {
             case "logout":
                 try {
-                    $this->user->logout();
+                    page::$user->logout();
                     $this->notice('Logout complete');
                 } catch (Exception $e) {
                     $this->notice($e->getMessage());
@@ -72,7 +72,7 @@ class login_page extends page {
             default:
                 if (strlen($this->username) > 0 && strlen($this->password) > 0) {
                     try {
-                        $this->user->login($this->username, $this->password, $this->remember);
+                        page::$user->login($this->username, $this->password, $this->remember);
                         $this->notice('Login successful<br />
                             <a href="' . config::completed_login_url() . '">Click here to proceed.</a>');
                     } catch (Exception $e) {
@@ -80,7 +80,7 @@ class login_page extends page {
                         $this->login_form();
                     }
                 } else {
-                    if ($this->user->get_level() > userlevels::$guest) {
+                    if (page::$user->get_level() > userlevels::$guest) {
                         $this->notice(html_login::logout());
                     } else {
                         $this->login_form();

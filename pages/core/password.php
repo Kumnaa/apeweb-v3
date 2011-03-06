@@ -73,7 +73,7 @@ class password_page extends page {
     protected function resend() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $this->notice($this->user->resend_activation_email($this->email, $this->redirect_url));
+                $this->notice(page::$user->resend_activation_email($this->email, $this->redirect_url));
             }
         } catch (Exception $ex) {
             $this->notice($ex->getMessage());
@@ -94,7 +94,7 @@ class password_page extends page {
     protected function lost_password() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $this->notice($this->user->recover_password($this->email));
+                $this->notice(page::$user->recover_password($this->email));
             }
         } catch (Exception $ex) {
             $this->notice($ex->getMessage());
@@ -112,10 +112,10 @@ class password_page extends page {
     }
 
     protected function change_password() {
-        if ($this->user->get_level() >= userlevels::$registered) {
+        if (page::$user->get_level() >= userlevels::$registered) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
-                    $this->user->update_password($this->old_password, $this->new_password, $this->new2_password);
+                    page::$user->update_password($this->old_password, $this->new_password, $this->new2_password);
                     $this->add_text('main', 'Password updated');
                 } catch (Exception $ex) {
                     $this->notice('Password not updated');

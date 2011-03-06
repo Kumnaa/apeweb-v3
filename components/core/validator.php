@@ -27,8 +27,8 @@
 
 class validator {
 
-    public static function validate_username_email($db, $username, $email) {
-        $user_bl = new user_bl($db);
+    public static function validate_username_email($username, $email) {
+        $user_bl = new user_bl();
 
         $check = $user_bl->get_mini_user_by_username_or_email($username, $email);
         if (count($check) > 0) {

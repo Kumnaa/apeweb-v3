@@ -101,7 +101,7 @@ class register_page extends page {
     }
 
     protected function activate($message = null) {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         $security = $ubl->get_user_by_security_code($this->user_id, $this->security_code);
         if (count($security) > 0) {
             $ubl->activate_user($security[0]['id']);
@@ -112,7 +112,7 @@ class register_page extends page {
     }
 
     protected function gen_reg_form() {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         $activation_code = apetech::random_string();
         $security_code = apetech::random_string();
         $ubl->add_registration_code($activation_code, $security_code);
@@ -120,12 +120,12 @@ class register_page extends page {
     }
 
     protected function validate() {
-        if ($this->user->get_level() > userlevels::$guest) {
+        if (page::$user->get_level() > userlevels::$guest) {
             throw new Exception("You are already registered.");
         } else {
             if (config::allow_registration() == true) {
                 try {
-                    validator::validate_username_email($this->db, $this->username, $this->email);
+                    validator::validate_username_email($this->username, $this->email);
 
                     validator::validate_password($this->password, $this->confirm_password);
 
@@ -143,7 +143,7 @@ class register_page extends page {
     }
 
     protected function add_user($security_code) {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         $new_user_array = array(
             'username' => array('value' => $this->username, 'type' => PDO::PARAM_STR),
             'password' => array('value' => md5($this->password . config::salt()), 'type' => PDO::PARAM_STR),
@@ -156,7 +156,7 @@ class register_page extends page {
         $new_user = $ubl->add_user($new_user_array);
         if ($new_user > 0) {
             $click_url = html::build_registration_url(array('action' => 'activate', 'user_id' => $new_user, 'security_code' => $security_code));
-            $this->user->send_activation_email($this->email, $this->username, $new_user, $security_code, $click_url);
+            page::$user->send_activation_email($this->email, $this->username, $new_user, $security_code, $click_url);
             return $this->display_user_created();
         } else {
             throw new Exception("Error adding user. Contact " . config::smtp_sender());

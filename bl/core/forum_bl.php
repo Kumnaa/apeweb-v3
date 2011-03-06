@@ -25,17 +25,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class forum_bl {
-
-    protected $db;
-
-    public function __construct($db) {
-        $this->db = $db;
-    }
-
-    public function __destruct() {
-        $this->db = null;
-    }
+class forum_bl extends businesslogic_base {
 
     public function insert_post($post, $subject, $user_id, $user_ip, $forum, $topic, $icon = 0) {
         $this->db->begin_transaction();

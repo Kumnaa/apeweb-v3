@@ -45,7 +45,7 @@ class images_page extends page {
     public function __construct() {
         parent::__construct();
         $this->gallery_id = input::validate('gallery_id', 'int');
-        $this->forum_bl = new forum_bl($this->db);
+        $this->forum_bl = new forum_bl();
         $this->add_text('title', 'Gallery');
     }
 

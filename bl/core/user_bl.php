@@ -25,17 +25,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class user_bl {
-
-    protected $db;
-
-    public function __construct($db) {
-        $this->db = $db;
-    }
-
-    public function __destruct() {
-        $this->db = null;
-    }
+class user_bl extends businesslogic_base {
 
     public function clear_unregistered_users($long) {
         switch (config::db_engine()) {

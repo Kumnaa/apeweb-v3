@@ -99,6 +99,45 @@ class forum_images {
         }
     }
 
+    static function delete_icon($style)
+    {
+        switch ($style)
+        {
+            default:
+                return 'http://images.apegaming.net/xbut.gif';
+                break;
+        }
+    }
+    
+    static function edit_icon($style)
+    {
+        switch ($style)
+        {
+            default:
+                return 'http://images.apegaming.net/ebut.gif';
+                break;
+        }
+    }
+    
+    static function quote_icon($style)
+    {
+        switch ($style)
+        {
+            default:
+                return 'http://images.apegaming.net/qbut.gif';
+                break;
+        }
+    }
+    
+    static function clock_icon($style)
+    {
+        switch ($style)
+        {
+            default:
+                return 'http://images.apegaming.net/clock.gif';
+                break;
+        }
+    }
 }
 
 ?>

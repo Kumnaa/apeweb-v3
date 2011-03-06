@@ -85,13 +85,13 @@ class profile_page extends page {
                 $this->save_profile();
             }
 
-            if (profile_config::access_level() <= $this->user->get_level()) {
-                if ($this->user_id == 0 && $this->user->get_user_id() > 0) {
-                    $this->user_id = $this->user->get_user_id();
+            if (profile_config::access_level() <= page::$user->get_level()) {
+                if ($this->user_id == 0 && page::$user->get_user_id() > 0) {
+                    $this->user_id = page::$user->get_user_id();
                 }
 
                 if ($this->user_id > 0) {
-                    $ubl = new user_bl($this->db);
+                    $ubl = new user_bl();
                     $this->display_profile($ubl->get_full_profile_details($this->user_id));
                 } else {
                     throw new Exception("Invalid user id.");
@@ -105,11 +105,11 @@ class profile_page extends page {
     }
 
     protected function save_profile() {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         $parameters = array(':id' => array('value' => $this->user_id, 'type' => PDO::PARAM_INT));
         $fields = array();
         foreach ($this->profile AS $key => $value) {
-            if ($this->profile_settings[$key]['auth'] <= $this->user->get_level() || ($this->user_id == $this->user->get_user_id() && $this->profile_settings[$key]['self'] == 'auth' && $this->profile_settings[$key][$this->profile_settings[$key]['self']] <= $this->user->get_level())) {
+            if ($this->profile_settings[$key]['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $this->profile_settings[$key]['self'] == 'auth' && $this->profile_settings[$key][$this->profile_settings[$key]['self']] <= page::$user->get_level())) {
                 if ($key == "bio") {
                     $ubl->update_bio($this->user_id, $value);
                 } else {
@@ -142,9 +142,9 @@ class profile_page extends page {
 
             foreach ($this->profile_settings AS $key => $value) {
                 if ($value['enabled'] == true) {
-                    if ($value['auth'] <= $this->user->get_level() || ($this->user_id == $this->user->get_user_id() && $value['self'] == 'auth' && $value[$value['self']] <= $this->user->get_level())) {
+                    if ($value['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $value['self'] == 'auth' && $value[$value['self']] <= page::$user->get_level())) {
                         $page->add_text('profile', $this->display_profile_edit($key));
-                    } else if ($value['view'] <= $this->user->get_level() || ($this->user_id == $this->user->get_user_id() && $value['self'] == 'view' && $value[$value['self']] <= $this->user->get_level())) {
+                    } else if ($value['view'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $value['self'] == 'view' && $value[$value['self']] <= page::$user->get_level())) {
                         $page->add_text('profile', $this->display_profile_view($key));
                     }
                 }

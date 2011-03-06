@@ -46,20 +46,20 @@ class page extends _page {
     }
 
     protected function create_user() {
-        $this->user = new user($this->db);
+        $this->user = new user();
     }
 
     protected function pre_action() {
-        $this->user->grab_info();
-        $this->user->update_page(get_class($this));
+        page::$user->grab_info();
+        page::$user->update_page(get_class($this));
         $this->add_text('javascript', 'var url_root = "' . config::site_url() . '";');
     }
 
     protected function post_action() {
         $this->menu = new cccp_menu($this);
         $this->menu->display();
-        if (strlen($this->user->avatar_link) > 0) {
-            $this->add_text('avatar', '<div id="avatar_container"><img id="avatar" src="' . $this->user->avatar_link . '" alt="" /></div>');
+        if (strlen(page::$user->avatar_link) > 0) {
+            $this->add_text('avatar', '<div id="avatar_container"><img id="avatar" src="' . page::$user->avatar_link . '" alt="" /></div>');
         }
     }
 

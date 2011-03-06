@@ -1,15 +1,15 @@
 <?php
 
 /*
-  Logout page
+  buisnesslogic_base
 
   @author Ben Bowtell
 
-  @date 27-Feb-2011
+  @date 06-Mar-2011
 
-  (c) 2011 by http://www.amplifycreative.net
+  (c) 2011 by http://www.amplifycreative.net/
 
-  contact: ben@amplifycreative.net.net
+  contact: ben@amplifycreative.net
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,34 +25,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// for unit testing
-if (file_exists('components/page.php')) {
-    require_once('components/page.php');
-} else {
-    require_once('components/core/page.php');
-}
-
-// end for unit testing
-
-class logout_page extends page {
-
-    protected $redirect_url;
-
+class businesslogic_base {
+    
+    protected $db;
+    
     public function __construct() {
-        parent::__construct();
-        $this->add_text('title', 'Login/Logout');
-        $this->redirect_url = input::validate('redirect_url', 'message');
+        $this->db = page::$db_connection;
     }
-
-    public function generate_display() {
-        $this->display();
-    }
-
-    protected function action() {
-        page::$user->logout();
-        $this->redirect($this->redirect_url);
-    }
-
 }
 
 ?>

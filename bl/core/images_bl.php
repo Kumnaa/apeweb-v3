@@ -25,17 +25,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class images_bl {
-
-    protected $db;
-
-    public function __construct($db) {
-        $this->db = $db;
-    }
-
-    public function __destruct() {
-        $this->db = null;
-    }
+class images_bl extends businesslogic_base {
 
     public function get_image_count($user_id = null) {
         switch (config::db_engine()) {

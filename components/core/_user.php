@@ -85,8 +85,8 @@ abstract class _user {
         return $this->phone_number;
     }
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct() {
+        $this->db = page::$db_connection;
 
         $this->in_login = false;
 
@@ -116,7 +116,7 @@ abstract class _user {
     }
 
     public function update_page($_page) {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         if ($_page == '') {
             $_page == 'Unknown';
         }
@@ -124,7 +124,7 @@ abstract class _user {
     }
 
     public function grab_info() {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         $month = time() - 2678400;
         $sql = $ubl->get_session_data($this->session_security, $this->session_username, $this->session_random);
         if (count($sql) > 0) {
@@ -150,7 +150,7 @@ abstract class _user {
     }
 
     public function login($_username, $_password, $remember = 'off') {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         $message = '';
         if ($remember == 'on') {
             $remember = '2';
@@ -227,7 +227,7 @@ abstract class _user {
     }
 
     protected function update_session() {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         $ubl->update_session($_SERVER['HTTP_USER_AGENT'], $this->id, $this->session_random);
     }
 
@@ -251,7 +251,7 @@ abstract class _user {
     }
 
     public function resend_activation_email($email, $redirect_url) {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         $sql = $ubl->get_user_by_email($email);
         if (is_array($sql) && count($sql) > 0 && $sql[0]['status'] == 0) {
             $click_url = html::build_registration_url(array('action' => 'activate', 'user_id' => $sql[0]['id'], 'security_code' => $sql[0]['security'], 'redirect_url' => urlencode($redirect_url)));
@@ -263,7 +263,7 @@ abstract class _user {
     }
 
     public function update_password($old_password, $new_password, $new2_password) {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
         $sql = $ubl->get_old_password($this->id);
         if ($sql[0]['password'] == md5($old_password . config::salt())) {
             if ($new_password != '' && ($new_password == $new2_password)) {
@@ -277,7 +277,7 @@ abstract class _user {
     }
 
     public function recover_password($email) {
-        $ubl = new user_bl($this->db);
+        $ubl = new user_bl();
 
         $sql = $ubl->get_user_by_email($email);
         if (is_array($sql) && sizeof($sql) > 0) {

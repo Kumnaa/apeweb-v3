@@ -48,7 +48,7 @@ class images_page extends page {
         $this->image_id = input::validate('image_id', 'string');
         $this->image_manager = new image_manager(forum_config::image_warehouse_filesystem(), forum_config::image_warehouse_filesystem() . 'thumb/', null, null, 75, 75);
         $this->image_manager->set_filename_length(8);
-        $this->images_bl = new images_bl($this->db);
+        $this->images_bl = new images_bl();
         $this->add_text('title', 'Images');
         $this->paging = new paging();
         $this->paging->items_per_page = forum_config::$page_limit;
@@ -87,7 +87,7 @@ class images_page extends page {
     protected function delete() {
         $image = $this->images_bl->get_image($this->image_id);
         if (is_array($image) && count($image) > 0) {
-            if ($this->user->get_level() >= userlevels::$moderator || $this->user->get_user_id() == $image[0]['owner_id']) {
+            if (page::$user->get_level() >= userlevels::$moderator || page::$user->get_user_id() == $image[0]['owner_id']) {
                 if ($this->confirm == "confirm") {
                     $head_exp = explode('/', $image[0]['header']);
                     $extension = array_pop($head_exp);
@@ -134,12 +134,12 @@ class images_page extends page {
     }
 
     protected function browse() {
-        $your_images = $this->images_bl->get_image_count($this->user->get_user_id());
+        $your_images = $this->images_bl->get_image_count(page::$user->get_user_id());
         $this->paging->total_items = $your_images;
         $this->paging->url_arguments = array('action' => 'browse');
         $this->add_text('main', $this->paging->display());
 
-        $images = $this->images_bl->get_images($this->page_id, $this->user->get_user_id());
+        $images = $this->images_bl->get_images($this->page_id, page::$user->get_user_id());
         if (is_array($images) && count($images) > 0) {
             $this->list_images($images);
         } else {
@@ -184,8 +184,8 @@ class images_page extends page {
             $head_exp = explode('/', $repeat['header']);
             $extension = array_pop($head_exp);
             $owner = $repeat['username'];
-            if ($repeat['owner_id'] == $this->user->get_user_id() || $this->user->get_level() >= userlevels::$moderator) {
-                $del = '<a href="' . html::gen_url('images.php', array('action' => 'delete', 'image_id' => $repeat['image_id'])) . '"><img alt="" src="' . forum_images::delete_icon($this->user->get_style()) . '" /></a>';
+            if ($repeat['owner_id'] == page::$user->get_user_id() || page::$user->get_level() >= userlevels::$moderator) {
+                $del = '<a href="' . html::gen_url('images.php', array('action' => 'delete', 'image_id' => $repeat['image_id'])) . '"><img alt="" src="' . forum_images::delete_icon(page::$user->get_style()) . '" /></a>';
             } else {
                 $del = '';
             }
@@ -224,13 +224,13 @@ class images_page extends page {
     }
 
     protected function upload() {
-        if ($this->user->get_level() >= userlevels::$member) {
+        if (page::$user->get_level() >= userlevels::$member) {
             if (isset($_FILES) && count($_FILES) > 0) {
                 $image = $this->image_manager->image_upload($_FILES, 'uploaded_image', 0, null, false);
                 if ($image === false) {
                     $this->notice("Failed to upload image.");
                 } else {
-                    $this->images_bl->add_image($image->ImageName(), $image->ImageFileName(), $this->user->get_user_id(), time(), $image->ImageType(), $image->ImageSize());
+                    $this->images_bl->add_image($image->ImageName(), $image->ImageFileName(), page::$user->get_user_id(), time(), $image->ImageType(), $image->ImageSize());
                 }
             }
 

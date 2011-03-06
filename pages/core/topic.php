@@ -76,19 +76,19 @@ class topic_page extends page {
     }
 
     protected function initialise_bl() {
-        $this->forum_bl = new forum_bl($this->db);
+        $this->forum_bl = new forum_bl();
     }
 
     protected function display_new_post() {
         return '
                 <a href="' . html::gen_url('post.php', array('topic_id' => $this->topic_id)) . '">
-                    <img src="' . forum_images::make_post($this->user->get_style()) . '" alt="" />
+                    <img src="' . forum_images::make_post(page::$user->get_style()) . '" alt="" />
                 </a>
             ';
     }
 
     protected function generate_topic_by_topic_id() {
-        if ($this->user->get_level() >= userlevels::$administrator) {
+        if (page::$user->get_level() >= userlevels::$administrator) {
             $post_count = $this->forum_bl->count_posts_in_topic($this->topic_id, 2);
         } else {
             $post_count = $this->forum_bl->count_posts_in_topic($this->topic_id, 1);
@@ -105,7 +105,7 @@ class topic_page extends page {
             $this->forum_post_level = $topic_details[0]['forum_post_level'];
             $this->topic_title = $topic_details[0]['topic_title'];
             $this->breadcrumb->add_crumb(html::clean_text($this->topic_title));
-            if ($this->forum_view_level <= $this->user->get_level()) {
+            if ($this->forum_view_level <= page::$user->get_level()) {
                 $this->display_topic();
             }
         } else {
@@ -127,7 +127,7 @@ class topic_page extends page {
         $page = new page($this->template);
         $page->set_template('forums/topic_details');
         $page->add_text('breadcrumb_trail', $this->breadcrumb->display());
-        if ($this->user->get_level() >= $this->forum_post_level) {
+        if (page::$user->get_level() >= $this->forum_post_level) {
             $page->add_text('new_post', $this->display_new_post());
         }
         $this->add_text('main', $page->display());
@@ -149,7 +149,7 @@ class topic_page extends page {
     }
 
     protected function display_posts() {
-        if ($this->user->get_level() >= userlevels::$administrator) {
+        if (page::$user->get_level() >= userlevels::$administrator) {
             $posts = $this->forum_bl->get_topic_posts($this->topic_id, $this->page_id, 2);
         } else {
             $posts = $this->forum_bl->get_topic_posts($this->topic_id, $this->page_id, 1);
@@ -169,39 +169,39 @@ class topic_page extends page {
     }
 
     protected function mark_last_post_read($post_id, $post_time) {
-        $read_topics = $this->user->get_read_topics();
+        $read_topics = page::$user->get_read_topics();
         if (array_key_exists($this->topic_id, $read_topics)) {
             if ($read_topics[$this->topic_id] < $post_id) {
-                $this->user->update_last_read_post_id($this->user->get_user_id(), $this->topic_id, $post_id);
+                page::$user->update_last_read_post_id(page::$user->get_user_id(), $this->topic_id, $post_id);
             }
         } else {
-            $this->user->update_last_read_post_id($this->user->get_user_id(), $this->topic_id, $post_id);
+            page::$user->update_last_read_post_id(page::$user->get_user_id(), $this->topic_id, $post_id);
         }
     }
 
     protected function display_post($post) {
-        $mark_read = forum_images::mini_post($this->user->get_style());
-        $read_topics = $this->user->get_read_topics();
-        if ($this->user->get_level() > userlevels::$guest && $post['post_time'] > $this->user->get_last_visit()) {
-            $mark_read = forum_images::new_mini_post($this->user->get_style());
+        $mark_read = forum_images::mini_post(page::$user->get_style());
+        $read_topics = page::$user->get_read_topics();
+        if (page::$user->get_level() > userlevels::$guest && $post['post_time'] > page::$user->get_last_visit()) {
+            $mark_read = forum_images::new_mini_post(page::$user->get_style());
             if (isset($read_topics[$post['topic_id']])) {
                 if ($read_topics[$post['topic_id']] >= $post['post_id']) {
-                    $mark_read = forum_images::mini_post($this->user->get_style());
+                    $mark_read = forum_images::mini_post(page::$user->get_style());
                 }
             }
         }
 
         $security = new security_type();
 
-        if (($this->user->get_level() >= userlevels::$moderator || $this->user->get_user_id() == $post['poster_id']) && $this->user->get_level() >= $this->forum_level) {
+        if ((page::$user->get_level() >= userlevels::$moderator || page::$user->get_user_id() == $post['poster_id']) && page::$user->get_level() >= $this->forum_level) {
             $security->AllowEdit(true);
         }
 
-        if ($this->user->get_level() >= userlevels::$moderator && $this->user->get_level() >= $this->forum_level) {
+        if (page::$user->get_level() >= userlevels::$moderator && page::$user->get_level() >= $this->forum_level) {
             $security->AllowDelete(true);
         }
 
-        if ($this->user->get_level() >= $this->forum_post_level) {
+        if (page::$user->get_level() >= $this->forum_post_level) {
             $security->AllowAdd(true);
         }
 
@@ -221,15 +221,15 @@ class topic_page extends page {
 
         // security
         if ($security->AllowEdit() == true) {
-            $page->add_text('edit', html::gen_link(html::gen_url('post.php', array('action' => 'edit', 'post_id' => $post['post_id'])), html::gen_image(forum_images::edit_icon($this->user->style))));
+            $page->add_text('edit', html::gen_link(html::gen_url('post.php', array('action' => 'edit', 'post_id' => $post['post_id'])), html::gen_image(forum_images::edit_icon(page::$user->style))));
         }
 
         if ($security->AllowAdd() == true) {
-            $page->add_text('quote', html::gen_link(html::gen_url('post.php', array('action' => 'quote', 'post_id' => $post['post_id'])), html::gen_image(forum_images::quote_icon($this->user->style))));
+            $page->add_text('quote', html::gen_link(html::gen_url('post.php', array('action' => 'quote', 'post_id' => $post['post_id'])), html::gen_image(forum_images::quote_icon(page::$user->style))));
         }
 
         if ($security->AllowDelete() == true) {
-            $page->add_text('delete', html::gen_link(html::gen_url('post.php', array('action' => 'delete', 'post_id' => $post['post_id'])), html::gen_image(forum_images::delete_icon($this->user->style))));
+            $page->add_text('delete', html::gen_link(html::gen_url('post.php', array('action' => 'delete', 'post_id' => $post['post_id'])), html::gen_image(forum_images::delete_icon(page::$user->style))));
         }
 
         return $page->display();

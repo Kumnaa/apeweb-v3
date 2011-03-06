@@ -41,7 +41,7 @@ class contact_list_page extends page {
 
     public function __construct() {
         parent::__construct();
-        $this->contact_list_bl = new contact_list_bl($this->db);
+        $this->contact_list_bl = new contact_list_bl();
         $this->add_text('title', 'Contact List');
     }
 
@@ -96,7 +96,7 @@ class contact_list_page extends page {
                     '<a href="mailto:' . html::clean_text($_mem['email']) . '">' . html::clean_text($_mem['email']) . '</a>',
                     html::clean_text($_mem['location'])
                 );
-                if ($this->user->get_level() >= userlevels::$moderator) {
+                if (page::$user->get_level() >= userlevels::$moderator) {
                     $data[] = '<a href="' . html::gen_url('profile.php', array('user_id' => html::clean_text($_mem['id']))) . '">Edit</a>';
                     $data[] = '&#160;<a href="' . html::gen_url('contactlist.php', array('id' => $_mem['id'], 'action' => 'up')) . '">[U]</a> - <a href="' . html::gen_url('contactlist.php', array('id' => $_mem['id'], 'action' => 'down')) . '">[D]</a>&#160;';
                 }

@@ -25,13 +25,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class contact_list_bl {
-
-    protected $db;
-
-    public function __construct($db) {
-        $this->db = $db;
-    }
+class contact_list_bl extends businesslogic_base {
 
     public function get_contact_list() {
         return $this->db->sql_select('SELECT
@@ -55,10 +49,6 @@ class contact_list_bl {
                 )
             ORDER BY
                 list_order ASC');
-    }
-
-    public function __destruct() {
-        $this->db = null;
     }
 
 }

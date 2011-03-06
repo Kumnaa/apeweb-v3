@@ -74,8 +74,8 @@ class forum_page extends page {
                 $this->pages->url_arguments = array('forum_id' => $this->forum_id);
                 $this->pages->page = $this->page_id;
 
-                $this->display_topics($this->forum_bl->get_global_topics($this->user), 'Global Announcements');
-                $this->display_topics($this->forum_bl->get_forum_by_id($this->user, $this->forum_id, $this->page_id), 'Topics');
+                $this->display_topics($this->forum_bl->get_global_topics(page::$user), 'Global Announcements');
+                $this->display_topics($this->forum_bl->get_forum_by_id(page::$user, $this->forum_id, $this->page_id), 'Topics');
                 $this->display_forum_details();
                 $this->display_paging();
                 $this->add_text('forum_name', html::clean_text($this->forum_name));
@@ -88,13 +88,13 @@ class forum_page extends page {
     }
 
     protected function initialise_bl() {
-        $this->forum_bl = new forum_bl($this->db);
+        $this->forum_bl = new forum_bl();
     }
 
     protected function display_new_topic() {
         return '
                 <a href="' . html::gen_url('post.php', array('forum_id' => $this->forum_id)) . '">
-                    <img src="' . forum_images::make_post($this->user->get_style()) . '" alt="" />
+                    <img src="' . forum_images::make_post(page::$user->get_style()) . '" alt="" />
                 </a>
             ';
     }
@@ -108,7 +108,7 @@ class forum_page extends page {
         $this->breadcrumb->add_crumb('Portal', html::gen_url('index.php'));
         $this->breadcrumb->add_crumb('Forums', html::gen_url('forums.php'));
         if (count($details) == 1) {
-            if ($details[0]['forum_view_level'] <= $this->user->get_level()) {
+            if ($details[0]['forum_view_level'] <= page::$user->get_level()) {
                 $this->forum_name = $details[0]['forum_name'];
                 $this->breadcrumb->add_crumb(html::clean_text($this->forum_name));
                 $this->forum_description = $details[0]['forum_desc'];
@@ -127,7 +127,7 @@ class forum_page extends page {
         $page->set_template('forums/forum_details');
         $page->add_text('forum_description', html::clean_text($this->forum_description));
         $page->add_text('breadcrumb_trail', $this->breadcrumb->display());
-        if ($this->user->get_level() >= $this->forum_level) {
+        if (page::$user->get_level() >= $this->forum_level) {
             $page->add_text('new_post', $this->display_new_topic());
         }
         $this->add_text('main', $page->display());
@@ -155,13 +155,13 @@ class forum_page extends page {
     }
 
     protected function display_topic($topic) {
-        $read_topics = $this->user->get_read_topics();
-        $mark_read = forum_images::topic($this->user->get_style());
-        if ($this->user->get_level() > userlevels::$guest && $topic['post_time'] > $this->user->get_last_visit()) {
-            $mark_read = forum_images::new_topic($this->user->get_style());
+        $read_topics = page::$user->get_read_topics();
+        $mark_read = forum_images::topic(page::$user->get_style());
+        if (page::$user->get_level() > userlevels::$guest && $topic['post_time'] > page::$user->get_last_visit()) {
+            $mark_read = forum_images::new_topic(page::$user->get_style());
             if (isset($read_topics[$topic['topic_id']])) {
                 if ($read_topics[$topic['topic_id']] >= $topic['topic_last_post_id']) {
-                    $mark_read = forum_images::topic($this->user->get_style());
+                    $mark_read = forum_images::topic(page::$user->get_style());
                 }
             }
         }

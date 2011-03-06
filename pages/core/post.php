@@ -47,7 +47,7 @@ class post_page extends page {
 
     public function __construct() {
         parent::__construct();
-        $this->forum_bl = new forum_bl($this->db);
+        $this->forum_bl = new forum_bl();
         $this->forum_id = input::validate('forum_id', 'int');
         $this->topic_id = input::validate('topic_id', 'int');
         $this->group_id = input::validate('group_id', 'int');
@@ -107,15 +107,15 @@ class post_page extends page {
         if (count($details) > 0) {
             $security = new security_type();
 
-            if (($this->user->get_level() >= userlevels::$moderator || $this->user->get_user_id() == $details[0]['poster_id']) && $this->user->get_level() >= $details[0]['forum_level']) {
+            if ((page::$user->get_level() >= userlevels::$moderator || page::$user->get_user_id() == $details[0]['poster_id']) && page::$user->get_level() >= $details[0]['forum_level']) {
                 $security->AllowEdit(true);
             }
 
-            if ($this->user->get_level() >= userlevels::$moderator && $this->user->get_level() >= $details[0]['forum_level']) {
+            if (page::$user->get_level() >= userlevels::$moderator && page::$user->get_level() >= $details[0]['forum_level']) {
                 $security->AllowDelete(true);
             }
 
-            if ($this->user->get_level() >= $details[0]['forum_post_level']) {
+            if (page::$user->get_level() >= $details[0]['forum_post_level']) {
                 $security->AllowAdd(true);
             }
             
@@ -147,7 +147,7 @@ class post_page extends page {
         $details = $this->forum_bl->get_topic_details($this->topic_id);
         if (count($details) > 0) {
             $this->forum_id = $details[0]['forum_id'];
-            if ($details[0]['forum_post_level'] <= $this->user->get_level()) {
+            if ($details[0]['forum_post_level'] <= page::$user->get_level()) {
                 $this->breadcrumb->add_crumb('Forums', html::gen_url('forums.php'));
                 $this->breadcrumb->add_crumb(html::clean_text($details[0]['forum_name']), html::gen_url('viewforum.php', array('forum_id' => $this->forum_id)));
                 $this->breadcrumb->add_crumb(html::clean_text($details[0]['topic_title']), html::gen_url('viewtopic.php', array('topic_id' => $this->topic_id)));
@@ -171,7 +171,7 @@ class post_page extends page {
     private function new_topic() {
         $details = $this->forum_bl->get_forum_details($this->forum_id);
         if (count($details) > 0) {
-            if ($details[0]['forum_level'] <= $this->user->get_level()) {
+            if ($details[0]['forum_level'] <= page::$user->get_level()) {
                 $this->breadcrumb->add_crumb('Forums', html::gen_url('forums.php'));
                 $this->breadcrumb->add_crumb(html::clean_text($details[0]['forum_name']), html::gen_url('viewforum.php', array('forum_id' => $this->forum_id)));
                 if ($_POST) {
@@ -224,7 +224,7 @@ class post_page extends page {
 
     private function insert_new_post() {
         $this->forum_bl->insert_post(
-                $this->post, $this->subject, $this->user->get_user_id(), $this->user->get_user_ip(), $this->forum_id, $this->topic_id
+                $this->post, $this->subject, page::$user->get_user_id(), page::$user->get_user_ip(), $this->forum_id, $this->topic_id
         );
         $page = new page($this->template);
         $page->set_template('forums/new_post_details');
@@ -234,7 +234,7 @@ class post_page extends page {
     }
     
     private function update_post() {
-        $this->forum_bl->update_post($this->post_id, $this->post, time(), $this->user->get_user_id());
+        $this->forum_bl->update_post($this->post_id, $this->post, time(), page::$user->get_user_id());
         $this->notice("Post saved.");
     }
 
