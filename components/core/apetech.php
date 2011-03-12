@@ -31,7 +31,7 @@ class apetech {
         if (isset($_POST) && is_array($_POST) && is_array($exceptions)) {
             $string = '';
             foreach ($_POST AS $key => $value) {
-                if (array_search($key, $exceptions) === false) {
+                if (array_search($key, $exceptions) == faslse) {
                     $string .= '<b>' . html::clean_text(ucwords(str_replace(array("_", "-"), " ", $key))) . '</b>:<br />' . html::clean_text($value) . '<br /><br />';
                 }
             }

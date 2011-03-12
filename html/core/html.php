@@ -59,7 +59,7 @@ class html {
 	    		);
 			});";
 
-        if ($catch_submit === true) {
+        if ($catch_submit == true) {
             $formcatcher = '$(\'#' . $form_name . '\').submit(function() {
 		        		try
 		        		{
@@ -85,7 +85,7 @@ class html {
 
     public static function truncate($string, $length) {
         $done = false;
-        while ($done === false && strlen($string) >= $length) {
+        while ($done == false && strlen($string) >= $length) {
             $alpha = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
             $opening_elements = 0;
             foreach ($alpha AS $_alpha) {
@@ -148,7 +148,7 @@ class html {
     public static function clean_text($post, $newline = false, $bbcode = true, $parse_urls = false) {
         $post = self::utf_safe($post);
         $post = self::remove_htmljava($post);
-        if ($bbcode === true) {
+        if ($bbcode == true) {
             foreach (bbcode::$bbcode_array AS $array) {
                 $post = preg_replace($array['name_tag'], $array['replace_tag'], $post);
             }
@@ -163,11 +163,11 @@ class html {
 
             $post = preg_replace_callback("/\[url=(.*?)\](.*?)\[\/url\]/", create_function('$matches', 'return (html::url_parsing_ext($matches));'), $post);
             $post = preg_replace_callback("/\[url\](.*?)\[\/url\]/", create_function('$matches', 'return (html::url_parsing_ext($matches));'), $post);
-            if ($parse_urls === true) {
+            if ($parse_urls == true) {
                 $post = preg_replace('|([A-Za-z]{3,9})://([-;:&=\+\$,\w]+@{1})?([-A-Za-z0-9\.]+)+:?(\d+)?((/[-\+~%/\.\w]+)?\??([-\+=&;%@\.\w]+)?#?([\w]+)?)?|', '<a href="\0" target="_blank">\1</a>', $post);
             }
         }
-        if ($newline === TRUE) {
+        if ($newline == true) {
             $post = nl2br($post);
         }
         return ($post);
@@ -186,8 +186,8 @@ class html {
           for ($n = 1; $n <= $len; $n++)
           {
           $current = substr($string, $n-1, 1);
-          //if (preg_match('/[\w\pL]/u', $current) === false && $current != "\n" && $current != "\r")
-          if (preg_match('/([\x09\x0A\x0D\x20-\x7E]|[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})*\z/', $current) === false)
+          //if (preg_match('/[\w\pL]/u', $current) == false && $current != "\n" && $current != "\r")
+          if (preg_match('/([\x09\x0A\x0D\x20-\x7E]|[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})*\z/', $current) == false)
           {
           $clean .= '?';
           }
@@ -230,12 +230,12 @@ class html {
             $_args['xhtml'] = $_GET['xhtml'];
         }
         $url = config::site_url() . $_file;
-        if ($encode === true) {
+        if ($encode == true) {
             $and = '&amp;';
         } else {
             $and = '&';
         }
-        if ($_append === true) {
+        if ($_append == true) {
             $prefix = $and;
             $query_string = '';
             foreach ($_GET AS $key => $get) {
@@ -262,7 +262,7 @@ class html {
                 if (defined('STATIC_URLS')) {
                     $args .= $key . '-' . $arg . '/';
                 } else {
-                    if ($start === true) {
+                    if ($start == true) {
                         $args .= $key . '=' . $arg;
                         $start = false;
                     } else {
@@ -279,7 +279,7 @@ class html {
     }
 
     public static function capture_url($capture_arguments = true) {
-        if ($capture_arguments === true) {
+        if ($capture_arguments == true) {
             $file = $_SERVER['REQUEST_URI'];
         } else {
             $file = $_SERVER['SCRIPT_NAME'];

@@ -227,7 +227,7 @@ class images_page extends page {
         if (page::$user->get_level() >= userlevels::$member) {
             if (isset($_FILES) && count($_FILES) > 0) {
                 $image = $this->image_manager->image_upload($_FILES, 'uploaded_image', 0, null, false);
-                if ($image === false) {
+                if ($image == false) {
                     $this->notice("Failed to upload image.");
                 } else {
                     $this->images_bl->add_image($image->ImageName(), $image->ImageFileName(), page::$user->get_user_id(), time(), $image->ImageType(), $image->ImageSize());

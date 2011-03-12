@@ -99,7 +99,7 @@ abstract class _page {
     public function execute() {
         $this->create_user();
         $this->pre_action();
-        if ($this->perform_action === true) {
+        if ($this->perform_action == true) {
             $this->action();
         }
 
@@ -142,10 +142,10 @@ abstract class _page {
     }
 
     public function display() {
-        if ($this->inner === false) {
+        if ($this->inner == false) {
             $debug = _page::$db_connection->debug;
             $this->add_debug(_page::$db_connection->sql_close());
-            if ($debug === true) {
+            if ($debug == true) {
                 $this->replace_text['debug'] = $this->debug_list;
             }
         }
@@ -157,7 +157,7 @@ abstract class _page {
 
         $html = preg_replace('/<!--ATTR_(.*?)-->/', '', $html);
 
-        if ($this->inner === false) {
+        if ($this->inner == false) {
             echo $html;
         } else {
             return $html;
@@ -197,7 +197,7 @@ abstract class _page {
 
     protected function pre_action() {
         $this->add_text('copyright', 'Powered by <a href="http://www.apegaming.net/" target="_blank">apetechv3</a> | &#169;2008-2011 <a href="http://www.amplifycreative.net">Amplify</a>');
-        if ($this->perform_login === true && strlen($this->login) > 0) {
+        if ($this->perform_login == true && strlen($this->login) > 0) {
             if ($this->login == 'true') {
                 try {
                     page::$user->login($this->username, $this->password, $this->remember);

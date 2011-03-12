@@ -46,8 +46,8 @@ class input {
         switch ($data_type) {
             case "checkbox":
                 $return = self::check_checkbox($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = 0;
                     } else {
                         $return = $default;
@@ -63,8 +63,8 @@ class input {
 
             case "float":
                 $return = self::check_float($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = 0;
                     } else {
                         $return = $default;
@@ -74,8 +74,8 @@ class input {
 
             case "intlist":
                 $return = self::check_int_list($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = 0;
                     } else {
                         $return = $default;
@@ -85,8 +85,8 @@ class input {
 
             case "int":
                 $return = self::check_int($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = 0;
                     } else {
                         $return = $default;
@@ -96,8 +96,8 @@ class input {
 
             case "string":
                 $return = self::check_string($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = '';
                     } else {
                         $return = $default;
@@ -107,8 +107,8 @@ class input {
 
             case "message":
                 $return = self::check_message($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = '';
                     } else {
                         $return = $default;
@@ -118,8 +118,8 @@ class input {
 
             case "time":
                 $return = self::check_time($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = FALSE;
                     } else {
                         $return = $default;
@@ -129,8 +129,8 @@ class input {
 
             case "string_list":
                 $return = self::check_string_list($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = '';
                     } else {
                         $return = $default;
@@ -140,8 +140,8 @@ class input {
 
             case "date":
                 $return = self::check_date($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = FALSE;
                     } else {
                         $return = $default;
@@ -151,8 +151,8 @@ class input {
 
             case "post_id":
                 $return = self::check_post_id($return);
-                if ($return === false) {
-                    if ($default === false) {
+                if ($return == faslse) {
+                    if ($default == faslse) {
                         $return = '';
                     } else {
                         $return = $default;

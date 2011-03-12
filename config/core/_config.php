@@ -52,10 +52,6 @@ class config {
         return 'default';
     }
 
-    static function ip() {
-        return '<add this machines ip address here>';
-    }
-
     static function db_engine() {
         return 'mysql'; // other dbs supported are 'postgresql' and 'mssql'
     }

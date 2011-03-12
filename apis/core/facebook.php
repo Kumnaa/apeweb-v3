@@ -634,7 +634,7 @@ class Facebook
       $result = curl_exec($ch);
     }
 
-    if ($result === false) {
+    if ($result == false) {
       $e = new FacebookApiException(array(
         'error_code' => curl_errno($ch),
         'error'      => array(

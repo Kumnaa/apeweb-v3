@@ -1998,7 +1998,7 @@ class MCAPI {
         if(ini_get("magic_quotes_runtime")) $response = stripslashes($response);
         
         $serial = unserialize($response);
-        if($response && $serial === false) {
+        if($response && $serial == false) {
         	$response = array("error" => "Bad Response.  Got This: " . $response, "code" => "-99");
         } else {
         	$response = $serial;

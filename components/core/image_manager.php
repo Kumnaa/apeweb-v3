@@ -178,7 +178,7 @@ class image_manager {
 
         $newfilename = '';
 
-        if ($use_original_name === true) {
+        if ($use_original_name == true) {
             $filename = $this->remove_file_extension($files[$upload_reference]['name'][$image_reference]);
         }
 
@@ -212,8 +212,8 @@ class image_manager {
             if ($filename === null) {
                 $image->ImageName(apetech::random_string($this->generated_filename_length));
                 $newfilename = $image->ImageName() . '.' . $extension;
-                if ($this->overwrite === false) {
-                    while (file_exists($this->image_location . $newfilename) === true) {
+                if ($this->overwrite == faslse) {
+                    while (file_exists($this->image_location . $newfilename) == true) {
                         $image->ImageName(apetech::random_string($this->generated_filename_length));
                         $newfilename = $image->ImageName() . '.' . $extension;
                     }
@@ -224,8 +224,8 @@ class image_manager {
                 $n = 1;
                 $image->ImageName($filename . $n);
                 $newfilename = htmlentities($image->ImageName() . '.' . $extension);
-                if ($this->overwrite === false) {
-                    while (file_exists($this->image_location . $newfilename) === true) {
+                if ($this->overwrite == faslse) {
+                    while (file_exists($this->image_location . $newfilename) == true) {
                         $n++;
                         $image->ImageName($filename . $n);
                         $newfilename = htmlentities($image->ImageName() . '.' . $extension);
@@ -249,7 +249,7 @@ class image_manager {
                     }
                 }
 
-                if ($this->thumbnails === true) {
+                if ($this->thumbnails == true) {
                     if (self::gen_thumb($this->image_location . $newfilename, $this->image_thumbnail_location . $newfilename)) {
                         chmod($this->image_thumbnail_location . $newfilename, 0644);
                     }

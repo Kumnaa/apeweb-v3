@@ -45,7 +45,7 @@ class shoutbox {
                     $output .= '<a href="'. html::gen_url('shoutbox.php', array('id' => $shout['post_id'])) .'"><img src="'. forum_images::edit_icon(page::$user->get_style()) .'" alt="e" /></a> ';
                 }
                 
-                if ($this->anonymous === true)
+                if ($this->anonymous == true)
                 {
                     $output .= '&#8855; ';
                 }

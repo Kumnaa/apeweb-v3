@@ -110,7 +110,7 @@ class portal_page extends page {
                 break;
 
             case "announcements":
-                $sql = $this->portal_bl->get_announcements($this->user);
+                $sql = $this->portal_bl->get_announcements(page::$user);
                 if (is_array($sql) && count($sql) > 0) {
                     foreach ($sql AS $wee) {
                         $content = '
@@ -130,7 +130,7 @@ class portal_page extends page {
                 break;
 
             case "lastposts":
-                $topics = $this->portal_bl->get_latest_topics($this->user);
+                $topics = $this->portal_bl->get_latest_topics(page::$user);
                 if (is_array($topics) && count($topics) > 0) {
                     $icon = '';
                     $content = '';

@@ -119,7 +119,7 @@ class post_page extends page {
                 $security->AllowAdd(true);
             }
             
-            if ($security->AllowEdit() === true) {
+            if ($security->AllowEdit() == true) {
                 $this->forum_id = $details[0]['forum_id'];
                 $this->breadcrumb->add_crumb('Forums', html::gen_url('forums.php'));
                 $this->breadcrumb->add_crumb(html::clean_text($details[0]['forum_name']), html::gen_url('viewforum.php', array('forum_id' => $this->forum_id)));
@@ -209,7 +209,7 @@ class post_page extends page {
         if (strlen($notice) > 0) {
             $page->add_text('new_post_notice', $notice);
         }
-        if ($subject === true) {
+        if ($subject == true) {
             $page->add_text('subject', 'Subject: <input id="new_post_subject" type="text" name="subject" value="' . $this->subject . '" />
                 <br />
                 <br />

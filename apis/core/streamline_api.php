@@ -116,7 +116,7 @@ class streamline {
         // close cURL resource, and free up system resources
         curl_close($ch);
 
-        if ($return === false) {
+        if ($return == false) {
             $error = curl_error($ch);
             apetech::error_email(array('CURL ERROR: ' . $error));
             throw new Exception($error);

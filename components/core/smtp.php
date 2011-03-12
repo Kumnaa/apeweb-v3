@@ -57,14 +57,14 @@ class smtp_class {
         $this->format_email();
         if (defined(config::smtp_server())) {
             $socket = new socket_class();
-            if ($socket->create(gethostbyname(config::smtp_server()), config::smtp_port()) === FALSE) {
+            if ($socket->create(gethostbyname(config::smtp_server()), config::smtp_port()) == faslse) {
                 throw new Exception('Connection could not be made');
             } else {
                 $time[microtime()] = 'Connection made';
                 do {
                     $data = $socket->read('1', $debug);
                     $contents .= $data;
-                } while (strstr($contents, "\r\n") === FALSE && $socket->socket_end === FALSE);
+                } while (strstr($contents, "\r\n") == faslse && $socket->socket_end == faslse);
                 $output .= $contents;
                 // if connection accepted
                 if (substr($contents, 0, 3) == '220') {
@@ -79,9 +79,9 @@ class smtp_class {
                         if (strstr($contents, 'AUTH=PLAIN LOGIN') != FALSE || strstr($contents, 'AUTH PLAIN LOGIN') != FALSE) {
                             $authing = TRUE;
                         }
-                    } while (preg_match("/250 (.*?)\n/m", $contents) == 0 && $socket->socket_end === FALSE);
+                    } while (preg_match("/250 (.*?)\n/m", $contents) == 0 && $socket->socket_end == faslse);
                     $output .= $contents;
-                    if ($authing === true) {
+                    if ($authing == true) {
                         $time[microtime()] = 'Authing starting';
                         $contents = '';
                         $auth_text = base64_encode(config::smtp_login() . "\0" . config::smtp_login() . "\0" . config::smtp_password());
@@ -91,7 +91,7 @@ class smtp_class {
                         do {
                             $data = $socket->read('1', $debug);
                             $contents .= $data;
-                        } while (strstr($contents, "\r\n") === FALSE && $socket->socket_end === FALSE);
+                        } while (strstr($contents, "\r\n") == faslse && $socket->socket_end == faslse);
                         $output .= $contents;
                         //sender ok?
                         if (substr($contents, 0, 3) == '235') {
@@ -107,7 +107,7 @@ class smtp_class {
                             $access = FALSE;
                         }
                     }
-                    if ($access === true) {
+                    if ($access == true) {
                         //server ok?
                         $time[microtime()] = 'Sending first header MAIL FROM';
                         $contents = '';
@@ -117,7 +117,7 @@ class smtp_class {
                         do {
                             $data = $socket->read('1', $debug);
                             $contents .= $data;
-                        } while (strstr($contents, "\r\n") === FALSE && $socket->socket_end === FALSE);
+                        } while (strstr($contents, "\r\n") == faslse && $socket->socket_end == faslse);
                         $output .= $contents;
                         //sender ok?
                         if (substr($contents, 0, 3) == '250') {
@@ -129,7 +129,7 @@ class smtp_class {
                             do {
                                 $data = $socket->read('1', $debug);
                                 $contents .= $data;
-                            } while (strstr($contents, "\r\n") === FALSE && $socket->socket_end === FALSE);
+                            } while (strstr($contents, "\r\n") == faslse && $socket->socket_end == faslse);
                             $output .= $contents;
                             //recipient ok?
                             if (substr($contents, 0, 3) == '250') {
@@ -141,7 +141,7 @@ class smtp_class {
                                 do {
                                     $data = $socket->read('1', $debug);
                                     $contents .= $data;
-                                } while (strstr($contents, "\r\n") === FALSE && $socket->socket_end === FALSE);
+                                } while (strstr($contents, "\r\n") == faslse && $socket->socket_end == faslse);
                                 $output .= $contents;
                                 //DATA ok?
                                 if (substr($contents, 0, 3) == '354') {
@@ -154,7 +154,7 @@ class smtp_class {
                                     do {
                                         $data = $socket->read('1', $debug);
                                         $contents .= $data;
-                                    } while (strstr($contents, "\r\n") === FALSE && $socket->socket_end === FALSE);
+                                    } while (strstr($contents, "\r\n") == faslse && $socket->socket_end == faslse);
                                     $output .= $contents;
                                     if (substr($contents, 0, 3) == '250') {
                                         $output .= 'QUIT' . $this->eol;
@@ -182,7 +182,7 @@ class smtp_class {
                 }
             }
         } else {
-            if (mail($this->to, $this->subject, $this->body, $this->headers, '-f ' . $this->from) === false) {
+            if (mail($this->to, $this->subject, $this->body, $this->headers, '-f ' . $this->from) == faslse) {
                 throw new Exception("Error sending: " . $this->body . " to " . $this->to . " with " . $this->subject . " as the subject.");
             }
         }

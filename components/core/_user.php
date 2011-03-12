@@ -243,7 +243,7 @@ abstract class _user {
         $message = str_replace('<!--ACTIVATION_URL-->', $click_url, $message);
         $message = str_replace('<!--DOMAIN-->', config::domain(), $message);
         $message = str_replace('<!--USERNAME-->', $username, $message);
-        if (apetech::send_mail($email, $subject, $message, config::smtp_sender(), config::smtp_sender()) === FALSE) {
+        if (apetech::send_mail($email, $subject, $message, config::smtp_sender(), config::smtp_sender()) == faslse) {
             return true;
         } else {
             throw new Exception('Failure!<br /><br />Contact ' . config::smtp_sender() . '<br />There was a problem sending the email.');
@@ -287,7 +287,7 @@ abstract class _user {
                 $ubl->update_password($new_pass, $sql[0]['id']);
                 $subject = 'Password change';
                 $message = 'Your password has been changed to ' . $new_pass . '<br />';
-                if (apetech::send_mail($recipient, $subject, $message, config::smtp_sender(), config::smtp_sender()) === FALSE) {
+                if (apetech::send_mail($recipient, $subject, $message, config::smtp_sender(), config::smtp_sender()) == faslse) {
                     return '<span class="reg_warn">Email sent</span>';
                 } else {
                     throw new Exception("Error sending email");

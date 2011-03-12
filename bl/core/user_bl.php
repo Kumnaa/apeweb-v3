@@ -503,17 +503,17 @@ class user_bl extends businesslogic_base {
     }
 
     public function add_user($new_user_array) {
-        if (array_key_exists('user_level', $new_user_array) === false) {
+        if (array_key_exists('user_level', $new_user_array) == false) {
             $array = array('user_level' => array('value' => 1, 'type' => PDO::PARAM_INT));
             $new_user_array = array_merge($new_user_array, $array);
         }
 
-        if (array_key_exists('status', $new_user_array) === false) {
+        if (array_key_exists('status', $new_user_array) == false) {
             $array = array('status' => array('value' => 0, 'type' => PDO::PARAM_INT));
             $new_user_array = array_merge($new_user_array, $array);
         }
 
-        if (array_key_exists('reg_date', $new_user_array) === false) {
+        if (array_key_exists('reg_date', $new_user_array) == false) {
             $array = array('reg_date' => array('value' => time(), 'type' => PDO::PARAM_INT));
             $new_user_array = array_merge($new_user_array, $array);
         }
@@ -833,7 +833,7 @@ class user_bl extends businesslogic_base {
     public function get_full_profile_details($user_id) {
         $array = array();
         foreach (profile_config::profile_list() AS $key => $value) {
-            if ($value['db'] === true) {
+            if ($value['db'] == true) {
                 $array[] = $key;
             }
         }
