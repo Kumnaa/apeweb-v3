@@ -3,7 +3,7 @@
 /*
   Erepublik API client
 
-  v1.2
+  v1.3
 
   @author Ben Bowtell
 
@@ -76,32 +76,35 @@
 class erep_api {
 
     private $params;
-    private $request_method;
+    private $request_method = 'GET';
     private $request_url;
     private $secret;
     private $normalised_string;
     private $signature;
     private $scope;
     private $consumer_secret;
-    private $url_domain;
+    private $url_domain = 'http://api.erepublik.com';
     private $subject;
     private $api_timeout = 20; // set the api timeout in seconds
-    private $debug_string;
+    private $debug_string = '';
     private $callback;
-    private $api_url;
+    private $api_url = 'http://api.erepublik.com/oauth/authorize';
 
     // constructor
     public function __construct($consumer_key, $consumer_secret) {
         $banned_user_agents = array(
             'Mediapartners-Google'
         );
+        
+        if (function_exists('imap_open') == false) {
+            throw new Exception('This class needs curl');
+        }
+        
         if (in_array($_SERVER['HTTP_USER_AGENT'], $banned_user_agents)) {
             throw new Exception("Banned user agent");
         }
-        $this->debug_string = '';
+        
         $this->consumer_secret = $consumer_secret;
-        $this->url_domain = 'http://api.erepublik.com';
-        $this->api_url = 'http://api.erepublik.com/oauth/authorize';
         $this->params = array(
             'oauth_consumer_key' => $consumer_key,
             'oauth_nonce' => '',
@@ -110,7 +113,7 @@ class erep_api {
             'oauth_token' => '',
             'oauth_version' => '1.0'
         );
-        $this->request_method = 'GET';
+        
         $this->gen_secret();
     }
 
@@ -125,6 +128,7 @@ class erep_api {
         if (strlen($verifier) > 0) {
             $this->params = array_merge($this->params, array('oauth_verifier' => $verifier));
         }
+        
         $data = $this->get_access();
         // get returned xml from transaction
         $this->subject = 'citizen';
@@ -155,6 +159,7 @@ class erep_api {
         if (strlen($verifier) > 0) {
             $this->params = array_merge($this->params, array('oauth_verifier' => $verifier));
         }
+        
         // get access tokens
         $data = $this->get_access();
         // get returned xml from transaction
@@ -179,6 +184,7 @@ class erep_api {
         } else {
             $return = $this->api_url . '?oauth_token=' . $token[0];
         }
+        
         return ($return);
     }
 
@@ -197,6 +203,7 @@ class erep_api {
         if (count($matches) != 3) {
             preg_match('/^oauth_token=([A-Za-z0-9]+)&oauth_token_secret=([A-Za-z0-9]+)&oauth_callback_confirmed=true$/', $data, $matches);
         }
+        
         if (count($matches) > 0) {
             $auth = $matches[1];
             $secret = $matches[2];
@@ -204,6 +211,7 @@ class erep_api {
         } else {
             $return = $this->handle_xml($data);
         }
+        
         return($return);
     }
 
@@ -214,18 +222,22 @@ class erep_api {
         if (strlen($this->callback) > 0) {
             $this->params = array_merge($this->params, array('oauth_callback' => $this->callback));
         }
+        
         if (strlen($this->scope) > 0) {
             $this->params = array_merge($this->params, array('scope' => $this->scope));
         }
+        
         $this->signature = $this->gen_signature();
         $parameters = $this->normalised_string . '&oauth_signature=' . urlencode($this->signature);
         if ($this->request_method != "POST") {
             $this->request_url .= '?' . $parameters;
         }
+        
         $this->debug_string .= '<b>Request sent:</b> ' . htmlentities($this->request_url);
         if ($this->request_method == "POST") {
             $this->debug_string .= ' - ' . $parameters . ' - ' . (count($this->params) + 1);
         }
+        
         $this->debug_string .= '<br /><br />';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->request_url);
@@ -233,12 +245,14 @@ class erep_api {
             curl_setopt($ch, CURLOPT_POST, count($this->params) + 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         }
+        
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->api_timeout);
         $data = curl_exec($ch);
-        if ($data == faslse) {
+        if ($data == false) {
             throw new Exception(curl_error($ch));
         }
+        
         curl_close($ch);
         $this->debug_string .= '<b>Data from api:</b> ' . htmlentities($data) . '<br /><br />';
         return ($data);
@@ -260,6 +274,7 @@ class erep_api {
                 $enc_params[] = urlencode($k) . '=' . urlencode($v);
             }
         }
+        
         $this->normalised_string = implode('&', $enc_params);
         $this->debug_string .= '<b>Normalised String:</b> ' . $this->normalised_string . '<br /><br />';
         $return = $this->request_method . '&' . urlencode($this->request_url) . '&' . urlencode($this->normalised_string);
@@ -294,6 +309,7 @@ class erep_api {
         } else {
             throw new Exception("Invalid xml returned: " . $data);
         }
+        
         return $data;
     }
 
