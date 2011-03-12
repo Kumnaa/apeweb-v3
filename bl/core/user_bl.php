@@ -816,20 +816,6 @@ class user_bl extends businesslogic_base {
                 id = :id', $parameters);
     }
 
-    public function update_bio($user_id, $bio) {
-        $this->db->sql_query('
-            REPLACE INTO
-                biography
-                (bio, user_id)
-            VALUES
-                (:bio, :user_id)
-            ', array(
-            ':bio' => array('value' => $bio, 'type' => PDO::PARAM_STR),
-            ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT)
-                )
-        );
-    }
-
     public function get_full_profile_details($user_id) {
         $array = array();
         foreach (profile_config::profile_list() AS $key => $value) {
@@ -847,10 +833,6 @@ class user_bl extends businesslogic_base {
                     FROM
                         users
                     LEFT JOIN
-                        subscriptions
-                        ON
-                        user_id = id
-                    LEFT JOIN
                         image_warehouse AS iw1
                         ON
                         iw1.image_id = avatar
@@ -858,10 +840,6 @@ class user_bl extends businesslogic_base {
                         image_warehouse AS iw2
                         ON
                         iw2.image_id = pic
-                    LEFT JOIN
-                        biography
-                        ON
-                        biography.user_id = id
                     WHERE
                         id = :id
                         ";

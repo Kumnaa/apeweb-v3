@@ -106,13 +106,12 @@ class profile_page extends page {
 
     protected function save_profile() {
         $ubl = new user_bl();
+        $old_user = $ubl->get_full_profile_details($this->user_id);
         $parameters = array(':id' => array('value' => $this->user_id, 'type' => PDO::PARAM_INT));
         $fields = array();
         foreach ($this->profile AS $key => $value) {
             if ($this->profile_settings[$key]['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $this->profile_settings[$key]['self'] == 'auth' && $this->profile_settings[$key][$this->profile_settings[$key]['self']] <= page::$user->get_level())) {
-                if ($key == "bio") {
-                    $ubl->update_bio($this->user_id, $value);
-                } else {
+                if ($key != 'user_level' || ($old_user[0]['user_level'] < page::$user->get_level() && $value < page::$user->get_level())) {
                     switch ($this->profile_settings[$key]['datatype']) {
                         case "int":
                         case "float":
@@ -209,13 +208,15 @@ class profile_page extends page {
 
                     case "user_level":
                         foreach ($this->access_list AS $ik => $iv) {
-                            if ($ik == $this->full_profile[$key]) {
-                                $selected = ' selected="selected"';
-                            } else {
-                                $selected = '';
-                            }
+                            if (page::$user->get_level() > $ik) {
+                                if ($ik == $this->full_profile[$key]) {
+                                    $selected = ' selected="selected"';
+                                } else {
+                                    $selected = '';
+                                }
 
-                            $text .= '<option' . $selected . ' value="' . $ik . '">' . $iv . '</option>';
+                                $text .= '<option' . $selected . ' value="' . $ik . '">' . $iv . '</option>';
+                            }
                         }
                         break;
                 }
@@ -224,6 +225,7 @@ class profile_page extends page {
                 $page->add_text('profile_text', $text);
                 break;
         }
+
         $this->is_submittable = true;
         return $page->display();
     }

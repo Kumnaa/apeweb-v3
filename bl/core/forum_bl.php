@@ -368,7 +368,6 @@ class forum_bl extends businesslogic_base {
                         u.signature_url,
                         iw.header,
                         u.status,
-                        subscriptions.active,
                         u.title,
                         u.colour,
                         ranks.rank_colour,
@@ -392,10 +391,6 @@ class forum_bl extends businesslogic_base {
                         ranks
                         ON
                         level = user_level
-                    LEFT JOIN
-                        subscriptions
-                        ON
-                        subscriptions.user_id = u.id
                     WHERE
                         topic_id = :topic_id
                         AND
@@ -502,7 +497,8 @@ class forum_bl extends businesslogic_base {
                         forums.forum_id,
                         topic_title,
                         post_text,
-                        poster_id
+                        poster_id,
+                        posts.topic_id
                     FROM
                         posts
                     LEFT JOIN

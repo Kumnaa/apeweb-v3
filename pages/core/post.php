@@ -121,6 +121,7 @@ class post_page extends page {
             
             if ($security->AllowEdit() == true) {
                 $this->forum_id = $details[0]['forum_id'];
+                $this->topic_id = $details[0]['topic_id'];
                 $this->breadcrumb->add_crumb('Forums', html::gen_url('forums.php'));
                 $this->breadcrumb->add_crumb(html::clean_text($details[0]['forum_name']), html::gen_url('viewforum.php', array('forum_id' => $this->forum_id)));
                 $this->breadcrumb->add_crumb(html::clean_text($details[0]['topic_title']), html::gen_url('viewtopic.php', array('topic_id' => $this->topic_id)));

@@ -155,7 +155,7 @@ class forum_page extends page {
     }
 
     protected function display_topic($topic) {
-        $read_topics = page::$user->get_read_topics();
+        $read_topics = $this->forum_bl->get_read_topics(page::$user->get_user_id(), page::$user->get_last_visit());
         $mark_read = forum_images::topic(page::$user->get_style());
         if (page::$user->get_level() > userlevels::$guest && $topic['post_time'] > page::$user->get_last_visit()) {
             $mark_read = forum_images::new_topic(page::$user->get_style());

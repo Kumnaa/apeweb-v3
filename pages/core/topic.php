@@ -169,19 +169,19 @@ class topic_page extends page {
     }
 
     protected function mark_last_post_read($post_id, $post_time) {
-        $read_topics = page::$user->get_read_topics();
+        $read_topics = $this->forum_bl->get_read_topics(page::$user->get_user_id(), page::$user->get_last_visit());
         if (array_key_exists($this->topic_id, $read_topics)) {
             if ($read_topics[$this->topic_id] < $post_id) {
-                page::$user->update_last_read_post_id(page::$user->get_user_id(), $this->topic_id, $post_id);
+                $this->forum_bl->update_last_read_post_id(page::$user->get_user_id(), $this->topic_id, $post_id);
             }
         } else {
-            page::$user->update_last_read_post_id(page::$user->get_user_id(), $this->topic_id, $post_id);
+            $this->forum_bl->update_last_read_post_id(page::$user->get_user_id(), $this->topic_id, $post_id);
         }
     }
 
     protected function display_post($post) {
         $mark_read = forum_images::mini_post(page::$user->get_style());
-        $read_topics = page::$user->get_read_topics();
+        $read_topics = $this->forum_bl->get_read_topics(page::$user->get_user_id(), page::$user->get_last_visit());
         if (page::$user->get_level() > userlevels::$guest && $post['post_time'] > page::$user->get_last_visit()) {
             $mark_read = forum_images::new_mini_post(page::$user->get_style());
             if (isset($read_topics[$post['topic_id']])) {
@@ -215,21 +215,21 @@ class topic_page extends page {
         $page->add_text('poster_join_date', date(forum_config::$date_format, $post['reg_date']));
         $page->add_text('post_icon', $mark_read);
         $page->add_text('post_time', date(forum_config::$date_format, $post['post_time']));
-        $page->add_text('poster_avatar', $this->display_avatar($page, $post));
+        $page->add_text('poster_avatar', $this->display_avatar($post));
         $page->add_text('post_url', html::gen_url('viewtopic.php', array('post_id' => $post['post_id']), false, '#p_' . $post['post_id']));
         $this->add_profile_link($page, $post);
 
         // security
         if ($security->AllowEdit() == true) {
-            $page->add_text('edit', html::gen_link(html::gen_url('post.php', array('action' => 'edit', 'post_id' => $post['post_id'])), html::gen_image(forum_images::edit_icon(page::$user->style))));
+            $page->add_text('edit', html::gen_link(html::gen_url('post.php', array('action' => 'edit', 'post_id' => $post['post_id'])), html::gen_image(forum_images::edit_icon(page::$user->get_style()))));
         }
 
         if ($security->AllowAdd() == true) {
-            $page->add_text('quote', html::gen_link(html::gen_url('post.php', array('action' => 'quote', 'post_id' => $post['post_id'])), html::gen_image(forum_images::quote_icon(page::$user->style))));
+            $page->add_text('quote', html::gen_link(html::gen_url('post.php', array('action' => 'quote', 'post_id' => $post['post_id'])), html::gen_image(forum_images::quote_icon(page::$user->get_style()))));
         }
 
         if ($security->AllowDelete() == true) {
-            $page->add_text('delete', html::gen_link(html::gen_url('post.php', array('action' => 'delete', 'post_id' => $post['post_id'])), html::gen_image(forum_images::delete_icon(page::$user->style))));
+            $page->add_text('delete', html::gen_link(html::gen_url('post.php', array('action' => 'delete', 'post_id' => $post['post_id'])), html::gen_image(forum_images::delete_icon(page::$user->get_style()))));
         }
 
         return $page->display();
@@ -239,12 +239,12 @@ class topic_page extends page {
         $page->add_text('profile_link', html::gen_url('profile.php', array('user_id' => $post['poster_id'])));
     }
 
-    protected function display_avatar($page, $post) {
+    protected function display_avatar($post) {
         $avatar_extension = explode('/', $post['header']);
         if (count($avatar_extension) > 1) {
-            $page->add_text('poster_avatar', html::gen_image(forum_config::image_warehouse_url() . $post['avatar'] . '.' . $avatar_extension[1], "portrait"));
+            return html::gen_image(forum_config::image_warehouse_url() . $post['avatar'] . '.' . $avatar_extension[1], "portrait");
         } else {
-            $page->add_text('poster_avatar', html::gen_image(forum_config::default_avatar(), "portrait"));
+            return html::gen_image(forum_config::default_avatar(), "portrait");
         }
     }
 

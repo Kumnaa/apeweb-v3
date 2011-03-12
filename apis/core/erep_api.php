@@ -3,8 +3,6 @@
 /*
   Erepublik API client
 
-  v1.3
-
   @author Ben Bowtell
 
   @date 27-Feb-2011
@@ -96,7 +94,7 @@ class erep_api {
             'Mediapartners-Google'
         );
         
-        if (function_exists('imap_open') == false) {
+        if (function_exists('curl_init') == false) {
             throw new Exception('This class needs curl');
         }
         

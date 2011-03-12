@@ -200,12 +200,19 @@ class html {
         return ($string);
     }
 
-    public static function gen_link($url, $text, $class = null) {
+    public static function gen_link($url, $text = '', $class = null) {
         $return = '<a href="' . $url . '"';
         if ($class != null) {
             $return .= ' class="' . $class . '"';
         }
-        $return .= '>' . $text . '</a>';
+        $return .= '>';
+
+        if (strlen($text) > 0) {
+            $return .= $text;
+        } else {
+            $return .= $url;
+        }
+        $return .= '</a>';
         return $return;
     }
 
