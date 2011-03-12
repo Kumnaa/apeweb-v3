@@ -11,7 +11,7 @@
 
   contact: ben@amplifycreative.net.net
 
-  ﻿   This program is free software: you can redistribute it and/or modify
+  This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
@@ -64,7 +64,7 @@ class socket_class {
     function read($bytes = 1024, $debug = FALSE) {
         /* $data = socket_read($this->socket, $bytes, PHP_BINARY_READ);
           if ($data === '') */
-        if (@socket_recv($this->socket, $data, $bytes, MSG_WAITALL) == faslse) {
+        if (@socket_recv($this->socket, $data, $bytes, MSG_WAITALL) == false) {
             $this->socket_end = TRUE;
             $this->socket_error = TRUE;
             if ($debug == true) {

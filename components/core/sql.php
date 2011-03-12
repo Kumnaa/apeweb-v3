@@ -11,7 +11,7 @@
 
   contact: ben@amplifycreative.net.net
 
-  ﻿   This program is free software: you can redistribute it and/or modify
+  This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
@@ -104,7 +104,7 @@ class db_connector {
 
     protected function prepare($statement, $arguments) {
         $sth = $this->sql_db->prepare($statement);
-        if ($sth == faslse) {
+        if ($sth == false) {
             $error = $this->sql_db->errorInfo();
             throw new Exception($error[2]);
         } else {
@@ -132,7 +132,7 @@ class db_connector {
         $execute = @$sth->execute();
 
         $this->last_query_time = round(microtime(), 6) - $start_time;
-        if ($execute == faslse) {
+        if ($execute == false) {
             $error = $sth->errorInfo();
             throw new Exception("Error executing sql: " . print_r($error, true));
         } else {
@@ -307,7 +307,7 @@ class sql_db extends db_connector {
             $field_list = substr($field_list, 0, -1) . ')';
             $value_list = substr($value_list, 0, -1) . ')';
             $query = "INSERT INTO " . $this->escape_table_name($tablename, $prefix) . " " . $field_list . " VALUES " . $value_list . ";" . $eol;
-            if ($this->sql_escaped_query($query) == faslse) {
+            if ($this->sql_escaped_query($query) == false) {
                 $return[0] = FALSE;
             } else {
                 if ($return[0] != FALSE) {
@@ -422,7 +422,7 @@ class sql_db extends db_connector {
             if ($time > 0.09) {
                 $time = '<span style="color:red">' . $time . '</span>';
             }
-            if ($_return == faslse) {
+            if ($_return == false) {
                 if ($this->debug == true) {
                     $this->query_list[] = '<br /><span style="color:red">' . html::clean_text($query) . '</span> - ' . $time . '<br /><br />';
                 }
@@ -497,13 +497,13 @@ class sql_db extends db_connector {
         if ($time > 0.09) {
             $time = '<span style="color:red">' . $time . '</span>';
         }
-        if ($this->query == faslse) {
+        if ($this->query == false) {
             $this->log_error($_query, print_r($this->value_array, true));
             if ($this->debug == true) {
                 $this->query_list[] = '<br /><span style="color:red">' . html::clean_text($_query) . '</span> - ' . $time . '<br /><br />';
             }
         } else {
-            if ($this->no_queries == faslse) {
+            if ($this->no_queries == false) {
                 $this->queries++;
             }
             if ($this->debug == true) {
@@ -524,7 +524,7 @@ class sql_db extends db_connector {
         $this->prepare_value_array();
         if ($query = $this->sql_db->prepare($_query)) {
             if ($query->execute($this->value_array)) {
-                if ($this->no_queries == faslse) {
+                if ($this->no_queries == false) {
                     $this->queries++;
                 }
                 $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -604,7 +604,7 @@ class sql_db extends db_connector {
         }
 
         foreach ($keys AS $_keys) {
-            if ($this->sql_escaped_query($_keys) == faslse) {
+            if ($this->sql_escaped_query($_keys) == false) {
                 $error = $this->last_error();
                 echo '<span style="color:red;">`' . $tablename . '` indexes error</span><br />' . str_replace(",", ",<br />", $_keys) . ' - <span style="color:red">' . $error . '</span><br />';
             } else {
@@ -621,7 +621,7 @@ class sql_db extends db_connector {
                 $drop = 'DROP table ' . $tablename;
         }
 
-        if ($this->sql_escaped_query($drop) == faslse) {
+        if ($this->sql_escaped_query($drop) == false) {
             $error = $this->last_error();
             echo '<span style="color:red;">`' . $tablename . '` table error</span><br />' . str_replace(",", ",<br />", $drop) . ' - <span style="color:red">' . $error . '</span><br />';
         } else {
@@ -810,7 +810,7 @@ class sql_db extends db_connector {
                 $create = substr($create, 0, -2) . $eol . ')' . $eol;
                 break;
         }
-        if ($this->sql_escaped_query($create) == faslse) {
+        if ($this->sql_escaped_query($create) == false) {
             $error = $this->last_error();
             echo '<span style="color:red;">`' . $tablename . '` table error</span><br />' . str_replace(",", ",<br />", $create) . ' - <span style="color:red">' . $error . '</span><br />';
         } else {
@@ -1152,7 +1152,7 @@ class sql_db extends db_connector {
 
     private function prepare_value_array() {
         foreach ($this->value_array AS $k => $v) {
-            if ($v == faslse) {
+            if ($v == false) {
                 $this->value_array[$k] = '';
             }
         }
@@ -1160,7 +1160,7 @@ class sql_db extends db_connector {
 
     public function sql_truncate($tablename, $prefix = TRUE) {
         $query = "TRUNCATE TABLE " . $this->escape_table_name($tablename, $prefix);
-        if ($this->sql_escaped_query($query) == faslse) {
+        if ($this->sql_escaped_query($query) == false) {
             $return[0] = FALSE;
         } else {
             if ($return[0] != FALSE) {

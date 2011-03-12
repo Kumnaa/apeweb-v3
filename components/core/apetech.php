@@ -11,7 +11,7 @@
 
   contact: ben@amplifycreative.net.net
 
-  ﻿   This program is free software: you can redistribute it and/or modify
+  This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
@@ -31,7 +31,7 @@ class apetech {
         if (isset($_POST) && is_array($_POST) && is_array($exceptions)) {
             $string = '';
             foreach ($_POST AS $key => $value) {
-                if (array_search($key, $exceptions) == faslse) {
+                if (array_search($key, $exceptions) == false) {
                     $string .= '<b>' . html::clean_text(ucwords(str_replace(array("_", "-"), " ", $key))) . '</b>:<br />' . html::clean_text($value) . '<br /><br />';
                 }
             }
