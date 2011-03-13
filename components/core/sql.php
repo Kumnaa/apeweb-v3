@@ -67,7 +67,7 @@ class db_connector {
             }
             $this->sql_db->exec("SET NAMES 'utf8'");
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            echo "Error connecting: ". $e->getMessage();
             die();
         }
     }

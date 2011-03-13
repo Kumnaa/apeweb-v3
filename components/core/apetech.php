@@ -27,6 +27,14 @@
 
 class apetech {
 
+    public static function server_name() {
+        if (isset($_SERVER['SERVER_NAME'])) {
+            return $_SERVER['SERVER_NAME'];
+        } else {
+            return 'cgi-script';
+        }
+    }
+    
     public static function form_to_email($recipient, $subject, $exceptions = array()) {
         if (isset($_POST) && is_array($_POST) && is_array($exceptions)) {
             $string = '';
