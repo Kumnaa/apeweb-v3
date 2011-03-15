@@ -218,7 +218,9 @@ class image_manager {
                         $newfilename = $image->ImageName() . '.' . $extension;
                     }
                 } else {
-                    @unlink($this->image_location . $newfilename);
+                    if (file_exists($this->image_location . $newfilename) == true) {
+                        unlink($this->image_location . $newfilename);
+                    }
                 }
             } else {
                 $n = 1;
@@ -231,7 +233,9 @@ class image_manager {
                         $newfilename = htmlentities($image->ImageName() . '.' . $extension);
                     }
                 } else {
-                    @unlink($this->image_location . $newfilename);
+                    if (file_exists($this->image_location . $newfilename) == true) {
+                        unlink($this->image_location . $newfilename);
+                    }
                 }
             }
 
