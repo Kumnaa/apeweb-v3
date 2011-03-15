@@ -47,6 +47,9 @@ class forum_page extends page {
     protected $forum_bl;
 
     public function __construct() {
+        $this->enable_component(component_types::$forums);
+        $this->enable_component(component_types::$breadcrumbs);
+        $this->enable_component(component_types::$paging);
         parent::__construct();
         $this->forum_id = input::validate('forum_id', 'int');
         $this->page_id = input::validate('page_id', 'int');

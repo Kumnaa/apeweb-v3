@@ -32,10 +32,6 @@ if (file_exists('components/page.php')) {
     require_once('components/core/page.php');
 }
 // end for unit testing
-require_once('bl/core/portal_bl.php');
-require_once('components/core/portal/portal_columns.php');
-require_once('config/portal_images.php');
-require_once('html/core/shoutbox.php');
 
 class portal_page extends page {
 
@@ -44,6 +40,9 @@ class portal_page extends page {
 
     public function __construct() {
         parent::__construct();
+        $this->enable_component(component_types::$portal);
+        $this->enable_component(component_types::$shoutbox);
+        $this->enable_component(component_types::$calendar);
         $this->add_text('title', 'Portal');
         $this->portal_bl = new portal_bl();
         $this->set_template('default');

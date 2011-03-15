@@ -31,7 +31,7 @@ class shoutbox {
     private $anonymous = false;
     
     public function display_shoutbox() {
-        $shout_bl = new portal_bl(page::$db_connection);
+        $shout_bl = new shoutbox_bl();
         return $this->process_shouts($shout_bl->get_shouts($this->shout_count));
     }
     

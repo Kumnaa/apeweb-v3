@@ -25,7 +25,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 require_once('apis/core/recaptchalib.php');
-require_once('config/recaptcha.php');
 
 class recaptcha {
 

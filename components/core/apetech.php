@@ -50,11 +50,6 @@ class apetech {
     }
 
     public static function error_handler($errno, $errstr, $errfile, $errline) {
-        if (!(error_reporting() & $errno)) {
-            // This error code is not included in error_reporting
-            return;
-        }
-
         switch ($errno) {
             case E_USER_ERROR:
                 echo "<b>My ERROR</b> [$errno] $errstr<br />\n";
@@ -72,6 +67,7 @@ class apetech {
                 echo "Unknown error type: [$errno] $errstr<br />\n";
                 break;
         }
+        
         echo "  on line $errline in file $errfile";
         debug_backtrace();
         /* Don't execute PHP internal error handler */

@@ -876,6 +876,24 @@ class forum_bl extends businesslogic_base {
         );
     }
 
+    public function get_categories() {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        cat_id,
+                        cat_title,
+                        cat_order
+                    FROM
+                        categories
+                    ORDER BY
+                        cat_order
+                ";
+                break;
+        }
+        $this->db->sql_query($query); 
+    }
+    
     public function get_forum_by_id($user, $forum_id, $page) {
         if ($page > 0) {
             $page = $page - 1;

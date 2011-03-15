@@ -25,8 +25,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once('components/core/recaptcha.php');
-
 // for unit testing
 if (file_exists('components/page.php')) {
     require_once('components/page.php');
@@ -52,6 +50,7 @@ class register_page extends page {
 
     public function __construct() {
         try {
+            $this->enable_component(component_types::$recaptcha);
             parent::__construct();
             $this->site_root = 'index.php';
             $this->recaptcha = new recaptcha();

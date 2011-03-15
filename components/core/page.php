@@ -26,14 +26,15 @@
  */
 
 // for unit testing
-require_once('components/core/_page.php');
-require_once('config/core/_config.php');
-require_once('config/core/_userlevels.php');
-require_once('config/core/bbcode.php');
-require_once('config/core/forum_config.php');
-require_once('config/core/forum_images.php');
-require_once('config/core/irc_config.php');
-require_once('config/core/profile_config.php');
+require('bl/core/forum_bl.php');
+require('components/core/_page.php');
+require('config/core/_config.php');
+require('config/core/_userlevels.php');
+require('config/core/bbcode.php');
+require('config/core/forum_config.php');
+require('config/core/forum_images.php');
+require('config/core/irc_config.php');
+require('config/core/profile_config.php');
 
 config::strict_mode();
 

@@ -26,28 +26,22 @@
  */
 
 require('components/core/businesslogic_base.php');
+require('components/core/component_types.php');
 require('bl/core/user_bl.php');
-require('bl/core/forum_bl.php');
-require('bl/core/images_bl.php');
 require('components/core/_templates.php');
 require('components/core/apetech.php');
-require('components/core/image_manager.php');
 require('components/core/input.php');
-require('components/core/menu_item.php');
 require('components/core/smtp.php');
 require('components/core/socket.php');
 require('components/core/sql.php');
 require('components/core/validator.php');
 require('components/core/exceptions.php');
 require('components/core/security_type.php');
-require('html/core/calendar.php');
-require('html/core/breadcrumb.php');
 require('html/core/html.php');
 require('html/core/login.php');
-require('html/core/paging.php');
-require('html/core/table.php');
 require('config/_config.php');
 require('config/messages.php');
+require('config/userlevels.php');
 
 set_error_handler(array('apetech', 'error_handler'));
 
@@ -107,6 +101,79 @@ abstract class _page {
         $this->generate_display();
     }
 
+    public function enable_component($component) {
+        switch ($component) {
+            case component_types::$recaptcha:
+                if (class_exists('recaptcha') == false) {
+                    require('components/core/recaptcha.php');
+                    require('config/recaptcha.php');
+                }
+                break;
+                
+            case component_types::$forums:
+                if (class_exists('forum_bl') == false) {
+                    require('bl/core/forum_bl.php');
+                    require('config/forum_config.php');
+                    require('config/forum_images.php');
+                    require('config/forumlevels.php');
+                }
+                break;
+                
+            case component_types::$images:
+                if (class_exists('images_bl') == false) {
+                    require('bl/core/images_bl.php');
+                    require('components/core/image_manager.php');
+                }
+                break;
+                
+            case component_types::$portal:
+                if (class_exists('portal_bl') == false) { 
+                    require('bl/core/portal_bl.php');
+                    require('components/core/portal/portal_columns.php');
+                    require('config/portal_images.php');
+                }
+                break;
+                
+            case component_types::$shoutbox:
+                if (class_exists('shoutbox_bl') == false) {
+                    require('bl/core/shoutbox_bl.php');
+                    require('html/core/shoutbox.php');                    
+                }
+                break;
+                
+            case component_types::$calendar:
+                if (class_exists('calendar_bl') == false) {
+                    require('bl/core/calendar_bl.php');
+                    require('html/core/calendar.php');       
+                }
+                break;
+                
+            case component_types::$apeweb_menu:
+                if (class_exists('menu_item') == false) {
+                    require('components/core/menu_item.php');
+                }
+                break;
+                
+            case component_types::$breadcrumbs:
+                if (class_exists('breadcrumb') == false) {
+                    require('html/core/breadcrumb.php');
+                }
+                break;
+            
+            case component_types::$tables:
+                if (class_exists('table') == false) {
+                    require('html/core/table.php');
+                }
+                break;
+                
+            case component_types::$paging:
+                if (class_exists('paging') == false) {
+                    require('html/core/paging.php');
+                }
+                break;
+        }
+    }
+    
     public function redirect($url) {
         header('Location: ' . $url);
     }

@@ -46,6 +46,7 @@ class post_page extends page {
     private $breadcrumb;
 
     public function __construct() {
+        $this->enable_component(component_types::$forums);
         parent::__construct();
         $this->forum_bl = new forum_bl();
         $this->forum_id = input::validate('forum_id', 'int');

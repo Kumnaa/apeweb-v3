@@ -39,6 +39,7 @@ class category_page extends page {
     protected $forum_bl;
 
     public function __construct() {
+        $this->enable_component(component_types::$forums);
         parent::__construct();
         $this->add_text('title', 'Category Viewer');
     }

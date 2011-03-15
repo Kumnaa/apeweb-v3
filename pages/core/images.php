@@ -43,6 +43,9 @@ class images_page extends page {
     protected $paging;
 
     public function __construct() {
+        $this->enable_component(component_types::$images);
+        $this->enable_component(component_types::$paging);
+        $this->enable_component(component_types::$tables);
         parent::__construct();
         $this->page_id = input::validate('page_id', 'int');
         $this->image_id = input::validate('image_id', 'string');

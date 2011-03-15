@@ -48,6 +48,9 @@ class topic_page extends page {
     protected $forum_bl;
 
     public function __construct() {
+        $this->enable_component(component_types::$forums);
+        $this->enable_component(component_types::$paging);
+        $this->enable_component(component_types::$breadcrumbs);
         parent::__construct();
         $this->topic_id = input::validate('topic_id', 'int');
         $this->post_id = input::validate('post_id', 'int');

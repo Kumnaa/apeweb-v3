@@ -271,7 +271,8 @@ class image_manager {
         }
 
         $return = true;
-        $extension = array_pop(explode(".", $img_in));
+        $name_split = explode(".", $img_in);
+        $extension = array_pop($name_split);
         list($_width, $_height) = getimagesize($img_in);
         $newheight = $_height;
         $newwidth = $_width;

@@ -1,7 +1,7 @@
 <?php
 
 /*
-  Calendar page
+  Administrate Forums page
 
   @author Ben Bowtell
 
@@ -34,42 +34,46 @@ if (file_exists('components/page.php')) {
 
 // end for unit testing
 
-class calendar_page extends page {
-
-    protected $month;
+class administrate_forums_page extends page {
 
     public function __construct() {
-        $this->enable_component(component_types::$calendar);
         parent::__construct();
-        $this->add_text('title', 'Category Viewer');
-        $this->month = input::validate('month', 'string');
+        $this->enable_component(component_types::$forums);
+        $this->forum_id = input::validate('forum_id', 'int');
+        $this->category_id = input::validate('page_id', 'int');
+        $this->breadcrumb = new breadcrumb();
+        $this->add_text('title', 'Forum Administration');
+        $this->initialise_bl();
     }
 
     public function generate_display() {
-        switch ($this->action) {
-            case "data":
-                $this->display_xml();
-                break;
-            default:
-                $this->display();
-                break;
-        }
+        $this->display();
     }
 
     protected function action() {
         try {
-            switch ($this->action) {
-                case "data":
-                    $date = new DateTime(substr($this->month, 0, 4) . '-' . substr($this->month, 4, 2) . '-1');
-                    $calendar = new calendar($date);
-                    $this->add_text('xml', $calendar->display_xml());
-                    break;
+            if (page::$user->get_user_level() >= userlevels::$administrator) {
+                if ($this->category_id > 0) {
+
+                } else if ($this->forum_id > 0) {
+
+                } else {
+                    $this->administrate_categories();
+                }
+            } else {
+                throw new Exception("Permission denied.");
             }
         } catch (Exception $ex) {
             $this->notice($ex->getMessage());
         }
     }
-
+    
+    protected function administrate_categories() {
+        $categories = $this->forum_bl->get_categories();
+        if (is_array($categories) && count($categories) > 0) {
+            
+        }
+    }
 }
 
 ?>

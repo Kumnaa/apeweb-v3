@@ -40,6 +40,7 @@ class contact_list_page extends page {
     private $contact_list_bl;
 
     public function __construct() {
+        $this->enable_component(component_types::$tables);
         parent::__construct();
         $this->contact_list_bl = new contact_list_bl();
         $this->add_text('title', 'Contact List');
