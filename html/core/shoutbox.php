@@ -26,46 +26,82 @@
  */
 
 class shoutbox {
-    
+
     private $shout_count = 10;
     private $anonymous = false;
+    private $allow_post = false;
+    
+    public function set_annonymous($value) {
+        $this->anonymous = $value;
+    }
+
+    public function set_allow_post($value) {
+        $this->allow_post = $value;
+    }
     
     public function display_shoutbox() {
         $shout_bl = new shoutbox_bl();
-        return $this->process_shouts($shout_bl->get_shouts($this->shout_count));
+        $output = $this->process_shouts($shout_bl->get_shouts($this->shout_count));
+        if ($this->allow_post == true) {
+            $output .= '<br />
+                <form id="shoutform" method="post" action="">
+                    <div> 
+                        <input id="shout_box_data" size="50" type="text" name="message"> 
+                        <input type="submit" value="Shout!">
+                    </div>
+                </form>
+                <script type="text/javascript">
+                //<!--
+                    $("#shoutform").apetech_shoutbox();
+                    $("#shoutbox img[title]").tooltip({ tipClass: "shout_time"});
+                //-->
+                </script>';
+        }
+
+        return $output;
+    }
+
+    public function display_plain_shoutbox() {
+        $shout_bl = new shoutbox_bl();
+        $output = $this->process_inner_shouts($shout_bl->get_shouts($this->shout_count));
+        $output .= '<script type="text/javascript">
+            //<!--
+            $("#shoutbox img[title]").tooltip();
+            //-->
+            </script>';
+        return $output;
     }
     
-    protected function process_shouts($shouts) {
+    protected function process_inner_shouts($shouts) {
         $output = '';
         if (is_array($shouts) && count($shouts) > 0) {
             foreach ($shouts AS $shout) {
                 $output .= '<div>';
-                if (page::$user->get_level() >= userlevels::$moderator || $shout['id'] == page::$user->get_user_id())
-                {
-                    $output .= '<a href="'. html::gen_url('shoutbox.php', array('id' => $shout['post_id'])) .'"><img src="'. forum_images::edit_icon(page::$user->get_style()) .'" alt="e" /></a> ';
+                if (page::$user->get_level() >= userlevels::$moderator || $shout['id'] == page::$user->get_user_id()) {
+                    $output .= '<a href="' . html::gen_url('shoutbox.php', array('id' => $shout['post_id'])) . '"><img src="' . forum_images::edit_icon(page::$user->get_style()) . '" alt="e" /></a> ';
                 }
-                
-                if ($this->anonymous == true)
-                {
+
+                if ($this->anonymous == true) {
                     $output .= '&#8855; ';
-                }
-                else
-                {
-                    $output .= '<img src="'. forum_images::clock_icon(page::$user->get_style()) .'" alt="clock" />&#160;'. html::clean_text($shout['username']) .' - ';
+                } else {
+                    $output .= '<img src="' . forum_images::clock_icon(page::$user->get_style()) . '" alt="clock" title="'. date(forum_config::$date_format, $shout['post_time']) .'" />&#160;' . html::clean_text($shout['username']) . ' - ';
                 }
                 $output .= html::clean_text($shout['post_text']);
-                $output .= '
-                <div style="display:none;">
-                    <div class="tb_item" style="border-width:1px; border-style:solid;" id="sh_ps_'. $shout['post_id'] .'">
-                        <span class="italic gensmall">'. date(forum_config::$date_format, $shout['post_time']) .'</span>
-                    </div>
-                </div>';
                 $output .= '</div>';
             }
         }
         
         return $output;
     }
+    
+    protected function process_shouts($shouts) {
+        $output = '<div id="shoutbox">';
+        $output .= $this->process_inner_shouts($shouts);
+        $output .= '</div>';
+        
+        return $output;
+    }
+
 }
 
 ?>

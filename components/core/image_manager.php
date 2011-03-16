@@ -86,6 +86,7 @@ class image_manager {
     private $thumbnails = false;
     private $overwrite = false;
     private $generated_filename_length = 12;
+    private $image_suffix = '';
 
     public function __construct($image_location, $image_thumb_location = null, $max_width = null, $max_height = null, $thumb_width = null, $thumb_height = null) {
         $this->image_location = $image_location;
@@ -125,6 +126,10 @@ class image_manager {
         $this->image_thumbnail_location = $location;
     }
 
+    public function set_image_suffix($value) {
+        $this->image_suffix = $value;
+    }
+    
     public function set_overwrite($value) {
         $this->overwrite = $value;
     }
@@ -179,7 +184,7 @@ class image_manager {
         $newfilename = '';
 
         if ($use_original_name == true) {
-            $filename = $this->remove_file_extension($files[$upload_reference]['name'][$image_reference]);
+            $filename = $this->remove_file_extension($files[$upload_reference]['name'][$image_reference]) . $this->image_suffix;
         }
 
         $image->ImageFileName($files[$upload_reference]['name'][$image_reference]);
