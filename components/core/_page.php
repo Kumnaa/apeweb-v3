@@ -54,7 +54,7 @@ require('components/core/businesslogic_base.php');
 require('components/core/component_types.php');
 
 // for unit testing
-if (file_exists('config/_config.php')) {
+if (file_exists('components/user.php')) {
     require('components/user.php');
 } else {
     require('components/core/user.php');
