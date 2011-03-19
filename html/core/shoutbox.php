@@ -41,7 +41,7 @@ class shoutbox {
     
     public function display_shoutbox() {
         $shout_bl = new shoutbox_bl();
-        $output = $this->process_shouts($shout_bl->get_shouts($this->shout_count));
+        $output = '<div id="shoutboxcontainer">'. $this->process_shouts($shout_bl->get_shouts($this->shout_count));
         if ($this->allow_post == true) {
             $output .= '<br />
                 <form id="shoutform" method="post" action="">
@@ -49,16 +49,17 @@ class shoutbox {
                         <input id="shout_box_data" size="50" type="text" name="message"> 
                         <input type="submit" value="Shout!">
                     </div>
-                </form>
-                <script type="text/javascript">
+                </form>';
+        }
+        
+        $output .= '<script type="text/javascript">
                 //<!--
-                    $("#shoutform").apetech_shoutbox();
+                    $("#shoutboxcontainer").apetech_shoutbox();
                     $("#shoutbox img[title]").tooltip({ tipClass: "shout_time"});
                 //-->
                 </script>';
-        }
 
-        return $output;
+        return $output .'</div>';
     }
 
     public function display_plain_shoutbox() {
@@ -66,7 +67,7 @@ class shoutbox {
         $output = $this->process_inner_shouts($shout_bl->get_shouts($this->shout_count));
         $output .= '<script type="text/javascript">
             //<!--
-            $("#shoutbox img[title]").tooltip();
+            $("#shoutbox img[title]").tooltip({ tipClass: "shout_time"});
             //-->
             </script>';
         return $output;

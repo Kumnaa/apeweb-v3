@@ -247,7 +247,7 @@ class db_connector {
             <br />
             " . print_r($_data, true) . "<br />
             <br />
-            Page http://" . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . "?" . $_SERVER['QUERY_STRING'] . "<br />
+            Page http://" . apetech::server_name() . $_SERVER['PHP_SELF'] . "?" . apetech::query_string() . "<br />
             <br />
             " . $_message . "<br />
             <br />";

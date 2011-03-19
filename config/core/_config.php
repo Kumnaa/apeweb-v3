@@ -45,7 +45,7 @@ class config {
     }
 
     static function site_url() {
-        return config::site_protocol() . $_SERVER['SERVER_NAME'] . '/';
+        return config::site_protocol() . apetech::server_name() . '/';
     }
 
     static function template() {
@@ -65,7 +65,7 @@ class config {
     }
 
     static function db_password() {
-        return '';
+        return 'password';
     }
 
     static function db_database() {
@@ -101,10 +101,10 @@ class config {
     }
 
     static function domain() {
-        if ($_SERVER['SERVER_NAME'] == '127.0.0.1') {
+        if (apetech::server_name() == '127.0.0.1') {
             $domain = 'localhost';
         } else {
-            $domain = $_SERVER['SERVER_NAME'];
+            $domain = apetech::server_name();
         }
         return $domain;
     }
@@ -129,6 +129,10 @@ class config {
         error_reporting(E_ALL);
     }
 
+    static function set_timezone() {
+        date_default_timezone_set('Europe/London');
+    }
+    
     static function allow_registration() {
         return true;
     }

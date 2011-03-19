@@ -27,9 +27,9 @@
 
 // for unit testing
 if (file_exists('components/page.php')) {
-    require_once('components/page.php');
+    require('components/page.php');
 } else {
-    require_once('components/core/page.php');
+    require('components/core/page.php');
 }
 
 // end for unit testing

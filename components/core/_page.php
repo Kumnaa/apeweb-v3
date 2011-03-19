@@ -25,9 +25,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require('components/core/businesslogic_base.php');
-require('components/core/component_types.php');
-require('bl/core/user_bl.php');
+ini_set('display_errors', 1);
+
+// for unit testing
+if (file_exists('config/_config.php')) {
+    require('config/_config.php');
+    require('config/messages.php');
+    require('config/userlevels.php');
+} else {
+    require('config/core/_config.php');
+    require('config/core/messages.php');
+    require('config/core/userlevels.php');
+}
+// end for unit testing
+
+config::set_timezone();
+
 require('components/core/_templates.php');
 require('components/core/apetech.php');
 require('components/core/input.php');
@@ -37,11 +50,20 @@ require('components/core/sql.php');
 require('components/core/validator.php');
 require('components/core/exceptions.php');
 require('components/core/security_type.php');
+require('components/core/businesslogic_base.php');
+require('components/core/component_types.php');
+
+// for unit testing
+if (file_exists('config/_config.php')) {
+    require('components/user.php');
+} else {
+    require('components/core/user.php');
+}
+// end for unit testing
+
+require('bl/core/user_bl.php');
 require('html/core/html.php');
 require('html/core/login.php');
-require('config/_config.php');
-require('config/messages.php');
-require('config/userlevels.php');
 
 set_error_handler(array('apetech', 'error_handler'));
 

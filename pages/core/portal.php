@@ -162,7 +162,7 @@ class portal_page extends page {
 
             case "shoutbox":
                 $shoutbox = new shoutbox();
-                if (page::$user->get_level() >= userlevels::$guest) {
+                if (page::$user->get_level() > userlevels::$guest) {
                     $shoutbox->set_allow_post(true);
                 }
                 

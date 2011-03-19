@@ -38,7 +38,7 @@
                 }
                 element = this;
                 
-                $(element).submit(function() {
+                $("form#shoutform", element).submit(function() {
                     alert('Handler for .submit() called.');
                     return false;
                 });

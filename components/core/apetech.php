@@ -27,12 +27,36 @@
 
 class apetech {
 
+    public static function query_string () {
+        if (isset($_SERVER['QUERY_STRING'])) {
+            return $_SERVER['QUERY_STRING'];
+        } else {
+            return 'cgi-script';
+        }
+    }
+    
     public static function server_name() {
         if (isset($_SERVER['SERVER_NAME'])) {
             return $_SERVER['SERVER_NAME'];
         } else {
             return 'cgi-script';
         }
+    }
+    
+    public static function server_port() {
+        if (isset($_SERVER['SERVER_PORT'])) {
+            return $_SERVER['SERVER_PORT'];
+        } else {
+            return 'cgi-script';
+        }
+    }
+    
+    public static function server_uri() {
+                    if (isset($_SERVER['REQUEST_URI'])) {
+                return $_SERVER['REQUEST_URI'];
+            } else {
+                return 'cgi-script';
+            }
     }
     
     public static function form_to_email($recipient, $subject, $exceptions = array()) {

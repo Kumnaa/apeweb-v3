@@ -25,11 +25,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// for unit testing
-require('bl/core/forum_bl.php');
 require('components/core/_page.php');
-require('config/core/_config.php');
-require('config/core/_userlevels.php');
+require('bl/core/forum_bl.php');
 require('config/core/bbcode.php');
 require('config/core/forum_config.php');
 require('config/core/forum_images.php');
@@ -47,7 +44,7 @@ class page extends _page {
     }
 
     protected function create_user() {
-        $this->user = new user();
+        page::$user = new user();
     }
 
     protected function pre_action() {
@@ -56,24 +53,17 @@ class page extends _page {
         $this->add_text('javascript', 'var url_root = "' . config::site_url() . '";');
     }
 
-    protected function post_action() {
-        $this->menu = new cccp_menu($this);
-        $this->menu->display();
-        if (strlen(page::$user->avatar_link) > 0) {
-            $this->add_text('avatar', '<div id="avatar_container"><img id="avatar" src="' . page::$user->avatar_link . '" alt="" /></div>');
-        }
-    }
+    protected function post_action() {}
 
     protected function notice($message) {
         $this->add_text('main_header', 'Error');
         $this->add_text('main', html::notice($message));
     }
 
-    protected function please_login() {
-        $this->add_text('main', '<div id="please_login">Please login</div>');
+    protected function please_login($element = 'main') {
+        $this->add_text($element, '<div id="please_login">Please login</div>');
     }
 
 }
 
-// end for unit testing
 ?>

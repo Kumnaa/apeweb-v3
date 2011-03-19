@@ -1,49 +1,66 @@
 <?php
-
-/*
-  BBCode definitions
-
-  @author Ben Bowtell
-
-  @date 27-Feb-2011
-
-  (c) 2011 by http://www.amplifycreative.net
-
-  contact: ben@amplifycreative.net.net
-
-  ﻿   This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 class bbcode {
 
     static $bbcode_array = array(
         array(
             'name_tag' => '/\[b\](.*?)\[\/b\]/is',
-            'replace_tag' => '<span class="bold">\\1</span>'
-        ),
+            'replace_tag' => '<span class="bold">\\1</span>',
+            'inline' => true
+            ),
+        array(
+            'name_tag' => '/\[u\](.*?)\[\/u\]/is',
+            'replace_tag' => '<span class="underline">\\1</span>',
+            'inline' => true
+            ),
+        array(
+            'name_tag' => '/\[i\](.*?)\[\/i\]/is',
+            'replace_tag' => '<span class="italic">\\1</span>',
+            'inline' => true
+            ),
+        array(
+            'name_tag' => '/\[bp\](.*?)\[\/bp\]/is',
+            'replace_tag' => '<ul>\\1</ul>',
+            'inline' => false
+            ),
+        array(
+            'name_tag' => '/\[dot\](.*?)\[\/dot\]/is',
+            'replace_tag' => '<li>\\1</li>',
+            'inline' => false
+            ),
         array(
             'name_tag' => '/\[img\](.*?)\[\/img\]/i',
-            'replace_tag' => '<img src="\\1" alt="image" />'
-        ),
+            'replace_tag' => '<img src="\\1" alt="image" />',
+            'inline' => false
+            ),
         array(
-            'name_tag' => '/\[img\](.*?)\[\/img\]/i',
-            'replace_tag' => '<img src="\\1" alt="image" />'
-        ),
+            'name_tag' => '/\[colour=(.*?)\](.*?)\[\/colour\]/is',
+            'replace_tag' => '<span style=\"color: \\1\">\\2</span>',
+            'inline' => true
+            ),
+        array(
+            'name_tag' => '/\[quote\](.*?)\[\/quote\]/is',
+            'replace_tag' => '<div class="quote auto">\\1</div>',
+            'inline' => false
+            ),
+        array(
+            'name_tag' => '/\[quote=&quot;(.*?)&quot;\](.*?)\[\/quote\]/is',
+            'replace_tag' => '<div class="quote auto"><span class="bold">\\1 said:</span><br /><br />\\2</div>',
+            'inline' => false
+            ),
+        array(
+            'name_tag' => '/\[size=([\d]*?)\](.*?)\[\/size\]/is',
+            'replace_tag' => '<span style="font-size:\\1pt;">\\2</span>',
+            'inline' => false
+            ),
+        array(
+            'name_tag' => '/\[center\](.*?)\[\/center\]/is',
+            'replace_tag' => '<div class="center">\\1</div>',
+            'inline' => false
+            )
     );
+
     static $smiley_array = array(
+            
     );
-
 }
-
 ?>

@@ -150,15 +150,15 @@ class html {
         $post = self::remove_htmljava($post);
         if ($bbcode == true) {
             foreach (bbcode::$bbcode_array AS $array) {
-                $post = preg_replace($array['name_tag'], $array['replace_tag'], $post);
+                if (($newline == false && $array['inline'] == true) || $newline == true) {
+                    $post = preg_replace($array['name_tag'], $array['replace_tag'], $post);
+                }
             }
 
             foreach (bbcode::$smiley_array AS $array) {
-                $post = str_replace($array['name_tag'], $array['replace_tag'], $post);
-            }
-
-            while (preg_match('/\[colour=(.*?)\](.*?)\[\/colour\]/is', $post)) {
-                $post = preg_replace('/\[colour=(.*?)\](.*?)\[\/colour\]/is', "<span style=\"color: \\1\">\\2</span>", $post);
+                if (($newline == false && $array['inline'] == true) || $newline == true) {
+                    $post = preg_replace($array['name_tag'], $array['replace_tag'], $post);
+                }
             }
 
             $post = preg_replace_callback("/\[url=(.*?)\](.*?)\[\/url\]/", create_function('$matches', 'return (html::url_parsing_ext($matches));'), $post);
@@ -287,7 +287,7 @@ class html {
 
     public static function capture_url($capture_arguments = true) {
         if ($capture_arguments == true) {
-            $file = $_SERVER['REQUEST_URI'];
+            $file = apetech::server_uri();
         } else {
             $file = $_SERVER['SCRIPT_NAME'];
         }
@@ -297,10 +297,10 @@ class html {
             $pageURL .= "s";
         }
         $pageURL .= "://";
-        if ($_SERVER["SERVER_PORT"] != "80") {
-            $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $file;
+        if (apetech::server_port() != "80") {
+            $pageURL .= apetech::server_name() . ":" . apetech::server_port() . $file;
         } else {
-            $pageURL .= $_SERVER["SERVER_NAME"] . $file;
+            $pageURL .= apetech::server_name() . $file;
         }
         return $pageURL;
     }

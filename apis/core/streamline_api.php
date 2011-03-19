@@ -36,6 +36,14 @@ class streamline {
     }
 
     public function __construct($order_number, $pounds, $pence) {
+        if (function_exists('curl_init') == false) {
+            throw new Exception('Streamline API class needs CURL');
+        }
+        
+        if (class_exists("DOMImplementation") == false) {
+            throw new Exception('Streamline API class needs the DOMImplementation object.');
+        }
+        
         $pence = str_pad($pence, 2, "0", STR_PAD_LEFT);
         if (strlen($pence) != 2) {
             throw new Exception("Incorrect pence value: " . $pence);
@@ -46,7 +54,7 @@ class streamline {
     }
 
     public function generate_payment($order_type, $email = '', $passed_message = '') {
-        $imp = new DOMImplementation;
+        $imp = new DOMImplementation();
         $dtd = $imp->createDocumentType('paymentService', '-//Streamline-esolutions/DTD Streamline-esolutions PaymentService v1//EN', 'http://dtd.streamline-esolutions.com/paymentService_v1.dtd');
         $doc = $imp->createDocument("", "", $dtd);
         $root = $doc->createElement('paymentService');
