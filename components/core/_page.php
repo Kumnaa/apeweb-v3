@@ -25,17 +25,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-ini_set('display_errors', 1);
-
 // for unit testing
 if (file_exists('config/_config.php')) {
     require('config/_config.php');
     require('config/messages.php');
     require('config/userlevels.php');
+    require('config/bbcode.php');
 } else {
     require('config/core/_config.php');
     require('config/core/messages.php');
     require('config/core/userlevels.php');
+    require('config/core/bbcode.php');
 }
 // end for unit testing
 
@@ -191,6 +191,13 @@ abstract class _page {
             case component_types::$paging:
                 if (class_exists('paging') == false) {
                     require('html/core/paging.php');
+                }
+                break;
+                
+            case component_types::$streamline:
+                if (class_exists('streamline') == false) {
+                    require('apis/core/streamline_api.php');
+                    require('config/streamline.php');
                 }
                 break;
         }

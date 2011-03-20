@@ -36,6 +36,7 @@ class component_types {
     public static $breadcrumbs = 8;
     public static $paging = 9;
     public static $recaptcha = 10;
+    public static $streamline = 11;
 }
 
 ?>

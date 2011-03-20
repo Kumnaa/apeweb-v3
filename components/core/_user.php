@@ -221,9 +221,11 @@ abstract class _user {
     }
 
     protected function set_cookie($_username, $_security, $_random, $_timeout) {
-        setcookie(config::cookie_name() . '[user]', $_username, $_timeout, '/', config::domain());
-        setcookie(config::cookie_name() . '[sec]', $_security, $_timeout, '/', config::domain());
-        setcookie(config::cookie_name() . '[rndm]', $_random, $_timeout, '/', config::domain());
+        if (apetech::server_name() != 'cgi-script') {
+            setcookie(config::cookie_name() . '[user]', $_username, $_timeout, '/', config::domain());
+            setcookie(config::cookie_name() . '[sec]', $_security, $_timeout, '/', config::domain());
+            setcookie(config::cookie_name() . '[rndm]', $_random, $_timeout, '/', config::domain());
+        }
     }
 
     protected function update_session() {
