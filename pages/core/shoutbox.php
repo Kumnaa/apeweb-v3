@@ -35,17 +35,22 @@ if (file_exists('components/page.php')) {
 
 class shoutbox_page extends page {
 
+    private $message;
+    
     public function __construct() {
         $this->enable_component(component_types::$shoutbox);
         parent::__construct();
         $this->add_text('title', 'Shoutbox');
         $this->set_template('default');
+        $this->message = input::validate('message', 'message');
     }
 
     public function generate_display() {
         switch ($this->action) {
             case "html":
                 $this->display_plain();
+                break;
+            case "post":
                 break;
             default:
                 $this->display();
@@ -60,12 +65,27 @@ class shoutbox_page extends page {
                     $shoutbox = new shoutbox();
                     $this->add_text('html', $shoutbox->display_plain_shoutbox());
                     break;
+                case "post":
+                    if (strlen($this->message) > 0) {
+                        $this->post_validator();
+                    }
+                    break;
             }
         } catch (Exception $ex) {
             $this->notice($ex->getMessage());
         }
     }
 
+    protected function post_validator() {
+        if (page::$user->get_level() > userlevels::$guest) {
+            $this->add_post();
+        }
+    }
+    
+    protected function add_post() {
+        $shoutbox_bl = new shoutbox_bl();
+        $shoutbox_bl->add_shout($this->message, page::$user->get_user_id(), page::$user->get_user_ip());
+    }
 }
 
 ?>

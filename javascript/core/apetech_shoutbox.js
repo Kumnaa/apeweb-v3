@@ -39,19 +39,23 @@
                 element = this;
                 
                 $("form#shoutform", element).submit(function() {
-                    alert('Handler for .submit() called.');
+                    $.post("shoutbox.php", { action: "post", message: $("#shout_box_data").val() }, function() {
+                        refresh_method();                        
+                    });
+                    
+                    $("#shout_box_data").val('');
                     return false;
                 });
                 
-                interval = setInterval(
-                    function(){
-                        $('#shoutbox').load('/shoutbox.php?action=html');
-                    }, 30000
-                );
+                interval = setInterval(refresh_method, 30000);
             });
         }
-   };
-   
+    };
+
+    function refresh_method() {
+        $('#shoutbox').load('/shoutbox.php?action=html');
+    }
+
     $.fn.apetech_shoutbox = function( method ) {
         if ( methods[method] ) {
             return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));

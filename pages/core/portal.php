@@ -31,6 +31,7 @@ if (file_exists('components/page.php')) {
 } else {
     require_once('components/core/page.php');
 }
+
 // end for unit testing
 
 class portal_page extends page {
@@ -83,6 +84,10 @@ class portal_page extends page {
         }
     }
 
+    protected function process_additional_element_html($element) {
+        
+    }
+
     protected function process_element_html($element) {
         $element_html = '';
         switch ($element['type']) {
@@ -105,7 +110,7 @@ class portal_page extends page {
 
             case "calendar":
                 $calendar = new calendar(new DateTime());
-                $element_html = $this->display_block($calendar->display($this->template), "Calendar");
+                $element_html .= $this->display_block($calendar->display($this->template), "Calendar");
                 break;
 
             case "announcements":
@@ -165,8 +170,12 @@ class portal_page extends page {
                 if (page::$user->get_level() > userlevels::$guest) {
                     $shoutbox->set_allow_post(true);
                 }
-                
+
                 $element_html .= $this->display_block($shoutbox->display_shoutbox(), 'Shoutbox');
+                break;
+                
+            default:
+                $element_html .= $this->process_additional_element_html($element);
                 break;
         }
 

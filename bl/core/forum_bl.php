@@ -435,7 +435,7 @@ class forum_bl extends businesslogic_base {
                 ':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
                     )
             );
-            
+
             // update post details
             switch (config::db_engine()) {
                 default:
@@ -456,8 +456,8 @@ class forum_bl extends businesslogic_base {
                 ':post_edit_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
                 ':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
                     )
-            );            
-            
+            );
+
             $this->db->end_transaction();
         } catch (Exception $ex) {
             $this->db->rollback_transaction();
@@ -891,9 +891,9 @@ class forum_bl extends businesslogic_base {
                 ";
                 break;
         }
-        $this->db->sql_query($query); 
+        $this->db->sql_query($query);
     }
-    
+
     public function get_forum_by_id($user, $forum_id, $page) {
         if ($page > 0) {
             $page = $page - 1;
