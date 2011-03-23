@@ -111,7 +111,11 @@ class profile_page extends page {
         $fields = array();
         foreach ($this->profile AS $key => $value) {
             if ($this->profile_settings[$key]['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $this->profile_settings[$key]['self'] == 'auth' && $this->profile_settings[$key][$this->profile_settings[$key]['self']] <= page::$user->get_level())) {
-                if ($key != 'user_level' || ($old_user[0]['user_level'] < page::$user->get_level() && $value < page::$user->get_level())) {
+                if (
+                        $key != 'user_level'
+                        ||
+                        ($this->user_id != page::$user->get_user_id() && $old_user[0]['user_level'] < page::$user->get_level() && $value < page::$user->get_level())
+                ) {
                     switch ($this->profile_settings[$key]['datatype']) {
                         case "int":
                         case "float":
@@ -141,7 +145,11 @@ class profile_page extends page {
 
             foreach ($this->profile_settings AS $key => $value) {
                 if ($value['enabled'] == true) {
-                    if ($value['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $value['self'] == 'auth' && $value[$value['self']] <= page::$user->get_level())) {
+                    if (
+                            (($key == 'user_level' && page::$user->get_user_id() != $this->user_id) || ($key != 'user_level'))
+                            &&
+                            ($value['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $value['self'] == 'auth' && $value[$value['self']] <= page::$user->get_level()))
+                    ) {
                         $page->add_text('profile', $this->display_profile_edit($key));
                     } else if ($value['view'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $value['self'] == 'view' && $value[$value['self']] <= page::$user->get_level())) {
                         $page->add_text('profile', $this->display_profile_view($key));
