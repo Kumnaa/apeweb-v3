@@ -84,9 +84,9 @@ class calendar {
         return $doc->saveXML();
     }
 
-    public function display($template) {
+    public function display($template, $template_name = 'calendar') {
         $page = new page($template);
-        $page->set_template('calendar');
+        $page->set_template($template_name);
         $blank = 0;
         switch ($this->first_day_of_month->format("D")) {
             case "Sun": $blank = 0;

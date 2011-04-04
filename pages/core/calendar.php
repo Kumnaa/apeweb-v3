@@ -41,8 +41,9 @@ class calendar_page extends page {
     public function __construct() {
         $this->enable_component(component_types::$calendar);
         parent::__construct();
+        $today = new DateTime();
         $this->add_text('title', 'Category Viewer');
-        $this->month = input::validate('month', 'string');
+        $this->month = input::validate('month', 'string', $today->format('Ym'));
     }
 
     public function generate_display() {
@@ -63,6 +64,12 @@ class calendar_page extends page {
                     $date = new DateTime(substr($this->month, 0, 4) . '-' . substr($this->month, 4, 2) . '-1');
                     $calendar = new calendar($date);
                     $this->add_text('xml', $calendar->display_xml());
+                    break;
+                
+                default:
+                    $date = new DateTime(substr($this->month, 0, 4) . '-' . substr($this->month, 4, 2) . '-1');
+                    $calendar = new calendar($date);
+                    $this->add_text('main', $calendar->display($this->template, 'calendar_large'));
                     break;
             }
         } catch (Exception $ex) {

@@ -46,7 +46,7 @@ class register_page extends page {
     protected $error;
     protected $user_id;
     protected $recaptcha;
-    private $site_root;
+    protected $site_root;
 
     public function __construct() {
         try {
