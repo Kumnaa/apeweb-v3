@@ -227,7 +227,24 @@ class apetech {
         $date->setTimestamp($time);
         return $date->format("Y-m-d H:i:s");
     }
+    
+    public static function human_readable_get() {
+        $message = "";
+        foreach ($_GET as $key => $value) {
+            $message .= html::clean_text($key) . ": " . html::clean_text($value) . "<br />";
+        }
+        
+        return $message;
+    }
 
+    public static function human_readable_post() {
+        $message = "";
+        foreach ($_POST as $key => $value) {
+            $message .= html::clean_text($key) . ": " . html::clean_text($value) . "<br />";
+        }
+        
+        return $message;
+    }
 }
 
 ?>

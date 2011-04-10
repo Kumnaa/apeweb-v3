@@ -178,6 +178,7 @@ class db_connector {
     public function sql_select($statement, $arguments = array()) {
         $this->statement = $statement;
         $this->arguments = $arguments;
+        $sth = null;
         try {
             $sth = $this->prepare($statement, $arguments);
             $sth = $this->execute($sth, $arguments);
