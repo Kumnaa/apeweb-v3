@@ -145,28 +145,35 @@ class html {
         return htmlentities($text);
     }
 
+    public static function parse_bbcode($post, $newline, $parse_urls) {
+        foreach (bbcode::$bbcode_array AS $array) {
+            if (($newline == false && $array['inline'] == true) || $newline == true) {
+                $post = preg_replace($array['name_tag'], $array['replace_tag'], $post);
+            }
+        }
+
+        foreach (bbcode::$smiley_array AS $array) {
+            if (($newline == false && $array['inline'] == true) || $newline == true) {
+                $post = preg_replace($array['name_tag'], $array['replace_tag'], $post);
+            }
+        }
+
+        $post = preg_replace_callback("/\[url=(.*?)\](.*?)\[\/url\]/", create_function('$matches', 'return (html::url_parsing_ext($matches));'), $post);
+        $post = preg_replace_callback("/\[url\](.*?)\[\/url\]/", create_function('$matches', 'return (html::url_parsing_ext($matches));'), $post);
+        if ($parse_urls == true) {
+            $post = preg_replace('|([A-Za-z]{3,9})://([-;:&=\+\$,\w]+@{1})?([-A-Za-z0-9\.]+)+:?(\d+)?((/[-\+~%/\.\w]+)?\??([-\+=&;%@\.\w]+)?#?([\w]+)?)?|', '<a href="\0" target="_blank">\1</a>', $post);
+        }
+
+        return $post;
+    }
+
     public static function clean_text($post, $newline = false, $bbcode = true, $parse_urls = false) {
         $post = self::utf_safe($post);
         $post = self::remove_htmljava($post);
         if ($bbcode == true) {
-            foreach (bbcode::$bbcode_array AS $array) {
-                if (($newline == false && $array['inline'] == true) || $newline == true) {
-                    $post = preg_replace($array['name_tag'], $array['replace_tag'], $post);
-                }
-            }
-
-            foreach (bbcode::$smiley_array AS $array) {
-                if (($newline == false && $array['inline'] == true) || $newline == true) {
-                    $post = preg_replace($array['name_tag'], $array['replace_tag'], $post);
-                }
-            }
-
-            $post = preg_replace_callback("/\[url=(.*?)\](.*?)\[\/url\]/", create_function('$matches', 'return (html::url_parsing_ext($matches));'), $post);
-            $post = preg_replace_callback("/\[url\](.*?)\[\/url\]/", create_function('$matches', 'return (html::url_parsing_ext($matches));'), $post);
-            if ($parse_urls == true) {
-                $post = preg_replace('|([A-Za-z]{3,9})://([-;:&=\+\$,\w]+@{1})?([-A-Za-z0-9\.]+)+:?(\d+)?((/[-\+~%/\.\w]+)?\??([-\+=&;%@\.\w]+)?#?([\w]+)?)?|', '<a href="\0" target="_blank">\1</a>', $post);
-            }
+            $post = html::parse_bbcode($post, $newline, $parse_urls);
         }
+
         if ($newline == true) {
             $post = nl2br($post);
         }
@@ -230,22 +237,22 @@ class html {
         if (isset($_GET['wap'])) {
             $_args['wap'] = $_GET['wap'];
         }
-        
+
         if (isset($_GET['sql'])) {
             $_args['sql'] = $_GET['sql'];
         }
-        
+
         if (isset($_GET['xhtml'])) {
             $_args['xhtml'] = $_GET['xhtml'];
         }
-        
+
         $url = config::site_url() . $_file;
         if ($encode == true) {
             $and = '&amp;';
         } else {
             $and = '&';
         }
-        
+
         if ($_append == true) {
             $prefix = $and;
             $query_string = '';
@@ -255,13 +262,13 @@ class html {
                 }
             }
         }
-        
+
         if (sizeof($_args) > 0) {
             $prefix = '?';
             $args = html::args_to_str($_args);
             $url .= '?' . $args;
         }
-        
+
         $url .= $_jumpto;
         return($url);
     }
