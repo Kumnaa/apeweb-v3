@@ -29,7 +29,7 @@ class config {
 
     static $user_type = 'web_user';
 
-    static $error_destination = '';
+    static $error_destination = 'kumnaa@gmail.com';
     
     static function completed_login_url() {
         return config::site_url();

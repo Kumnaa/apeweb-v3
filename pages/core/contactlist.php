@@ -37,12 +37,14 @@ require('bl/core/contact_list_bl.php');
 
 class contact_list_page extends page {
 
-    private $contact_list_bl;
+    protected $contact_list_bl;
+    protected $user_id;
 
     public function __construct() {
         $this->enable_component(component_types::$tables);
         parent::__construct();
         $this->contact_list_bl = new contact_list_bl();
+        $this->user_id = input::validate('user_id', 'int');
         $this->add_text('title', 'Contact List');
     }
 
@@ -53,6 +55,14 @@ class contact_list_page extends page {
     protected function action() {
         try {
             switch ($this->action) {
+                case "up":
+                    $this->move_up();
+                    $this->default_action();
+                    break;
+                case "down":
+                    $this->move_down();
+                    $this->default_action();
+                    break;
                 default:
                     $this->default_action();
                     break;
@@ -66,6 +76,14 @@ class contact_list_page extends page {
         return '<a href="' . html::gen_url('contactlist.php', array('user_id' => $id)) . '">' . $name . '</a>';
     }
 
+    protected function move_up() {
+        $this->contact_list_bl->move_up($this->user_id);
+    }
+    
+    protected function move_down() {
+        $this->contact_list_bl->move_down($this->user_id);
+    }
+    
     protected function default_action() {
         $contacts = $this->contact_list_bl->get_contact_list();
         if (is_array($contacts) && count($contacts) > 0) {
@@ -99,7 +117,7 @@ class contact_list_page extends page {
                 );
                 if (page::$user->get_level() >= userlevels::$moderator) {
                     $data[] = '<a href="' . html::gen_url('profile.php', array('user_id' => html::clean_text($_mem['id']))) . '">Edit</a>';
-                    $data[] = '&#160;<a href="' . html::gen_url('contactlist.php', array('id' => $_mem['id'], 'action' => 'up')) . '">[U]</a> - <a href="' . html::gen_url('contactlist.php', array('id' => $_mem['id'], 'action' => 'down')) . '">[D]</a>&#160;';
+                    $data[] = '<a href="' . html::gen_url('contactlist.php', array('user_id' => $_mem['id'], 'action' => 'up')) . '">[U]</a> - <a href="' . html::gen_url('contactlist.php', array('user_id' => $_mem['id'], 'action' => 'down')) . '">[D]</a>';
                 }
 
                 $table->add_data($data);

@@ -103,7 +103,7 @@ class html {
 
     //make valid url
     public static function check_url($url) {
-        if (substr($url, 0, 7) == 'http://' || substr($url, 0, 8) == 'https://' || substr($url, 0, 7) == 'mailto:' || substr($url, 0, 6) == 'irc://') {
+        if (substr($url, 0, 7) == 'http://' || substr($url, 0, 8) == 'https://' || substr($url, 0, 7) == 'mailto:' || substr($url, 0, 6) == 'irc://' || substr($url, 0, 7) == 'file://') {
             str_replace(" ", "", $url);
         } else {
             $url = '';
@@ -230,18 +230,22 @@ class html {
         if (isset($_GET['wap'])) {
             $_args['wap'] = $_GET['wap'];
         }
+        
         if (isset($_GET['sql'])) {
             $_args['sql'] = $_GET['sql'];
         }
+        
         if (isset($_GET['xhtml'])) {
             $_args['xhtml'] = $_GET['xhtml'];
         }
+        
         $url = config::site_url() . $_file;
         if ($encode == true) {
             $and = '&amp;';
         } else {
             $and = '&';
         }
+        
         if ($_append == true) {
             $prefix = $and;
             $query_string = '';
@@ -251,11 +255,13 @@ class html {
                 }
             }
         }
+        
         if (sizeof($_args) > 0) {
             $prefix = '?';
             $args = html::args_to_str($_args);
             $url .= '?' . $args;
         }
+        
         $url .= $_jumpto;
         return($url);
     }

@@ -479,6 +479,26 @@ class user_bl extends businesslogic_base {
         }
     }
 
+    public function get_last_list_order() {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        list_order
+                    FROM
+                        users
+                    ORDER BY
+                        list_order DESC
+                    LIMIT
+                        1
+                    OFFSET
+                        0";
+                break;
+        }
+        $return = $this->db->sql_select($query);
+        return $return[0]['lost_order'];
+    }
+    
     public function get_mini_user_by_username_or_email($username, $email) {
         switch (config::db_engine()) {
             default:

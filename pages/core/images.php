@@ -41,6 +41,8 @@ class images_page extends page {
     protected $page_id;
     protected $image_id;
     protected $paging;
+    protected $tag;
+    protected $description;
 
     public function __construct() {
         $this->enable_component(component_types::$images);
@@ -57,6 +59,8 @@ class images_page extends page {
         $this->paging->items_per_page = forum_config::$page_limit;
         $this->paging->relative_url = 'images.php';
         $this->paging->page = $this->page_id;
+        $this->tag = input::validate('tag', 'message');
+        $this->description = input::validate('description', 'message');
     }
 
     public function generate_display() {
@@ -124,12 +128,37 @@ class images_page extends page {
         if (is_array($image) && count($image) > 0) {
             $current_tag = $image[0]['tag'];
             $current_description = $image[0]['description'];
+            
+            if (page::$user->get_level() >= userlevels::$moderator) {
+                if (strlen($this->tag) > 0) {
+                    $this->images_bl->update_tag($this->image_id, $this->tag);
+                    $current_tag = $this->tag;
+                }
+
+                if (strlen($this->description) > 0) {
+                    $this->images_bl->update_description($this->image_id, $this->description);
+                    $current_description = $this->description;
+                }
+            }
+            
             $image_name = html::clean_text($image[0]['image_name']);
             $time = date(forum_config::$date_format, $image[0]['timestamp']);
             $head_exp = explode('/', $image[0]['header']);
             $extension = array_pop($head_exp);
             $image_url = forum_config::image_warehouse_url() . $this->image_id . '.' . $extension;
             $this->add_text('main', '<span class="head_text">' . $image_name . '</span><br/ ><span class="italic">uploaded by ' . html::clean_text($image[0]['username']) . '</span><br /><br />');
+            if (page::$user->get_level() > 0) {
+                $this->add_text('main', '<form action="'. html::gen_url('images.php', array('action' => 'view', 'image_id' => $this->image_id)) .'" method="post">
+                        <div class="div_center dotted_box sixty">
+                            <span class="italic">Description:</span><br />
+                            <input name="description" size="60" value="'. html::clean_text($current_description) .'" /><br /><br />
+                            <span class="italic">Tags:</span><br />
+                            <input name="tag" size="60" value="'. html::clean_text($current_tag) .'" /><br /><br />
+                            <input type="submit" value="Update" />
+                        </div>
+                        </form><br />
+                        <br />');
+            }
             $this->add_text('main', '<a href="' . $image_url . '" target="_blank"><img src="' . $image_url . '" alt="user_image" class="user_image" /></a>');
         } else {
             throw new Exception("Image not found.");

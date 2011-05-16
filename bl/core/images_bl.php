@@ -140,6 +140,43 @@ class images_bl extends businesslogic_base {
         );
     }
 
+    public function update_tag($image_id, $tag) {
+        $this->db->sql_query('DELETE FROM
+                    image_tags
+                WHERE
+                    `image_id` = :image_id',
+            array(
+                ':image_id' => array('value' => $image_id, 'type' => PDO::PARAM_INT)
+            )
+        );
+        
+        $this->db->sql_query('INSERT INTO
+                    image_tags
+                    (`image_id`,`tag`, `updated`)
+                VALUES
+                    (:image_id, :tag, UNIX_TIMESTAMP())',
+                array(
+                    ':image_id' => array('value' => $image_id, 'type' => PDO::PARAM_INT),
+                    ':tag' => array('value' => $tag, 'type' => PDO::PARAM_STR)
+                )
+            );
+    }
+    
+    public function update_description($image_id, $description) {
+        $this->db->sql_query('UPDATE 
+                    image_warehouse
+                SET 
+                    description = :description,
+                    updated = UNIX_TIMESTAMP()
+                WHERE
+                    `image_id` = :image_id',
+                array(
+                    ':image_id' => array('value' => $image_id, 'type' => PDO::PARAM_INT),
+                    ':description' => array('value' => $description, 'type' => PDO::PARAM_STR)
+                )
+            );
+    }
+    
     public function get_images($page, $user_id = null) {
         if ($page > 0) {
             $page = $page - 1;

@@ -99,6 +99,7 @@ class password_page extends page {
         } catch (Exception $ex) {
             $this->notice($ex->getMessage());
         }
+
         $this->add_text('main', '
             <form action="' . html::capture_url(true) . '" method="post">
                 <fieldset>

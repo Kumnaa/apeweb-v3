@@ -52,7 +52,7 @@ class administrate_forums_page extends page {
 
     protected function action() {
         try {
-            if (page::$user->get_user_level() >= userlevels::$administrator) {
+            if (page::$user->get_level() >= userlevels::$administrator) {
                 if ($this->category_id > 0) {
 
                 } else if ($this->forum_id > 0) {

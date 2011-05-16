@@ -220,12 +220,16 @@ class apetech {
     }
 
     public static function mysqltime($time = null) {
-        if ($time === null) {
+        if ($time == null) {
             $time = time();
         }
-        $date = new DateTime();
-        $date->setTimestamp($time);
-        return $date->format("Y-m-d H:i:s");
+        
+        if (class_exists("DateTime")) {
+            $date = new DateTime("@".$time);
+            return $date->format("Y-m-d H:i:s");
+        } else {
+            return date("Y-m-d H:i:s", $time);
+        }
     }
     
     public static function human_readable_get() {

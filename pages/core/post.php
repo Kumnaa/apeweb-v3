@@ -47,6 +47,7 @@ class post_page extends page {
 
     public function __construct() {
         $this->enable_component(component_types::$forums);
+        $this->enable_component(component_types::$breadcrumbs);
         parent::__construct();
         $this->forum_bl = new forum_bl();
         $this->forum_id = input::validate('forum_id', 'int');
@@ -237,6 +238,10 @@ class post_page extends page {
     
     private function update_post() {
         $this->forum_bl->update_post($this->post_id, $this->post, time(), page::$user->get_user_id());
+        $page = new page($this->template);
+        $page->set_template('forums/new_post_details');
+        $page->add_text('breadcrumb_trail', $this->breadcrumb->display());
+        $this->add_text('main', $page->display());
         $this->notice("Post saved.");
     }
 
