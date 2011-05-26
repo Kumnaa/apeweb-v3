@@ -81,7 +81,7 @@ class administrate_users_page extends page {
     
     protected function add_user() {
         if (strlen($this->username) > 0 && strlen($this->password) && strlen($this->email)) {
-            if (count($this->user_bl->get_mini_user_by_username_or_email($username, null)) > 0) {
+            if (count($this->user_bl->get_mini_user_by_username_or_email($this->username, null)) > 0) {
                 $this->add_text('main', 'User already exists<br /><br />');
             } else {
                 $last_order = $this->user_bl->get_last_list_order();
@@ -100,7 +100,7 @@ class administrate_users_page extends page {
         }
 
         $this->add_text('main', '<b>Enter details here to add a new user</b><br /><br />
-            <form action="'. html::gen_url('administrate_user.php', array('action' => 'add')) .'" method="post"><div>
+            <form action="'. html::gen_url('administrate_users.php', array('action' => 'add')) .'" method="post"><div>
                 <label>Username</label> <input type="text" name="username" /> <span class="gensmall">(required)</span><br />
                 <label>Password</label> <input type="text" name="password" /> <span class="gensmall">(required)</span><br />
                 <label>Email</label> <input type="text" name="email" /> <span class="gensmall">(required)</span><br />
