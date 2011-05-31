@@ -89,16 +89,19 @@ class contact_list_page extends page {
         if (is_array($contacts) && count($contacts) > 0) {
             $table = new table();
             $table->add_aligns(array('left', 'left', 'center', 'center', 'left', 'left'));
-            $table->add_header(array(
+            $table_header = array(
                 'Name',
                 'Position',
                 'Phone No.',
                 'Mobile No.',
                 'Email',
-                'Location',
-                '',
-                ''
-            ));
+                'Location');
+            if (page::$user->get_level() >= userlevels::$moderator) {
+                $table_header[] = '';
+                $table_header[] = '';
+            }
+
+            $table->add_header($table_header);
 
             foreach ($contacts AS $_mem) {
                 if ($_mem['firstname'] != '') {
