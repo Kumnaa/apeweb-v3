@@ -30,6 +30,7 @@ class shoutbox {
     private $shout_count = 10;
     private $anonymous = false;
     private $allow_post = false;
+    private $shout_text = 'Shout!';
     
     public function set_annonymous($value) {
         $this->anonymous = $value;
@@ -37,6 +38,10 @@ class shoutbox {
 
     public function set_allow_post($value) {
         $this->allow_post = $value;
+    }
+    
+    public function set_shout_text($value) {
+        $this->shout_text = $value;
     }
     
     public function display_shoutbox() {
@@ -47,7 +52,7 @@ class shoutbox {
                 <form id="shoutform" method="post" action="">
                     <div> 
                         <input id="shout_box_data" size="50" type="text" name="message"> 
-                        <input type="submit" value="Shout!">
+                        <input type="submit" value="'. html::clean_text($this->shout_text) .'">
                     </div>
                 </form>';
         }
