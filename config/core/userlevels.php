@@ -1,7 +1,7 @@
 <?php
 
 /*
-  User levels config class
+  User levels extended config class
 
   @author Ben Bowtell
 
@@ -25,19 +25,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class userlevels {
+require('config/core/_userlevels.php');
 
-    static $guest = 0;
-    static $registered = 1;
-    static $friend = 20;
-    static $member = 30;
-    static $officer = 40;
-    static $moderator = 50;
-    static $administrator = 60;
-    static $senior_administrator = 70;
-    static $technical_administrator = 80;
-    static $noaccess = 1000;
-
+class userlevels extends _userlevels {
+    public static function add_extra_permissions()
+    {
+    }
 }
 
 ?>

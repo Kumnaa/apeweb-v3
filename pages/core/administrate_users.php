@@ -48,6 +48,7 @@ class administrate_users_page extends page {
     public function __construct() {
         parent::__construct();
         $this->enable_component(component_types::$forums);
+        $this->enable_component(component_types::$tables);
         $this->username = input::validate('username', 'string');
         $this->password = input::validate('password', 'message');
         $this->email = input::validate('email', 'message');
@@ -70,12 +71,37 @@ class administrate_users_page extends page {
                     case "add":
                         $this->add_user();
                         break;
+                    case "list":
+                        $this->list_users();
+                        break;
                 }
             } else {
                 throw new Exception("Permission denied.");
             }
         } catch (Exception $ex) {
             $this->notice($ex->getMessage());
+        }
+    }
+    
+    protected function list_users()
+    {
+        $users = $this->user_bl->get_all_users();
+        if (is_array($users) && count($users) > 0){
+            $table = new table();
+            $table->add_header(array('Username', 'Email', 'Status', 'Access Level', 'Last Visit'));
+            foreach ($users AS $user) {
+                $table->add_data(
+                        array(
+                            '<a href="'. html::gen_url('profile.php', array('user_id' => html::clean_text($user['id']))) .'">'. html::clean_text($user['username']) .'</a>',
+                            html::clean_text($user['email']),
+                            html::clean_text(apetech::status_to_text($user['status'])),
+                            html::clean_text(userlevels::userlevel_to_text(($user['user_level']))),
+                            html::clean_text(date(forum_config::$date_format, $user['user_lastvisit']))
+                            )
+                        );
+            }
+            
+            $this->add_text('main', $table->v_display());
         }
     }
     
@@ -93,9 +119,11 @@ class administrate_users_page extends page {
                     'phone_number' => array('value' => $this->phone_number, 'type' => PDO::PARAM_STR),
                     'mobile_number' => array('value' => $this->mobile_number, 'type' => PDO::PARAM_STR),
                     'position' => array('value' => $this->position, 'type' => PDO::PARAM_STR),
-                    'location' => array('value' => $this->location, 'type' => PDO::PARAM_STR)
+                    'location' => array('value' => $this->location, 'type' => PDO::PARAM_STR),
+                    'status' => array('value' => 2, 'type' => PDO::PARAM_INT)
                 );
                 $this->user_bl->add_user($new_user_array);
+                $this->notice(html::clean_text($this->username) .' added.');
             }
         }
 

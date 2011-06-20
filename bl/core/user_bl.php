@@ -383,6 +383,26 @@ class user_bl extends businesslogic_base {
         );
     }
 
+    public function get_all_users() {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        id,
+                        username,
+                        email,
+                        status,
+                        user_level,
+                        user_lastvisit
+                    FROM
+                        users
+                    ORDER BY
+                        username";
+                break;
+        }
+        return $this->db->sql_select($query);
+    }
+
     public function get_user_by_security_code($user_id, $security_code) {
         switch (config::db_engine()) {
             default:
@@ -496,9 +516,9 @@ class user_bl extends businesslogic_base {
                 break;
         }
         $return = $this->db->sql_select($query);
-        return $return[0]['lost_order'];
+        return $return[0]['list_order'];
     }
-    
+
     public function get_mini_user_by_username_or_email($username, $email) {
         switch (config::db_engine()) {
             default:

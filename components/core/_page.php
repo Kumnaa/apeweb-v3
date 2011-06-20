@@ -108,6 +108,7 @@ abstract class _page {
             $this->login_error = '';
             _page::$db_connection->debug = config::debug();
             $this->perform_login = false;
+            userlevels::build_permissions();
             $this->initialise_bl();
         }
     }

@@ -249,6 +249,26 @@ class apetech {
         
         return $message;
     }
+    
+    public static function status_to_text($status) {
+        switch ($status) {
+            case "1":
+                return "Disabled";
+                break;
+            case "2":
+                return "Active";
+                break;
+            case "3":
+                return "Awaiting Email Activation";
+                break;
+            case "4":
+                return "";
+                break;
+            default:
+                return "Unknown";
+                break;
+        }
+    }
 }
 
 ?>
