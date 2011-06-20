@@ -87,40 +87,33 @@ class contact_list_page extends page {
     protected function default_action() {
         $contacts = $this->contact_list_bl->get_contact_list();
         if (is_array($contacts) && count($contacts) > 0) {
-            $table = new table();
+            $table = new table('', 'contactlist');
             $table->add_aligns(array('left', 'left', 'center', 'center', 'left', 'left'));
             $table_header = array(
                 'Name',
                 'Position',
-                'Phone No.',
-                'Mobile No.',
+                'Contact No.',
                 'Email',
                 'Location');
             if (page::$user->get_level() >= userlevels::$moderator) {
                 $table_header[] = '';
-                $table_header[] = '';
+                // $table_header[] = '';
             }
 
             $table->add_header($table_header);
 
             foreach ($contacts AS $_mem) {
-                if ($_mem['firstname'] != '') {
-                    $name = html::clean_text($_mem['firstname']);
-                } else {
-                    $name = html::clean_text($_mem['username']);
-                }
-
+               
                 $data = array(
-                    $this->gen_profile_link_url($_mem['id'], $name),
+                    $this->gen_profile_link_url($_mem['id'], $_mem['lastname'] . ', '. $_mem['firstname']),
                     html::clean_text($_mem['position']),
-                    html::clean_text($_mem['phone_number']),
-                    html::clean_text($_mem['mobile_number']),
+                    html::clean_text("T: ". $_mem['phone_number']) ."<br />M: ". html::clean_text($_mem['mobile_number']),
                     '<a href="mailto:' . html::clean_text($_mem['email']) . '">' . html::clean_text($_mem['email']) . '</a>',
                     html::clean_text($_mem['location'])
                 );
                 if (page::$user->get_level() >= userlevels::$moderator) {
                     $data[] = '<a href="' . html::gen_url('profile.php', array('user_id' => html::clean_text($_mem['id']))) . '">Edit</a>';
-                    $data[] = '<a href="' . html::gen_url('contactlist.php', array('user_id' => $_mem['id'], 'action' => 'up')) . '">[U]</a> - <a href="' . html::gen_url('contactlist.php', array('user_id' => $_mem['id'], 'action' => 'down')) . '">[D]</a>';
+                    // $data[] = '<a href="' . html::gen_url('contactlist.php', array('user_id' => $_mem['id'], 'action' => 'up')) . '">[U]</a> - <a href="' . html::gen_url('contactlist.php', array('user_id' => $_mem['id'], 'action' => 'down')) . '">[D]</a>';
                 }
 
                 $table->add_data($data);

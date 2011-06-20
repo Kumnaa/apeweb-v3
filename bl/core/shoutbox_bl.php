@@ -27,6 +27,20 @@
 
 class shoutbox_bl extends businesslogic_base {
 
+    public function clear_shouts() {
+                    switch (config::db_engine()) {
+                default:
+                    $query = "
+                    UPDATE 
+                        shoutbox
+                    SET
+                        status = 0
+                    ";
+                    break;
+            }
+            $this->db->sql_query($query);
+    }
+    
     public function add_shout($post, $user_id, $user_ip) {
         $this->db->begin_transaction();
         try {

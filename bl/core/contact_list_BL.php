@@ -100,6 +100,7 @@ class contact_list_bl extends businesslogic_base {
                 `username`,
                 `mobile_number`,
                 `firstname`,
+                `lastname`,
                 `id`,
                 `location`,
                 `email`,
@@ -116,7 +117,8 @@ class contact_list_bl extends businesslogic_base {
                     `status` = 4
                 )
             ORDER BY
-                list_order ASC');
+                lastname ASC, 
+                firstname ASC');
     }
 
 }
