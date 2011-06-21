@@ -29,7 +29,7 @@ class bbcode {
             ),
         array(
             'name_tag' => '/\[img\](.*?)\[\/img\]/i',
-            'replace_tag' => '<img src="\\1" alt="image" />',
+            'replace_tag' => '<img class="bb_image" src="\\1" alt="image" />',
             'inline' => false
             ),
         array(

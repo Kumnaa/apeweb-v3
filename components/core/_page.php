@@ -249,6 +249,11 @@ abstract class _page {
 
         $html = $this->template->get_template($this->template_name);
         foreach ($this->replace_text AS $k => $v) {
+            if (strtoupper($k) == 'JAVASCRIPT') {
+                $v = '//<!--
+                    '.$v .'
+                //-->';
+            }
             $html = str_replace('<!--' . strtoupper($k) . '-->', $v, $html);
         }
 
