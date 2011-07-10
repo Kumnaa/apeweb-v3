@@ -226,7 +226,7 @@ class forum_bl extends businesslogic_base {
                     SET
                     	posts = posts + 1
                     WHERE
-                    	user_id = :user_id
+                    	id = :user_id
                 ";
                 break;
         }
