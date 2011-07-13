@@ -76,7 +76,7 @@ class login_page extends page {
                         $this->notice('Login successful<br />
                             <a href="' . config::completed_login_url() . '">Click here to proceed.</a>');
                     } catch (Exception $e) {
-                        $this->notice($e->getMessage());
+                        $this->display_error($e->getMessage());
                         $this->login_form();
                     }
                 } else {
@@ -88,6 +88,10 @@ class login_page extends page {
                 }
                 break;
         }
+    }
+
+    protected function display_error($message) {
+        $this->notice($message);
     }
 
     protected function login_form() {

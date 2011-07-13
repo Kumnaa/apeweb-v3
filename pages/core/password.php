@@ -36,11 +36,11 @@ if (file_exists('components/page.php')) {
 
 class password_page extends page {
 
-    private $old_password;
-    private $new_password;
-    private $new2_password;
-    private $email;
-    private $redirect_url;
+    protected $old_password;
+    protected $new_password;
+    protected $new2_password;
+    protected $email;
+    protected $redirect_url;
 
     public function __construct() {
         parent::__construct();
@@ -97,7 +97,7 @@ class password_page extends page {
                 $this->notice(page::$user->recover_password($this->email));
             }
         } catch (Exception $ex) {
-            $this->notice($ex->getMessage());
+            $this->display_error($ex->getMessage());
         }
 
         $this->add_text('main', '
@@ -110,6 +110,10 @@ class password_page extends page {
                     <input type="submit" value="Send" />
                 </fieldset>
             </form>');
+    }
+
+    protected function display_error($message) {
+        $this->notice($ex->getMessage());
     }
 
     protected function change_password() {
