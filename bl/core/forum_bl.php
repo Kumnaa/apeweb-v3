@@ -224,7 +224,7 @@ class forum_bl extends businesslogic_base {
                     UPDATE
                         users
                     SET
-                    	posts = posts + 1
+                    	user_posts = user_posts + 1
                     WHERE
                     	id = :user_id
                 ";
