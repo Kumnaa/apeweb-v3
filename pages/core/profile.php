@@ -132,7 +132,11 @@ class profile_page extends page {
             }
         }
 
-        $ubl->update_profile(implode(", ", $fields), $parameters);
+        if (count($fields) > 0) {
+            $ubl->update_profile(implode(", ", $fields), $parameters);
+        } else {
+            throw new Exception("Nothing updated.");
+        }
     }
 
     protected function display_profile($profile_list) {
@@ -147,20 +151,20 @@ class profile_page extends page {
                 if ($value['enabled'] == true) {
                     if (
                             (
-                                ($key == 'user_level' && page::$user->get_user_id() != $this->user_id)
-                                ||
-                                $key != 'user_level'
+                            ($key == 'user_level' && page::$user->get_user_id() != $this->user_id)
+                            ||
+                            $key != 'user_level'
                             )
                             &&
                             (
-                                $value['auth'] <= page::$user->get_level() 
-                                ||
-                                (
-                                    $this->user_id == page::$user->get_user_id()
-                                    &&
-                                    $value['self'] == 'auth'
+                            $value['auth'] <= page::$user->get_level()
+                            ||
+                            (
+                            $this->user_id == page::$user->get_user_id()
+                            &&
+                            $value['self'] == 'auth'
 
-                                )
+                            )
                             )
                     ) {
                         $page->add_text('profile', $this->display_profile_edit($key));

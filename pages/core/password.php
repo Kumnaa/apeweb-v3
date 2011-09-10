@@ -113,7 +113,7 @@ class password_page extends page {
     }
 
     protected function display_error($message) {
-        $this->notice($ex->getMessage());
+        $this->notice($message);
     }
 
     protected function change_password() {
