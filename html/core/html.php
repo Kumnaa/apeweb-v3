@@ -144,7 +144,7 @@ class html {
     public static function clean_input_text($text) {
         return htmlentities($text);
     }
-
+   
     public static function parse_bbcode($post, $newline, $parse_urls) {
         foreach (bbcode::$bbcode_array AS $array) {
             if (($newline == false && $array['inline'] == true) || $newline == true) {
@@ -177,6 +177,10 @@ class html {
         if ($newline == true) {
             $post = nl2br($post);
         }
+        
+        // tidy up
+        $post = preg_replace('/<(\/*)ul>(<br \/>*)/', '<\\1ul>', $post);
+        $post = preg_replace('/<\/li>(<br \/>*)/', '</li>', $post);
         return ($post);
     }
 

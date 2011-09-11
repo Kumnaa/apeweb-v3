@@ -99,6 +99,7 @@ class portal_page extends page {
                         } else {
                             $t_img = '';
                         }
+                        
                         $element_html .= $this->display_block($t_img . html::clean_text($element['message'], true, true), html::clean_text($element['title']));
                     } else {
                         if (page::$user->get_level() >= $element['view_level']) {
@@ -122,9 +123,7 @@ class portal_page extends page {
 	                        <img class="float" src="' . portal_images::news(page::$user->get_style()) . '" alt="" />
 	                        ' . html::clean_text($wee['post_text'], true, true) . '<br /><br />
 	                        <span class="italic">
-	                            <a href="' . html::gen_url('viewtopic.php', array('topic_id' => $wee['topic_id'])) . '">
-	                                View Whole Post/Comment
-	                            </a>
+	                            <a href="' . html::gen_url('viewtopic.php', array('topic_id' => $wee['topic_id'])) . '">View Whole Post/Comment</a>
 	                        </span> - Posted by ' . html::clean_text($wee['username']) . '<br /><br />
 	                        <div class="cleaner"></div>
 	                    </div>';
@@ -150,15 +149,11 @@ class portal_page extends page {
                             }
                         }
 
-                        $content .= '<a href="' . html::gen_url('viewtopic.php', array('topic_id' => $_lt['topic_id'])) . '">
-	                            <span class="bold">' . html::clean_text($_lt['topic_title']) . '</span>
-	                        </a><br />
-	                        <a href="' . html::gen_url('viewforum.php', array('forum_id' => $_lt['forum_id'])) . '">
-	                            ' . html::clean_text($_lt['forum_name']) . '
-	                        </a><br />
+                        $content .= '<a class="port_lastp_topic_title" href="' . html::gen_url('viewtopic.php', array('topic_id' => $_lt['topic_id'])) . '">' . html::clean_text($_lt['topic_title']) . '</a><br />
+	                        <a class="port_lastp_forum_title" href="' . html::gen_url('viewforum.php', array('forum_id' => $_lt['forum_id'])) . '">' . html::clean_text($_lt['forum_name']) . '</a><br />
 	                        <a href="' . html::gen_url('viewtopic.php', array('post_id' => $_lt['topic_last_post_id']), false, '#p_' . $_lt['topic_last_post_id']) . '"><img src="' . $mark_read . '" alt="View latest post" title="View latest post" /></a>
 	                        <br />
-	                        <span style="font-size: 9px;">by ' . $_lt['username'] . ' ' . date(forum_config::$date_format, $_lt['post_time']) . '</span><br /><br />';
+	                        <span class="port_lastp_user_title">by ' . $_lt['username'] . ' ' . date(forum_config::$date_format, $_lt['post_time']) . '</span><br /><br />';
                     }
 
                     $element_html .= $this->display_block($content, 'Latest Posts');
