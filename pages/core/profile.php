@@ -110,7 +110,7 @@ class profile_page extends page {
         $parameters = array(':id' => array('value' => $this->user_id, 'type' => PDO::PARAM_INT));
         $fields = array();
         foreach ($this->profile AS $key => $value) {
-            if ($this->profile_settings[$key]['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $this->profile_settings[$key]['self'] == 'auth' && $this->profile_settings[$key][$this->profile_settings[$key]['self']] <= page::$user->get_level())) {
+            if ($this->profile_settings[$key]['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $this->profile_settings[$key]['self_auth'] <= page::$user->get_level())) {
                 if (
                         $key != 'user_level'
                         ||
@@ -162,13 +162,13 @@ class profile_page extends page {
                             (
                             $this->user_id == page::$user->get_user_id()
                             &&
-                            $value['self'] == 'auth'
+                            $value['self_auth'] <= page::$user->get_level()
 
                             )
                             )
                     ) {
                         $page->add_text('profile', $this->display_profile_edit($key));
-                    } else if ($value['view'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $value['self'] == 'view' && $value[$value['self']] <= page::$user->get_level())) {
+                    } else if ($value['view'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $value['self_view'] <= page::$user->get_level())) {
                         $page->add_text('profile', $this->display_profile_view($key));
                     }
                 }
