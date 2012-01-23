@@ -132,28 +132,28 @@ class password_page extends page {
                     <fieldset>
                         <legend style="font-weight:bold;">Change password</legend><br />
 
-                    	<div style="float:left;">
+                    	<div style="float:left;width:20%">
+                            <div style="height:25px;">
 	                        <label>Old password:</label>
+                            </div>
+                            <div style="height:25px;">
+                                <label>New password:</label>
+                            </div>
+                            <div style="height:25px;">
+                                <label">Confirm new password:</label>
+                            </div>
                         </div>
-						<div style="float:left;position:absolute;padding-left: 175px;">
-	                        <input type="password" size="25" name="old_password" maxlength="25" value="" />
-	                    </div>
-	                    <div style="height:15px;clear:both;"></div>
-	                    
-                        <div style="float:left;">
-	                        <label>New password:</label>
+                        <div style="float:right;width:75%;text-align:left;">
+                            <div style="height:25px;">
+	                        <input style="height:15px;" type="password" size="25" name="old_password" maxlength="25" value="" />
+                            </div>
+                            <div style="height:25px;">
+                                <input style="height:15px;" type="password" size="25" name="new_password" maxlength="25" value="" />
+                            </div>
+                            <div style="height:25px;">
+                                <input style="height:15px;" type="password" size="25" name="new2_password" maxlength="25" value="" />
+                            </div>
                         </div>
-						<div style="float:left;position:absolute;padding-left: 175px;">
-	                        <input type="password" size="25" name="new_password" maxlength="25" value="" />
-	                    </div>
-						<div style="height:15px;clear:both;"></div>
-	                    	                    
-                        <div style="float:left;">
-							<label>Confirm new password:</label>
-						</div>
- 						<div style="float:left;position:absolute;padding-left: 175px;">
-	                        <input type="password" size="25" name="new2_password" maxlength="25" value="" />
-	                    </div>
                         <div style="height:15px;clear:both;"></div>
                         <input type="hidden" class="text" name="email" value="' . html::clean_text($this->redirect_url) . '" />
                         <input type="submit" value="Update" />
