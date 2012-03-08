@@ -121,6 +121,7 @@ class html {
     }
 
     public static function clean_for_static_url($text) {
+        $return = '';
         if (strlen($text) > 0) {
             $text = str_replace(' ', '-', $text);
             $text = trim($text, '-');
