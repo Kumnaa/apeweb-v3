@@ -32,10 +32,10 @@ class template {
     public function get_template($template_name) {
         if (!isset($this->templates[$template_name])) {
             try {
-                if (file_exists('html/templates/' . $template_name . '.html')) {
-                    $this->templates[$template_name] = file_get_contents('html/templates/' . $template_name . '.html');
-                } else if (file_exists('templates/' . $template_name . '.html')) {
-                    $this->templates[$template_name] = file_get_contents('templates/' . $template_name . '.html');
+                if (file_exists(RELATIVE_PATH . 'html/templates/' . $template_name . '.html')) {
+                    $this->templates[$template_name] = file_get_contents(RELATIVE_PATH . 'html/templates/' . $template_name . '.html');
+                } else if (file_exists(RELATIVE_PATH . 'templates/' . $template_name . '.html')) {
+                    $this->templates[$template_name] = file_get_contents(RELATIVE_PATH . 'templates/' . $template_name . '.html');
                 } else {
                     throw new Exception("Template " . $template_name . " not found.");
                 }

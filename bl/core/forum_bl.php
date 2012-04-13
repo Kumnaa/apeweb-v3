@@ -498,7 +498,8 @@ class forum_bl extends businesslogic_base {
                         topic_title,
                         post_text,
                         poster_id,
-                        posts.topic_id
+                        posts.topic_id,
+                        topics.topic_first_post_id
                     FROM
                         posts
                     LEFT JOIN
@@ -552,6 +553,126 @@ class forum_bl extends businesslogic_base {
         );
     }
 
+    public function move_topic($topic_id, $old_forum_id, $new_forum_id) {
+        // get post count
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        COUNT(post_id) AS posts
+                    FROM
+                        posts
+                    WHERE
+                        posts.topic_id = :topic_id
+                ";
+                break;
+        }
+        
+        $result = $this->db->sql_select(
+            $query, array(
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
+            )
+        );
+
+        $posts = $result[0]['posts'];
+        
+        // update topic
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    UPDATE 
+                        topics 
+                    SET
+                        forum_id = :forum_id
+                    WHERE
+                        topic_id = :topic_id
+                ";
+                break;
+        }
+        $this->db->sql_query(
+            $query, array(
+                ':forum_id' => array('value' => $new_forum_id, 'type' => PDO::PARAM_INT),
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
+            )
+        );
+        
+        // update posts
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    UPDATE 
+                        posts 
+                    SET
+                        forum_id = :forum_id
+                    WHERE
+                        topic_id = :topic_id
+                ";
+                break;
+        }
+        $this->db->sql_query(
+            $query, array(
+                ':forum_id' => array('value' => $new_forum_id, 'type' => PDO::PARAM_INT),
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
+            )
+        );
+
+        $this->update_last_post_id_for_forum($new_forum_id, 1, $posts);
+        $this->update_last_post_id_for_forum($old_forum_id, -1, -$posts);
+    }
+    
+    public function update_last_post_id_for_forum($forum_id, $topics_change = 0, $posts_change = 0) {
+        // get current last post id
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        posts.post_id
+                    FROM
+                        topics
+                    LEFT JOIN
+                        posts
+                    ON
+                        posts.post_id = topics.topic_last_post_id
+                    WHERE
+                        topics.forum_id = :forum_id
+                    ORDER BY
+                        posts.post_time DESC
+                    LIMIT 1
+                ";
+                break;
+        }
+        $post = $this->db->sql_select(
+                $query, array(
+                    ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
+                )
+        );
+        
+        if (is_array($post) && count($post) > 0) {
+            switch (config::db_engine()) {
+                default:
+                    $query = "
+                        UPDATE 
+                            forums
+                        SET
+                            forum_last_post_id = :post_id,
+                            forum_topics = forum_topics + :topics,
+                            forum_posts = forum_posts + :posts
+                        WHERE
+                            forum_id = :forum_id
+                    ";
+                    break;
+            }
+            $this->db->sql_query(
+                $query, array(
+                    ':post_id' => array('value' => $post[0]['post_id'], 'type' => PDO::PARAM_INT),
+                    ':topics' => array('value' => $topics_change, 'type' => PDO::PARAM_INT),
+                    ':posts' => array('value' => $posts_change, 'type' => PDO::PARAM_INT),
+                    ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
+                )
+            );
+        }
+    }
+    
     public function get_topic_id_from_post_id($post_id) {
         switch (config::db_engine()) {
             default:

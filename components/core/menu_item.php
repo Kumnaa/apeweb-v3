@@ -70,7 +70,7 @@ class menu_item {
             $html .= '<a' . $link_id . ' href="' . $this->link . '">' . $this->text . '</a>
                 ';
         } else {
-            $html .= $this->text;
+            $html .= '<a>'. $this->text .'</a>';
         }
         if (count($this->children) > 0) {
             $id = '';

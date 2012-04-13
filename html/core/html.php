@@ -27,6 +27,8 @@
 
 class html {
 
+    public static $site_url = '';
+    
     public static function build_registration_url($parameters = array()) {
         return str_replace('&amp;', '&', html::gen_url('register.php', $parameters));
     }
@@ -251,7 +253,7 @@ class html {
             $_args['xhtml'] = $_GET['xhtml'];
         }
 
-        $url = config::site_url() . $_file;
+        $url = html::$site_url . $_file;
         if ($encode == true) {
             $and = '&amp;';
         } else {

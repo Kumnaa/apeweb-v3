@@ -26,11 +26,11 @@
  */
 
 // for unit testing
-if (file_exists('config/_config.php')) {
-    require('config/_config.php');
-    require('config/messages.php');
-    require('config/userlevels.php');
-    require('config/bbcode.php');
+if (file_exists(RELATIVE_PATH . 'config/_config.php')) {
+    require(RELATIVE_PATH . 'config/_config.php');
+    require(RELATIVE_PATH . 'config/messages.php');
+    require(RELATIVE_PATH . 'config/userlevels.php');
+    require(RELATIVE_PATH . 'config/bbcode.php');
 } else {
     require('config/core/_config.php');
     require('config/core/messages.php');
@@ -54,8 +54,8 @@ require('components/core/businesslogic_base.php');
 require('components/core/component_types.php');
 
 // for unit testing
-if (file_exists('components/user.php')) {
-    require('components/user.php');
+if (file_exists(RELATIVE_PATH . 'components/user.php')) {
+    require(RELATIVE_PATH . 'components/user.php');
 } else {
     require('components/core/user.php');
 }
@@ -64,6 +64,8 @@ if (file_exists('components/user.php')) {
 require('bl/core/user_bl.php');
 require('html/core/html.php');
 require('html/core/login.php');
+
+html::$site_url = config::site_url() . RELATIVE_URL;
 
 set_error_handler(array('apetech', 'error_handler'));
 
@@ -89,7 +91,7 @@ abstract class _page {
     protected $remember;
     protected $recaptcha_challenge_field;
     protected $recaptcha_response_field;
-    
+
     public function __construct($template = false) {
         if ($template !== false) {
             $this->template = $template;
@@ -129,81 +131,81 @@ abstract class _page {
             case component_types::$recaptcha:
                 if (class_exists('recaptcha') == false) {
                     require('components/core/recaptcha.php');
-                    require('config/recaptcha.php');
+                    require(RELATIVE_PATH . 'config/recaptcha.php');
                 }
                 break;
-                
+
             case component_types::$forums:
                 if (class_exists('forum_bl') == false) {
                     require('bl/core/forum_bl.php');
-                    require('config/forum_config.php');
-                    require('config/forum_images.php');
-                    require('config/forumlevels.php');
+                    require(RELATIVE_PATH . 'config/forum_config.php');
+                    require(RELATIVE_PATH . 'config/forum_images.php');
+                    require(RELATIVE_PATH . 'config/forumlevels.php');
                 }
                 break;
-                
+
             case component_types::$images:
                 if (class_exists('images_bl') == false) {
                     require('bl/core/images_bl.php');
                     require('components/core/image_manager.php');
                 }
                 break;
-                
+
             case component_types::$portal:
-                if (class_exists('portal_bl') == false) { 
+                if (class_exists('portal_bl') == false) {
                     require('bl/core/portal_bl.php');
                     require('components/core/portal/portal_columns.php');
-                    require('config/portal_images.php');
+                    require(RELATIVE_PATH . 'config/portal_images.php');
                 }
                 break;
-                
+
             case component_types::$shoutbox:
                 if (class_exists('shoutbox_bl') == false) {
                     require('bl/core/shoutbox_bl.php');
-                    require('html/core/shoutbox.php');                    
+                    require('html/core/shoutbox.php');
                 }
                 break;
-                
+
             case component_types::$calendar:
                 if (class_exists('calendar_bl') == false) {
                     require('bl/core/calendar_bl.php');
-                    require('html/core/calendar.php');       
+                    require('html/core/calendar.php');
                 }
                 break;
-                
+
             case component_types::$apeweb_menu:
                 if (class_exists('menu_item') == false) {
                     require('components/core/menu_item.php');
                 }
                 break;
-                
+
             case component_types::$breadcrumbs:
                 if (class_exists('breadcrumb') == false) {
                     require('html/core/breadcrumb.php');
                 }
                 break;
-            
+
             case component_types::$tables:
                 if (class_exists('table') == false) {
                     require('html/core/table.php');
                 }
                 break;
-                
+
             case component_types::$paging:
                 if (class_exists('paging') == false) {
                     require('html/core/paging.php');
                 }
                 break;
-                
+
             case component_types::$streamline:
                 if (class_exists('streamline') == false) {
                     require('apis/core/streamline_api.php');
-                    require('config/streamline.php');
+                    require(RELATIVE_PATH . 'config/streamline.php');
                 }
                 break;
         }
     }
-    
+
     public function redirect($url) {
         header('Location: ' . $url);
     }
@@ -251,7 +253,7 @@ abstract class _page {
         foreach ($this->replace_text AS $k => $v) {
             if (strtoupper($k) == 'JAVASCRIPT') {
                 $v = '//<!--
-                    '.$v .'
+                    ' . $v . '
                 //-->';
             }
             $html = str_replace('<!--' . strtoupper($k) . '-->', $v, $html);
@@ -298,7 +300,7 @@ abstract class _page {
     }
 
     protected function pre_action() {
-        $this->add_text('copyright', 'Powered by <a href="http://www.apegaming.net/" target="_blank">apetechv3</a> | &#169;2008-2011 <a href="http://www.amplifycreative.net">Amplify</a>');
+        $this->add_text('copyright', 'Powered by <a href="http://www.amplifycreative.net/" target="_blank">apetechv3</a> | &#169;2008-2012 <a href="http://www.amplifycreative.net">Amplify</a>');
         if ($this->perform_login == true && strlen($this->login) > 0) {
             if ($this->login == 'true') {
                 try {

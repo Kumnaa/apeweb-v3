@@ -26,8 +26,8 @@
  */
 
 // for unit testing
-if (file_exists('components/page.php')) {
-    require_once('components/page.php');
+if (file_exists(RELATIVE_PATH . 'components/page.php')) {
+    require_once(RELATIVE_PATH . 'components/page.php');
 } else {
     require_once('components/core/page.php');
 }
@@ -74,6 +74,17 @@ class post_page extends page {
         try {
             $this->breadcrumb->add_crumb('Portal', html::gen_url('index.php'));
             switch ($this->action) {
+                case "delete":
+                    if ($this->post_id > 0) {
+                        $this->delete_post();
+                    } else if ($this->group_post_id) {
+                        $this->delete_group_post();
+                    } else if ($this->banter_post_id) {
+                        $this->delete_banter_post();
+                    } else {
+                        throw new Exception("No valid post to delete.");
+                    }
+                    break;
                 case "edit":
                     if ($this->post_id > 0) {
                         $this->edit_post();
@@ -82,7 +93,7 @@ class post_page extends page {
                     } else if ($this->banter_post_id) {
                         $this->edit_banter_post();
                     } else {
-                        throw new Exception("No valid post.");
+                        throw new Exception("No valid post to edit.");
                     }
                     break;
                 default:
@@ -104,23 +115,48 @@ class post_page extends page {
         }
     }
 
-    private function edit_post() {
-       $details = $this->forum_bl->get_post_details($this->post_id);
+    private function get_post_security($details) {
+        $security = new security_type();
+
+        if ((page::$user->get_level() >= userlevels::$moderator || page::$user->get_user_id() == $details[0]['poster_id']) && page::$user->get_level() >= $details[0]['forum_level']) {
+            $security->AllowEdit(true);
+        }
+
+        if (page::$user->get_level() >= userlevels::$moderator && page::$user->get_level() >= $details[0]['forum_level']) {
+            $security->AllowDelete(true);
+        }
+
+        if (page::$user->get_level() >= $details[0]['forum_post_level']) {
+            $security->AllowAdd(true);
+        }
+
+        return $security;
+    }
+
+    private function delete_post() {
+        $details = $this->forum_bl->get_post_details($this->post_id);
         if (count($details) > 0) {
-            $security = new security_type();
+            $security = $this->get_post_security($details);
 
-            if ((page::$user->get_level() >= userlevels::$moderator || page::$user->get_user_id() == $details[0]['poster_id']) && page::$user->get_level() >= $details[0]['forum_level']) {
-                $security->AllowEdit(true);
+            if ($security->AllowDelete() == true) {
+                if ($details[0]['topic_first_post_id'] == $this->post_id) {
+                    $this->forum_bl->move_topic($details[0]['topic_id'], $details[0]['forum_id'], 2);
+                } else {
+                    
+                }
+            } else {
+                throw new Exception("Access denied.");
             }
+        } else {
+            throw new Exception("Post does not exist.");
+        }
+    }
 
-            if (page::$user->get_level() >= userlevels::$moderator && page::$user->get_level() >= $details[0]['forum_level']) {
-                $security->AllowDelete(true);
-            }
+    private function edit_post() {
+        $details = $this->forum_bl->get_post_details($this->post_id);
+        if (count($details) > 0) {
+            $security = $this->get_post_security($details);
 
-            if (page::$user->get_level() >= $details[0]['forum_post_level']) {
-                $security->AllowAdd(true);
-            }
-            
             if ($security->AllowEdit() == true) {
                 $this->forum_id = $details[0]['forum_id'];
                 $this->topic_id = $details[0]['topic_id'];
@@ -143,7 +179,7 @@ class post_page extends page {
             }
         } else {
             throw new Exception("Post does not exist.");
-        } 
+        }
     }
 
     private function new_post() {
@@ -235,7 +271,7 @@ class post_page extends page {
         $this->add_text('main', $page->display());
         $this->notice("Post added.");
     }
-    
+
     private function update_post() {
         $this->forum_bl->update_post($this->post_id, $this->post, time(), page::$user->get_user_id());
         $page = new page($this->template);

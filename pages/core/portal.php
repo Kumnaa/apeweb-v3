@@ -26,8 +26,8 @@
  */
 
 // for unit testing
-if (file_exists('components/page.php')) {
-    require_once('components/page.php');
+if (file_exists(RELATIVE_PATH . 'components/page.php')) {
+    require_once(RELATIVE_PATH . 'components/page.php');
 } else {
     require_once('components/core/page.php');
 }
@@ -37,6 +37,7 @@ if (file_exists('components/page.php')) {
 class portal_page extends page {
 
     private $portal_bl;
+    private $forum_bl;
     private $portal_template;
 
     public function __construct() {
@@ -46,6 +47,7 @@ class portal_page extends page {
         $this->enable_component(component_types::$calendar);
         $this->add_text('title', 'Portal');
         $this->portal_bl = new portal_bl();
+        $this->forum_bl = new forum_bl();
         $this->set_template('default');
         $this->portal_template = new page($this->template);
         $this->portal_template->set_template('portal');
@@ -59,7 +61,10 @@ class portal_page extends page {
         try {
             $portal_elements = $this->portal_bl->get_portal();
             foreach ($portal_elements AS $element) {
-                $this->process_element($element);
+                if ($element['view_level'] <= page::$user->get_level())
+                {
+                    $this->process_element($element);
+                }
             }
             $this->add_text('main', $this->portal_template->display());
         } catch (Exception $ex) {
@@ -91,6 +96,12 @@ class portal_page extends page {
     protected function process_element_html($element) {
         $element_html = '';
         switch ($element['type']) {
+            case "post":
+                $post_details = $this->forum_bl->get_post_details($element['message']);
+                if (is_array($post_details) && count($post_details) > 0) {
+                    $element_html .= $this->display_block(html::clean_text($post_details[0]['post_text'], true, true, true));
+                }
+            break;
             case "text":
                 if (strlen($element['message']) > 0) {
                     if ($element['tag'] == 'main') {
@@ -102,9 +113,7 @@ class portal_page extends page {
                         
                         $element_html .= $this->display_block($t_img . html::clean_text($element['message'], true, true), html::clean_text($element['title']));
                     } else {
-                        if (page::$user->get_level() >= $element['view_level']) {
-                            $element_html .= $this->display_block(html::clean_text($element['message'], true, true), html::clean_text($element['title']));
-                        }
+                        $element_html .= $this->display_block(html::clean_text($element['message'], true, true), html::clean_text($element['title']));
                     }
                 }
                 break;

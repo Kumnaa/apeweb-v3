@@ -26,8 +26,8 @@
  */
 
 // for unit testing
-if (file_exists('components/page.php')) {
-    require('components/page.php');
+if (file_exists(RELATIVE_PATH . 'components/page.php')) {
+    require(RELATIVE_PATH . 'components/page.php');
 } else {
     require('components/core/page.php');
 }
