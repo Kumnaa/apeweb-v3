@@ -40,8 +40,11 @@ class smtp_class {
         $this->headers .= "Date: " . date('D, j M Y H:i:s O') . $this->eol;
         $this->headers .= "Subject: " . $this->subject . $this->eol;
         $this->headers .= "From: " . $this->from . $this->eol;
-        $this->headers .= "To: " . $this->to . $this->eol;
-        $this->headers .= "User-Agent: Apeweb mail" . $this->eol;
+        if (config::smtp_server() != '') {
+            $this->headers .= "To: " . $this->to . $this->eol;
+        }
+        
+        $this->headers .= "User-Agent: Apetech mail" . $this->eol;
         $this->headers .= "MIME-Version: 1.0" . $this->eol;
         $this->headers .= "Content-type: text/html;charset=iso-8859-1" . $this->eol;
         $this->headers .= "Content-Transfer-Encoding: 8bit" . $this->eol;
@@ -55,7 +58,7 @@ class smtp_class {
         $output = '';
         $return = FALSE;
         $this->format_email();
-        if (defined(config::smtp_server())) {
+        if (config::smtp_server() != '') {
             $socket = new socket_class();
             if ($socket->create(gethostbyname(config::smtp_server()), config::smtp_port()) == false) {
                 throw new Exception('Connection could not be made');
@@ -182,10 +185,11 @@ class smtp_class {
                 }
             }
         } else {
-            if (mail($this->to, $this->subject, $this->body, $this->headers, '-f ' . $this->from) == false) {
+            if (mail($this->to, $this->subject, $this->body, $this->headers, '-f' . $this->from) == false) {
                 throw new Exception("Error sending: " . $this->body . " to " . $this->to . " with " . $this->subject . " as the subject.");
             }
         }
+
         return ($return);
     }
 

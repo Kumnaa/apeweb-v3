@@ -59,14 +59,28 @@ class apetech {
             }
     }
     
+    public static function array_to_upper($array){
+       if (is_array($array)) {
+           foreach ($array as $key=>$value) {
+               $array[$key] = strtoupper($value);
+           }
+       } else {
+           throw new InvalidArgumentException("Expecting an array");
+       }
+       
+       return $array;
+    }
+    
     public static function form_to_email($recipient, $subject, $exceptions = array()) {
+        $exceptions = apetech::array_to_upper($exceptions);
         if (isset($_POST) && is_array($_POST) && is_array($exceptions)) {
             $string = '';
             foreach ($_POST AS $key => $value) {
-                if (array_search($key, $exceptions) == false) {
+                if (array_search(strtoupper($key), $exceptions) === false) {
                     $string .= '<b>' . html::clean_text(ucwords(str_replace(array("_", "-"), " ", $key))) . '</b>:<br />' . html::clean_text($value) . '<br /><br />';
                 }
             }
+            
             apetech::send_mail($recipient, $subject, $string, config::smtp_sender(), config::smtp_sender());
         } else {
             throw new Exception("Invalid arguments.");
