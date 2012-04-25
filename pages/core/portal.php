@@ -60,10 +60,11 @@ class portal_page extends page {
     protected function action() {
         try {
             $portal_elements = $this->portal_bl->get_portal();
-            foreach ($portal_elements AS $element) {
-                if ($element['view_level'] <= page::$user->get_level())
-                {
-                    $this->process_element($element);
+            if (is_array($portal_elements)) {
+                foreach ($portal_elements AS $element) {
+                    if ($element['view_level'] <= page::$user->get_level()) {
+                        $this->process_element($element);
+                    }
                 }
             }
             $this->add_text('main', $this->portal_template->display());
@@ -101,7 +102,7 @@ class portal_page extends page {
                 if (is_array($post_details) && count($post_details) > 0) {
                     $element_html .= $this->display_block(html::clean_text($post_details[0]['post_text'], true, true, true));
                 }
-            break;
+                break;
             case "text":
                 if (strlen($element['message']) > 0) {
                     if ($element['tag'] == 'main') {
@@ -110,7 +111,7 @@ class portal_page extends page {
                         } else {
                             $t_img = '';
                         }
-                        
+
                         $element_html .= $this->display_block($t_img . html::clean_text($element['message'], true, true), html::clean_text($element['title']));
                     } else {
                         $element_html .= $this->display_block(html::clean_text($element['message'], true, true), html::clean_text($element['title']));
@@ -177,7 +178,7 @@ class portal_page extends page {
 
                 $element_html .= $this->display_block($shoutbox->display_shoutbox(), 'Shoutbox');
                 break;
-                
+
             default:
                 $element_html .= $this->process_additional_element_html($element);
                 break;

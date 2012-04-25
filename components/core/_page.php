@@ -62,6 +62,7 @@ if (file_exists(RELATIVE_PATH . 'components/user.php')) {
 // end for unit testing
 
 require('bl/core/user_bl.php');
+require('bl/core/setup_bl.php');
 require('html/core/html.php');
 require('html/core/login.php');
 
