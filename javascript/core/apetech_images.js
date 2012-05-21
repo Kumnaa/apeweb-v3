@@ -76,6 +76,12 @@
             }
         }
     }
+    
+    $.fn.apetech_preload = function( files ) {
+        $(files).each(function () {
+            $('<img />').attr('src',this).appendTo('body').hide();
+        });
+    }
 
     $.fn.apetech_images = function( method ) {
         if ( methods[method] ) {
@@ -83,7 +89,7 @@
         } else if ( typeof method === 'object' || ! method ) {
             return methods.init.apply( this, arguments );
         } else {
-            $.error( 'Method ' +  method + ' does not exist on jQuery.apetech_shoutbox' );
+            $.error( 'Method ' +  method + ' does not exist on jQuery.apetech_images' );
         }
     };
 })( jQuery );
