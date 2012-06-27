@@ -37,16 +37,16 @@ abstract class _userlevels {
     public static $senior_administrator;
     public static $technical_administrator;
     public static $noaccess;
-    
+
     protected static $access_config = array(
         'guest' => 0,
         'registered' => 1,
-        'friend' => 20,
-        'member' => 30,
-        'officer' => 40,
-        'moderator' => 50,
-        'administrator' => 60,
-        'senior_administrator' => 70,
+        'friend' => 10,
+        'member' => 20,
+        'officer' => 30,
+        'moderator' => 40,
+        'administrator' => 50,
+        'senior_administrator' => 60,
         'technical_administrator' => 80,
         'noaccess' => 1000
     );
@@ -71,10 +71,26 @@ abstract class _userlevels {
         }
     }
     
-    public static function access_list()
+    public static function userlevel_colours()
     {
-        return array(
-            userlevels::$guest => 'Guest',
+        $array = array(
+            userlevels::$guest => '#808080',
+            userlevels::$registered => '#000000',
+            userlevels::$friend => '#0000FF',
+            userlevels::$member => '#F62217',
+            userlevels::$officer => '#DAA520',
+            userlevels::$moderator => '#00A000',
+            userlevels::$administrator => '#F88017',
+            userlevels::$senior_administrator => '#F88017',
+            userlevels::$technical_administrator => '#F88017'
+        );
+
+        return $array;
+    }
+    
+    public static function access_list($hide_guest = false)
+    {
+        $array = array(
             userlevels::$registered => 'Registered',
             userlevels::$friend => 'Friend',
             userlevels::$member => 'Member',
@@ -84,6 +100,18 @@ abstract class _userlevels {
             userlevels::$senior_administrator => 'Senior Administrator',
             userlevels::$technical_administrator => 'Technical Administrator'
         );
+        
+        $new_array = array();
+      
+        if ($hide_guest == false) {
+            $new_array[userlevels::$guest] = 'Guest';
+        }
+        
+        foreach ($array AS $key=>$value) {
+            $new_array[$key] = $value;
+        }
+        
+        return $new_array;
     }
 }
 ?>

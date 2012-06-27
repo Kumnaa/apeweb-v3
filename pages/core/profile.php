@@ -59,7 +59,7 @@ class profile_page extends page {
             '1' => 'Yes'
         );
 
-        $this->access_list = userlevels::access_list();
+        $this->access_list = userlevels::access_list(true);
 
         $this->is_submittable = false;
 
@@ -185,7 +185,7 @@ class profile_page extends page {
     protected function display_profile_edit($key) {
         $page = new page($this->template);
         $page->set_template('profile_row');
-        $page->add_text('profile_title', html::clean_text($this->profile_settings[$key]['hrtext']));
+        $page->add_text('profile_title', html::clean_text($this->profile_settings[$key]['hrtext']) .':');
         switch ($this->profile_settings[$key]['type']) {
             case "text":
                 $page->add_text('profile_text', '<input class="profile_input" type="text" name="profile[' . html::clean_text($key) . ']" value="' . html::clean_input_text($this->full_profile[$key]) . '" />');
@@ -258,7 +258,7 @@ class profile_page extends page {
     protected function display_profile_view($key) {
         $page = new page($this->template);
         $page->set_template('profile_row');
-        $page->add_text('profile_title', html::clean_text($this->profile_settings[$key]['hrtext']));
+        $page->add_text('profile_title', html::clean_text($this->profile_settings[$key]['hrtext']) .':');
         switch ($this->profile_settings[$key]['type']) {
             case "text":
                 switch ($key) {

@@ -31,7 +31,7 @@ class shoutbox {
     private $anonymous = false;
     private $allow_post = false;
     private $shout_text = 'Shout!';
-    
+
     public function set_annonymous($value) {
         $this->anonymous = $value;
     }
@@ -39,24 +39,24 @@ class shoutbox {
     public function set_allow_post($value) {
         $this->allow_post = $value;
     }
-    
+
     public function set_shout_text($value) {
         $this->shout_text = $value;
     }
-    
+
     public function display_shoutbox() {
         $shout_bl = new shoutbox_bl();
-        $output = '<div id="shoutboxcontainer">'. $this->process_shouts($shout_bl->get_shouts($this->shout_count));
+        $output = '<div id="shoutboxcontainer">' . $this->process_shouts($shout_bl->get_shouts($this->shout_count));
         if ($this->allow_post == true) {
             $output .= '<br />
                 <form id="shoutform" method="post" action="">
                     <div> 
                         <input id="shout_box_data" size="50" type="text" name="message"> 
-                        <input type="submit" value="'. html::clean_text($this->shout_text) .'">
+                        <input type="submit" value="' . html::clean_text($this->shout_text) . '">
                     </div>
                 </form>';
         }
-        
+
         $output .= '<script type="text/javascript">
                 //<!--
                     $("#shoutboxcontainer").apetech_shoutbox();
@@ -64,7 +64,7 @@ class shoutbox {
                 //-->
                 </script>';
 
-        return $output .'</div>';
+        return $output . '</div>';
     }
 
     public function display_plain_shoutbox() {
@@ -77,7 +77,7 @@ class shoutbox {
             </script>';
         return $output;
     }
-    
+
     protected function process_inner_shouts($shouts) {
         $output = '';
         if (is_array($shouts) && count($shouts) > 0) {
@@ -90,21 +90,21 @@ class shoutbox {
                 if ($this->anonymous == true) {
                     $output .= '&#8855; ';
                 } else {
-                    $output .= '<img src="' . forum_images::clock_icon(page::$user->get_style()) . '" alt="clock" title="'. date(forum_config::$date_format, $shout['post_time']) .'" />&#160;' . html::clean_text($shout['username']) . ' - ';
+                    $output .= '<img src="' . forum_images::clock_icon(page::$user->get_style()) . '" alt="clock" title="' . date(forum_config::$date_format, $shout['post_time']) . '" />&#160;' . html::display_username($shout['username'], $shout['poster_id'], $shout['user_level'], $shout['colour']) . ' - ';
                 }
                 $output .= html::clean_text($shout['post_text']);
                 $output .= '</div>';
             }
         }
-        
+
         return $output;
     }
-    
+
     protected function process_shouts($shouts) {
         $output = '<div id="shoutbox">';
         $output .= $this->process_inner_shouts($shouts);
         $output .= '</div>';
-        
+
         return $output;
     }
 

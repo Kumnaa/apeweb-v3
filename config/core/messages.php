@@ -30,7 +30,7 @@ class messages {
     public static function registration_email() {
         return 'Welcome to <!--DOMAIN-->, <!--USERNAME--><br /><br />
 	            Your account is currently inactive. You cannot use it until you visit the following link:<br /><br />
-	            <!--ACTIVATION_URL--><br /><br />
+	            <!--ACTIVATION_URL--> <br /><br />
 	            Thank you for registering';
     }
 

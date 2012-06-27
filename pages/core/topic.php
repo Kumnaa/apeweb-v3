@@ -108,6 +108,16 @@ class topic_page extends page {
             $this->forum_post_level = $topic_details[0]['forum_post_level'];
             $this->topic_title = $topic_details[0]['topic_title'];
             $this->breadcrumb->add_crumb(html::clean_text($this->topic_title));
+            if ($this->post_id > 0) {
+                if (page::$user->get_level() >= userlevels::$administrator) {
+                    $post_count = $this->forum_bl->count_posts_in_topic($this->topic_id, 2);
+                } else {
+                    $post_count = $this->forum_bl->count_posts_in_topic($this->topic_id, 1);
+                }
+
+                $this->page_id = ceil($post_count/forum_config::$page_limit);
+            }
+            
             if ($this->forum_view_level <= page::$user->get_level()) {
                 $this->display_topic();
             }
@@ -163,8 +173,9 @@ class topic_page extends page {
             $last_post_time = $posts[count($posts) - 1]['post_time'];
             $this->mark_last_post_read($last_post_id, $last_post_time);
             $this->forum_bl->update_topic_views($this->topic_id);
+            $read_topics = $this->forum_bl->get_read_topics(page::$user->get_user_id(), page::$user->get_last_visit());
             foreach ($posts AS $post) {
-                $this->add_text('main', $this->display_post($post) . '<br />');
+                $this->add_text('main', $this->display_post($post, $read_topics) . '<br />');
             }
         } else {
             throw new Exception("No posts on this page.");
@@ -182,9 +193,8 @@ class topic_page extends page {
         }
     }
 
-    protected function display_post($post) {
+    protected function display_post($post, $read_topics) {
         $mark_read = forum_images::mini_post(page::$user->get_style());
-        $read_topics = $this->forum_bl->get_read_topics(page::$user->get_user_id(), page::$user->get_last_visit());
         if (page::$user->get_level() > userlevels::$guest && $post['post_time'] > page::$user->get_last_visit()) {
             $mark_read = forum_images::new_mini_post(page::$user->get_style());
             if (isset($read_topics[$post['topic_id']])) {
@@ -214,7 +224,7 @@ class topic_page extends page {
         // post details
         $page->add_text('post_id', html::clean_text($post['post_id']));
         $page->add_text('post_text', html::clean_text($post['post_text'], true, true));
-        $page->add_text('poster_name', html::clean_text($post['username']));
+        $page->add_text('poster_name', html::display_username($post['username'], $post['poster_id'], $post['user_level'], $post['colour']));
         $page->add_text('poster_join_date', date(forum_config::$date_format, $post['reg_date']));
         $page->add_text('post_icon', $mark_read);
         $page->add_text('post_time', date(forum_config::$date_format, $post['post_time']));

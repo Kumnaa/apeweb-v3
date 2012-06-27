@@ -120,7 +120,6 @@ class shoutbox_bl extends businesslogic_base {
                     `u`.`username`,
                     `u`.`user_level`,
                     `u`.`colour`,
-                    `rank_colour`,
                     `u`.`id`
     		FROM
                     `shoutbox` AS `p`
@@ -132,10 +131,6 @@ class shoutbox_bl extends businesslogic_base {
                     `shoutbox_text` AS `pt`
                     ON
                     `pt`.`post_id` = `p`.`post_id`
-                LEFT JOIN
-                    `ranks`
-                    ON
-                    `ranks`.`level` = `u`.`user_level`    		
     		WHERE
                     `p`.`status` =  1
     		ORDER BY 

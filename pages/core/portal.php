@@ -163,7 +163,7 @@ class portal_page extends page {
 	                        <a class="port_lastp_forum_title" href="' . html::gen_url('viewforum.php', array('forum_id' => $_lt['forum_id'])) . '">' . html::clean_text($_lt['forum_name']) . '</a><br />
 	                        <a href="' . html::gen_url('viewtopic.php', array('post_id' => $_lt['topic_last_post_id']), false, '#p_' . $_lt['topic_last_post_id']) . '"><img src="' . $mark_read . '" alt="View latest post" title="View latest post" /></a>
 	                        <br />
-	                        <span class="port_lastp_user_title">by ' . $_lt['username'] . ' ' . date(forum_config::$date_format, $_lt['post_time']) . '</span><br /><br />';
+	                        <span class="port_lastp_user_title">by ' . html::display_username($_lt['username'], $_lt['poster_id'], $_lt['user_level'], $_lt['colour']) . ' ' . date(forum_config::$date_format, $_lt['post_time']) . '</span><br /><br />';
                     }
 
                     $element_html .= $this->display_block($content, 'Latest Posts');

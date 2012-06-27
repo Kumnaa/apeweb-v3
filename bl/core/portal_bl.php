@@ -41,8 +41,7 @@ class portal_bl extends businesslogic_base {
     			`users`.`id`,
     			`user_level`,
     			`topics`.`forum_id`,
-    			`users`.`colour`,
-    			`ranks`.`rank_colour`
+    			`users`.`colour`
     		FROM
     			`topics`
     		LEFT JOIN
@@ -65,10 +64,6 @@ class portal_bl extends businesslogic_base {
                         `post_icons`
                         ON
                         `post_icons`.`id` = `topic_icon`
-                LEFT JOIN
-                        `ranks`
-                        ON
-                        `ranks`.`level` = `users`.`user_level`    		
     		WHERE
     			`forum_view_level` <= :user_level
     			AND

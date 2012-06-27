@@ -393,9 +393,12 @@ class user_bl extends businesslogic_base {
                         email,
                         status,
                         user_level,
-                        user_lastvisit
+                        user_lastvisit,
+                        colour
                     FROM
                         users
+                    WHERE 
+                        user_level > 0
                     ORDER BY
                         username";
                 break;

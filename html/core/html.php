@@ -28,7 +28,7 @@
 class html {
 
     public static $site_url = '';
-    
+
     public static function build_registration_url($parameters = array()) {
         return str_replace('&amp;', '&', html::gen_url('register.php', $parameters));
     }
@@ -147,7 +147,7 @@ class html {
     public static function clean_input_text($text) {
         return htmlentities($text);
     }
-   
+
     public static function parse_bbcode($post, $newline, $parse_urls) {
         foreach (bbcode::$bbcode_array AS $array) {
             if (($newline == false && $array['inline'] == true) || $newline == true) {
@@ -180,7 +180,7 @@ class html {
         if ($newline == true) {
             $post = nl2br($post);
         }
-        
+
         // tidy up
         $post = preg_replace('/<(\/*)ul>(<br \/>*)/', '<\\1ul>', $post);
         $post = preg_replace('/<\/li>(<br \/>*)/', '</li>', $post);
@@ -323,6 +323,24 @@ class html {
             $pageURL .= apetech::server_name() . $file;
         }
         return $pageURL;
+    }
+
+    public static function display_username($username, $user_id, $user_level, $overriding_colour) {
+        $url = html::gen_url('profile.php', array('user_id' => $user_id));
+        if ($overriding_colour != '') {
+            $colour = $overriding_colour;
+        } else {
+            $userlevel_colours = userlevels::userlevel_colours();
+            $colour = $userlevel_colours[$user_level];
+        }
+
+        $username = html::clean_text($username);
+
+        if ($colour != '') {
+            $username = '<a href="'. $url .'" style="color:' . $colour . '">' . $username . '</a>';
+        }
+        
+        return $username;
     }
 
 }

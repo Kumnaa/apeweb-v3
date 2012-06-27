@@ -92,7 +92,7 @@ class administrate_users_page extends page {
             foreach ($users AS $user) {
                 $table->add_data(
                         array(
-                            '<a href="'. html::gen_url('profile.php', array('user_id' => html::clean_text($user['id']))) .'">'. html::clean_text($user['username']) .'</a>',
+                            html::display_username($user['username'], $user['id'], $user['user_level'], $user['colour']),
                             html::clean_text($user['email']),
                             html::clean_text(apetech::status_to_text($user['status'])),
                             html::clean_text(userlevels::userlevel_to_text(($user['user_level']))),
@@ -129,9 +129,9 @@ class administrate_users_page extends page {
 
         $this->add_text('main', '<b>Enter details here to add a new user</b><br /><br />
             <form action="'. html::gen_url('administrate_users.php', array('action' => 'add')) .'" method="post"><div>
-                <label>Username</label> <input type="text" name="username" /> <span class="gensmall">(required)</span><br />
-                <label>Password</label> <input type="text" name="password" /> <span class="gensmall">(required)</span><br />
-                <label>Email</label> <input type="text" name="email" /> <span class="gensmall">(required)</span><br />
+                <label>Username <span class="gensmall">(required)</span></label> <input type="text" name="username" /><br />
+                <label>Password <span class="gensmall">(required)</span></label> <input type="text" name="password" /><br />
+                <label>Email <span class="gensmall">(required)</span></label> <input type="text" name="email" /><br />
                 <label>Location</label> <input type="text" name="location" /><br />
                 <label>Position</label> <input type="text" name="position" /><br />
                 <label>Phone Number</label> <input type="text" name="phone_number" /><br />

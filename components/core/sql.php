@@ -131,7 +131,8 @@ class db_connector {
 
         $execute = @$sth->execute();
 
-        $this->last_query_time = round(microtime(), 6) - $start_time;
+        $end_time = round(microtime(), 6);
+        $this->last_query_time = $end_time - $start_time;
         if ($execute == false) {
             $error = $sth->errorInfo();
             throw new Exception("Error executing sql: " . print_r($error, true));
@@ -170,7 +171,7 @@ class db_connector {
         $this->query_list[] = '<br />
             <span style="color:' . $colour . '">' . html::clean_text($statement) . '</span><br />
             ' . print_r($arguments, true) . '<br />
-            Time: ' . html::clean_text($this->last_query_time) . '<br />
+            Time: ' . html::clean_text(round($this->last_query_time, 4)) . '<br />
             Message: ' . html::clean_text($message) . '<br />
             ';
     }
