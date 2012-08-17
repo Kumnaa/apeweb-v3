@@ -58,9 +58,6 @@ class input {
             case "array":
                 break;
 
-            case "email":
-                break;
-
             case "float":
                 $return = self::check_float($return);
                 if ($return == false) {
@@ -105,6 +102,7 @@ class input {
                 }
                 break;
 
+            case "email":
             case "message":
                 $return = self::check_message($return);
                 if ($return == false) {

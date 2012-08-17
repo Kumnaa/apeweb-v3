@@ -170,10 +170,9 @@ class topic_page extends page {
 
         if (count($posts) > 0) {
             $last_post_id = $posts[count($posts) - 1]['post_id'];
-            $last_post_time = $posts[count($posts) - 1]['post_time'];
-            $this->mark_last_post_read($last_post_id, $last_post_time);
+            $this->mark_last_post_read($last_post_id);
             $this->forum_bl->update_topic_views($this->topic_id);
-            $read_topics = $this->forum_bl->get_read_topics(page::$user->get_user_id(), page::$user->get_last_visit());
+            $read_topics = page::$user->get_read_topics();
             foreach ($posts AS $post) {
                 $this->add_text('main', $this->display_post($post, $read_topics) . '<br />');
             }
@@ -182,8 +181,8 @@ class topic_page extends page {
         }
     }
 
-    protected function mark_last_post_read($post_id, $post_time) {
-        $read_topics = $this->forum_bl->get_read_topics(page::$user->get_user_id(), page::$user->get_last_visit());
+    protected function mark_last_post_read($post_id) {
+        $read_topics = page::$user->get_read_topics();
         if (array_key_exists($this->topic_id, $read_topics)) {
             if ($read_topics[$this->topic_id] < $post_id) {
                 $this->forum_bl->update_last_read_post_id(page::$user->get_user_id(), $this->topic_id, $post_id);

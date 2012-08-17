@@ -71,16 +71,21 @@ class apetech {
        return $array;
     }
     
+    public static function form_to_text($exceptions = array()) {
+        $string = '';
+        foreach ($_POST AS $key => $value) {
+            if (array_search(strtoupper($key), $exceptions) === false) {
+                $string .= '<b>' . html::clean_text(ucwords(str_replace(array("_", "-"), " ", $key))) . '</b>:<br />' . html::clean_text($value) . '<br /><br />';
+            }
+        }
+
+        return $string;
+    }
+    
     public static function form_to_email($recipient, $subject, $exceptions = array()) {
         $exceptions = apetech::array_to_upper($exceptions);
         if (isset($_POST) && is_array($_POST) && is_array($exceptions)) {
-            $string = '';
-            foreach ($_POST AS $key => $value) {
-                if (array_search(strtoupper($key), $exceptions) === false) {
-                    $string .= '<b>' . html::clean_text(ucwords(str_replace(array("_", "-"), " ", $key))) . '</b>:<br />' . html::clean_text($value) . '<br /><br />';
-                }
-            }
-            
+            $string = apetech::form_to_text($exceptions);
             apetech::send_mail($recipient, $subject, $string, config::smtp_sender(), config::smtp_sender());
         } else {
             throw new Exception("Invalid arguments.");
