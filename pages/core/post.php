@@ -73,42 +73,46 @@ class post_page extends page {
     protected function action() {
         try {
             $this->breadcrumb->add_crumb('Portal', html::gen_url('index.php'));
-            switch ($this->action) {
-                case "delete":
-                    if ($this->post_id > 0) {
-                        $this->delete_post();
-                    } else if ($this->group_post_id) {
-                        $this->delete_group_post();
-                    } else if ($this->banter_post_id) {
-                        $this->delete_banter_post();
-                    } else {
-                        throw new Exception("No valid post to delete.");
-                    }
-                    break;
-                case "edit":
-                    if ($this->post_id > 0) {
-                        $this->edit_post();
-                    } else if ($this->group_post_id) {
-                        $this->edit_group_post();
-                    } else if ($this->banter_post_id) {
-                        $this->edit_banter_post();
-                    } else {
-                        throw new Exception("No valid post to edit.");
-                    }
-                    break;
-                default:
-                    if ($this->topic_id > 0) {
-                        $this->new_post();
-                    } else if ($this->forum_id > 0) {
-                        $this->new_topic();
-                    } else if ($this->group_id > 0) {
-                        $this->new_group_post();
-                    } else if ($this->banter_id > 0) {
-                        $this->new_banter_post();
-                    } else {
-                        throw new Exception("No valid destination for this topic.");
-                    }
-                    break;
+            if (page::$user->get_level() > userlevels::$guest) {
+                switch ($this->action) {
+                    case "delete":
+                        if ($this->post_id > 0) {
+                            $this->delete_post();
+                        } else if ($this->group_post_id) {
+                            $this->delete_group_post();
+                        } else if ($this->banter_post_id) {
+                            $this->delete_banter_post();
+                        } else {
+                            throw new Exception("No valid post to delete.");
+                        }
+                        break;
+                    case "edit":
+                        if ($this->post_id > 0) {
+                            $this->edit_post();
+                        } else if ($this->group_post_id) {
+                            $this->edit_group_post();
+                        } else if ($this->banter_post_id) {
+                            $this->edit_banter_post();
+                        } else {
+                            throw new Exception("No valid post to edit.");
+                        }
+                        break;
+                    default:
+                        if ($this->topic_id > 0) {
+                            $this->new_post();
+                        } else if ($this->forum_id > 0) {
+                            $this->new_topic();
+                        } else if ($this->group_id > 0) {
+                            $this->new_group_post();
+                        } else if ($this->banter_id > 0) {
+                            $this->new_banter_post();
+                        } else {
+                            throw new Exception("No valid destination for this topic.");
+                        }
+                        break;
+                }
+            } else {
+                throw new Exception("Access denied.");
             }
         } catch (Exception $ex) {
             $this->notice($ex->getMessage());

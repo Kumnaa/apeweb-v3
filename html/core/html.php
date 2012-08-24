@@ -327,11 +327,14 @@ class html {
 
     public static function display_username($username, $user_id, $user_level, $overriding_colour) {
         $url = html::gen_url('profile.php', array('user_id' => $user_id));
+        $colour = '';
         if ($overriding_colour != '') {
             $colour = $overriding_colour;
         } else {
             $userlevel_colours = userlevels::userlevel_colours();
-            $colour = $userlevel_colours[$user_level];
+            if (array_key_exists($user_level, $userlevel_colours)) {
+                $colour = $userlevel_colours[$user_level];
+            }
         }
 
         $username = html::clean_text($username);
@@ -342,7 +345,6 @@ class html {
         
         return $username;
     }
-
 }
 
 ?>

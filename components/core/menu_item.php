@@ -56,12 +56,17 @@ class menu_item {
         $this->link_id = $id;
     }
 
-    public function generate() {
+    public function generate($use_container = true) {
         $id = '';
+        $html = '';
         if ($this->id) {
             $id = ' id="' . $this->id . '"';
         }
-        $html = '<li' . $id . '>';
+
+        if ($use_container == true) {
+            $html .= '<li' . $id . '>';
+        }
+
         if ($this->link) {
             $link_id = '';
             if ($this->link_id) {
@@ -70,23 +75,28 @@ class menu_item {
             $html .= '<a' . $link_id . ' href="' . $this->link . '">' . $this->text . '</a>
                 ';
         } else {
-            $html .= '<a>'. $this->text .'</a>';
+            $html .= '<a>' . $this->text . '</a>';
         }
         if (count($this->children) > 0) {
             $id = '';
             if ($this->children_id) {
                 $id = ' id="' . $this->children_id . '"';
             }
-            $html .= '<ul' . $id . '>
+            $html .= '<ul'. $id . '>
                 ';
             foreach ($this->children AS $child) {
                 $html .= $child->generate();
             }
+            
             $html .= '</ul>
                 ';
         }
-        $html .= '</li>
+
+        if ($use_container == true) {
+            $html .= '</li>
             ';
+        }
+
         return $html;
     }
 
