@@ -82,7 +82,7 @@ class paging {
             }
         }
 
-        return str_replace(',..,', '..', implode(',', $return));
+        return '<div class="paging">'. str_replace(',..,', '..', implode(',', $return)) .'</div>';
     }
 
     private function generate_page_entry($key, $value, $_page) {

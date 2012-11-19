@@ -124,11 +124,12 @@ class images_page extends page {
     }
 
     protected function view() {
+        $contents = '';
         $image = $this->images_bl->get_image($this->image_id);
         if (is_array($image) && count($image) > 0) {
             $current_tag = $image[0]['tag'];
             $current_description = $image[0]['description'];
-            
+
             if (page::$user->get_level() >= userlevels::$moderator) {
                 if (strlen($this->tag) > 0) {
                     $this->images_bl->update_tag($this->image_id, $this->tag);
@@ -140,61 +141,67 @@ class images_page extends page {
                     $current_description = $this->description;
                 }
             }
-            
+
             $image_name = html::clean_text($image[0]['image_name']);
             $time = date(forum_config::$date_format, $image[0]['timestamp']);
             $head_exp = explode('/', $image[0]['header']);
             $extension = array_pop($head_exp);
             $image_url = forum_config::image_warehouse_url() . $this->image_id . '.' . $extension;
-            $this->add_text('main', '<span class="head_text">' . $image_name . '</span><br/ ><span class="italic">uploaded by ' . html::clean_text($image[0]['username']) . '</span><br /><br />');
+            $contents .= '<span class="head_text">' . $image_name . '</span><br/ ><span class="italic">uploaded by ' . html::clean_text($image[0]['username']) . '</span><br /><br />';
             if (page::$user->get_level() > 0) {
-                $this->add_text('main', '<form action="'. html::gen_url('images.php', array('action' => 'view', 'image_id' => $this->image_id)) .'" method="post">
-                        <div class="div_center dotted_box sixty">
+                $contents .= '<form action="' . html::gen_url('images.php', array('action' => 'view', 'image_id' => $this->image_id)) . '" method="post">
+                        <div class="dotted_box sixty">
                             <span class="italic">Description:</span><br />
-                            <input name="description" size="60" value="'. html::clean_text($current_description) .'" /><br /><br />
+                            <input name="description" size="60" value="' . html::clean_text($current_description) . '" /><br /><br />
                             <span class="italic">Tags:</span><br />
-                            <input name="tag" size="60" value="'. html::clean_text($current_tag) .'" /><br /><br />
+                            <input name="tag" size="60" value="' . html::clean_text($current_tag) . '" /><br /><br />
                             <input type="submit" value="Update" />
                         </div>
                         </form><br />
-                        <br />');
+                        <br />';
             }
-            $this->add_text('main', '<a href="' . $image_url . '" target="_blank"><img src="' . $image_url . '" alt="user_image" class="user_image" /></a>');
+            $contents .= '<a href="' . $image_url . '" target="_blank"><img src="' . $image_url . '" alt="user_image" class="user_image" /></a>';
+            
+            $this->add_text('main', $this->display_block($contents, 'View Image'));
         } else {
             throw new Exception("Image not found.");
         }
     }
 
     protected function browse() {
+        $contents = '';
         $your_images = $this->images_bl->get_image_count(page::$user->get_user_id());
         $this->paging->total_items = $your_images;
         $this->paging->url_arguments = array('action' => 'browse');
-        $this->add_text('main', $this->paging->display());
+        $contents .= $this->paging->display();
 
         $images = $this->images_bl->get_images($this->page_id, page::$user->get_user_id());
         if (is_array($images) && count($images) > 0) {
-            $this->list_images($images);
+            $contents .= $this->list_images($images);
         } else {
             $this->notice('No images found.');
         }
 
-        $this->add_text('main', $this->paging->display());
+        $contents .= $this->paging->display();
+        $this->add_text('main', $this->display_block($contents, "Images"));
     }
 
     protected function browse_all() {
+        $contents = '';
         $your_images = $this->images_bl->get_image_count();
         $this->paging->total_items = $your_images;
         $this->paging->url_arguments = array('action' => 'browseall');
-        $this->add_text('main', $this->paging->display());
+        $contents .= $this->paging->display();
 
         $images = $this->images_bl->get_images($this->page_id);
         if (is_array($images) && count($images) > 0) {
-            $this->list_images($images);
+            $contents .= $this->list_images($images);
         } else {
             $this->notice('No images found.');
         }
 
-        $this->add_text('main', $this->paging->display());
+        $contents .= $this->paging->display();
+        $this->add_text('main', $this->display_block($contents, "Images"));
     }
 
     protected function list_images($result) {
@@ -252,7 +259,7 @@ class images_page extends page {
             $table->add_data(html::clean_text($image_name) . ' - ' . $time);
         }
 
-        $this->add_text('main', $table->v_display());
+        return $table->v_display();
     }
 
     protected function upload() {
@@ -266,16 +273,17 @@ class images_page extends page {
                 }
             }
 
-            $this->add_text('main', '<form enctype="multipart/form-data" action="' . html::gen_url('images.php', array('action' => 'upload')) . '" method="post">
+            $this->add_text('main', $this->display_block('<form enctype="multipart/form-data" action="' . html::gen_url('images.php', array('action' => 'upload')) . '" method="post">
                     <div>
                             <input type="file" name="uploaded_image[]" /> <input type="submit" value="Upload" />
                     </div>
                     </form>
-            ');
+            ', "Image Upload"));
         } else {
             throw new Exception('Access denied.');
         }
     }
+
 }
 
 ?>

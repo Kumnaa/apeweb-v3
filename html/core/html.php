@@ -85,6 +85,10 @@ class html {
 	        	</script>';
     }
 
+    public static function alert($message) {
+        return '<span class="reg_warn">'. html::clean_text($message) .'</span>';
+    }
+    
     public static function truncate($string, $length) {
         $done = false;
         while ($done == false && strlen($string) >= $length) {

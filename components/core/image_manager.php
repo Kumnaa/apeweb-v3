@@ -129,7 +129,7 @@ class image_manager {
     public function set_image_suffix($value) {
         $this->image_suffix = $value;
     }
-    
+
     public function set_overwrite($value) {
         $this->overwrite = $value;
     }

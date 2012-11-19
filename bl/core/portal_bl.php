@@ -27,6 +27,308 @@
 
 class portal_bl extends businesslogic_base {
 
+    public function delete_element($id) {
+        $current_position = $this->get_current_element_position($id);
+        $current_column = $this->get_current_element_column($id);
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    DELETE FROM
+                        `portal`
+                    WHERE
+                        `id` = :id
+                ";
+                break;
+        }
+        $this->db->sql_query(
+                $query, array(
+            ':id' => array('value' => $id, 'type' => PDO::PARAM_INT)
+                )
+        );
+
+        $this->move_elements_up($current_position, $current_column);
+    }
+
+    public function move_elements_up($position, $column) {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    UPDATE
+                        `portal`
+                    SET
+                        `order` = `order` - 1
+                    WHERE
+                        `order` > :position
+                        AND
+                        `col` = :column
+                ";
+                break;
+        }
+        $this->db->sql_query(
+                $query, array(
+            ':position' => array('value' => $position, 'type' => PDO::PARAM_INT),
+            ':column' => array('value' => $column, 'type' => PDO::PARAM_INT)
+                )
+        );
+    }
+
+    public function get_column_elements($column) {
+        $result = $this->db->sql_select('
+    		SELECT
+    			`message`, `tag`, `id`
+    		FROM
+    			`portal`
+    		WHERE
+                        `col` = :col
+    		ORDER BY 
+    			`order` ASC
+    		', array(
+            ':col' => array('value' => $column, 'type' => PDO::PARAM_INT)
+                )
+        );
+
+        if (count($result) > 0) {
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    public function update_element_position($element, $position) {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    UPDATE
+                        `portal`
+                    SET
+                        `order` = :position
+                    WHERE
+                        `id` = :id
+                ";
+                break;
+        }
+        $this->db->sql_query(
+                $query, array(
+            ':position' => array('value' => $position, 'type' => PDO::PARAM_INT),
+            ':id' => array('value' => $element, 'type' => PDO::PARAM_INT)
+                )
+        );
+    }
+
+    public function swap_element_positions($element1, $element2) {
+        $element1_position = $this->get_current_element_position($element1);
+        $element2_position = $this->get_current_element_position($element2);
+        $this->update_element_position($element1, $element2_position);
+        $this->update_element_position($element2, $element1_position);
+    }
+
+    public function get_element($id) {
+        $result = $this->db->sql_select('
+    		SELECT
+    			`message`, `tag`, `title`, `type`, `view_level`
+    		FROM
+    			`portal`
+    		WHERE
+                        `id` = :id
+    		', array(
+            ':id' => array('value' => $id, 'type' => PDO::PARAM_INT)
+                )
+        );
+
+        if (count($result) > 0) {
+            return $result[0];
+        } else {
+            return null;
+        }
+    }
+
+    public function update_element($id, $message, $title, $type, $viewlevel) {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    UPDATE
+                        `portal`
+                    SET
+                        `message` = :message,
+                        `title` = :title,
+                        `type` = :type,
+                        `view_level` = :viewlevel
+                    WHERE
+                        `id` = :id
+                ";
+                break;
+        }
+        $this->db->sql_query(
+                $query, array(
+            ':message' => array('value' => $message, 'type' => PDO::PARAM_STR),
+            ':title' => array('value' => $title, 'type' => PDO::PARAM_STR),
+            ':type' => array('value' => $type, 'type' => PDO::PARAM_STR),
+            ':viewlevel' => array('value' => $viewlevel, 'type' => PDO::PARAM_INT),
+            ':id' => array('value' => $id, 'type' => PDO::PARAM_INT)
+                )
+        );
+    }
+
+    public function add_element($tag, $column) {
+        $last_element_position = $this->get_last_element_position($column);
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    INSERT INTO
+                        `portal`
+                    (`tag`, `col`, `order`, `view_level`)
+                    VALUES
+                    (:tag, :column, :order, 0)
+                    ";
+                break;
+        }
+        $this->db->sql_query(
+                $query, array(
+            ':tag' => array('value' => $tag, 'type' => PDO::PARAM_STR),
+            ':order' => array('value' => $last_element_position + 1, 'type' => PDO::PARAM_INT),
+            ':column' => array('value' => $column, 'type' => PDO::PARAM_INT)
+                )
+        );
+    }
+
+    public function get_last_element_position($column) {
+        $result = $this->db->sql_select('
+    		SELECT
+    			`order`
+    		FROM
+    			`portal`
+    		WHERE
+                        `col` = :col
+    		ORDER BY 
+    			`order` DESC
+    		LIMIT
+    			1
+    		OFFSET
+    			0
+    		', array(
+            ':col' => array('value' => $column, 'type' => PDO::PARAM_INT)
+                )
+        );
+
+        if (count($result) > 0) {
+            return $result[0]['order'];
+        } else {
+            return 1;
+        }
+    }
+
+    public function get_previous_element($position, $column) {
+        $result = $this->db->sql_select('
+    		SELECT
+    			`id`
+    		FROM
+    			`portal`
+    		WHERE
+    			`order` < :order
+                        AND
+                        `col` = :col
+    		ORDER BY 
+    			`order` DESC
+    		LIMIT
+    			1
+    		OFFSET
+    			0
+    		', array(
+            ':order' => array('value' => $position, 'type' => PDO::PARAM_INT),
+            ':col' => array('value' => $column, 'type' => PDO::PARAM_INT)
+                )
+        );
+
+        if (count($result) > 0) {
+            return $result[0]['id'];
+        } else {
+            return null;
+        }
+    }
+
+    public function get_next_element($position, $column) {
+        $result = $this->db->sql_select('
+    		SELECT
+    			`id`
+    		FROM
+    			`portal`
+    		WHERE
+    			`order` > :order
+                        AND
+                        `col` = :col
+    		ORDER BY 
+    			`order` ASC
+    		LIMIT
+    			1
+    		OFFSET
+    			0
+    		', array(
+            ':order' => array('value' => $position, 'type' => PDO::PARAM_INT),
+            ':col' => array('value' => $column, 'type' => PDO::PARAM_INT)
+                )
+        );
+
+        if (count($result) > 0) {
+            return $result[0]['id'];
+        } else {
+            return null;
+        }
+    }
+
+    public function get_current_element_column($id) {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        `col`
+                    FROM
+                    	`portal`
+                    WHERE
+                    	`id` = :id
+                ";
+                break;
+        }
+
+        $results = $this->db->sql_select(
+                $query, array(
+            ':id' => array('value' => $id, 'type' => PDO::PARAM_INT)
+                )
+        );
+
+        if (count($results) > 0) {
+            return $results[0]['col'];
+        } else {
+            throw new Exception('Portal element not found');
+        }
+    }
+
+    public function get_current_element_position($id) {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        `order`
+                    FROM
+                    	`portal`
+                    WHERE
+                    	`id` = :id
+                ";
+                break;
+        }
+
+        $results = $this->db->sql_select(
+                $query, array(
+            ':id' => array('value' => $id, 'type' => PDO::PARAM_INT)
+                )
+        );
+
+        if (count($results) > 0) {
+            return $results[0]['order'];
+        } else {
+            throw new Exception('Portal element not found');
+        }
+    }
+
     public function get_latest_topics($user) {
         return $this->db->sql_select('
     		SELECT
@@ -77,8 +379,8 @@ class portal_bl extends businesslogic_base {
     		OFFSET
     			0
     		', array(
-            ':user_level' => array('value' => $user->get_level(), 'type' => PDO::PARAM_INT)
-                )
+                    ':user_level' => array('value' => $user->get_level(), 'type' => PDO::PARAM_INT)
+                        )
         );
     }
 
@@ -131,10 +433,10 @@ class portal_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                $query, array(
-            ':topic_type' => array('value' => forumlevels::$announcement, 'type' => PDO::PARAM_INT),
-            ':user_level' => array('value' => $user->get_level(), 'type' => PDO::PARAM_INT)
-                )
+                        $query, array(
+                    ':topic_type' => array('value' => forumlevels::$announcement, 'type' => PDO::PARAM_INT),
+                    ':user_level' => array('value' => $user->get_level(), 'type' => PDO::PARAM_INT)
+                        )
         );
     }
 
@@ -157,7 +459,7 @@ class portal_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                $query
+                        $query
         );
     }
 
