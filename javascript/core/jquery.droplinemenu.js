@@ -19,23 +19,25 @@ var droplinemenu={
                 var $curobj=$(this)
                 var $subul=$(this).find('ul:eq(0)')
                 this._dimensions={
-                    h:$curobj.find('a:eq(0)').outerHeight()
+                    h:$curobj.find('a:eq(0)').outerHeight(),
+                    w:$curobj.find('a:eq(0)').position().left
                     }
                 this.istopheader=$curobj.parents("ul").length==1? true : false
                 if (!this.istopheader)
                     $subul.css({
-                        left:0, 
+                        left:this._dimensions.w, 
                         top:this._dimensions.h
                         })
                 var $innerheader=$curobj.children('a').eq(0)
                 $innerheader=($innerheader.children().eq(0).is('span'))? $innerheader.children().eq(0) : $innerheader //if header contains inner SPAN, use that
+                $innerheader.append(' &#62;')
                 $curobj.hover(
                     function(e){
                         var $targetul=$(this).children("ul:eq(0)")
                         if ($targetul.queue().length<=1) //if 1 or less queued animations
                             if (this.istopheader)
                                 $targetul.css({
-                                    left: $mainmenu.position().left, 
+                                    left: $mainmenu.position().left+this._dimensions.w, 
                                     top: $mainmenu.position().top+this._dimensions.h
                                     })
                         if (document.all && !window.XMLHttpRequest) //detect IE6 or less, fix issue with overflow

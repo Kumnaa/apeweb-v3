@@ -112,8 +112,7 @@ class profile_page extends page {
         foreach ($this->profile AS $key => $value) {
             if ($this->profile_settings[$key]['auth'] <= page::$user->get_level() || ($this->user_id == page::$user->get_user_id() && $this->profile_settings[$key]['self_auth'] <= page::$user->get_level())) {
                 if (
-                        $key != 'user_level'
-                        ||
+                        $key != 'user_level' ||
                         ($this->user_id != page::$user->get_user_id() && $old_user[0]['user_level'] < page::$user->get_level() && $value < page::$user->get_level())
                 ) {
                     switch ($this->profile_settings[$key]['datatype']) {
@@ -151,17 +150,13 @@ class profile_page extends page {
                 if ($value['enabled'] == true) {
                     if (
                             (
-                            ($key == 'user_level' && page::$user->get_user_id() != $this->user_id)
-                            ||
+                            ($key == 'user_level' && page::$user->get_user_id() != $this->user_id) ||
                             $key != 'user_level'
-                            )
-                            &&
+                            ) &&
                             (
-                            $value['auth'] <= page::$user->get_level()
-                            ||
+                            $value['auth'] <= page::$user->get_level() ||
                             (
-                            $this->user_id == page::$user->get_user_id()
-                            &&
+                            $this->user_id == page::$user->get_user_id() &&
                             $value['self_auth'] <= page::$user->get_level()
 
                             )
@@ -185,7 +180,7 @@ class profile_page extends page {
     protected function display_profile_edit($key) {
         $page = new page($this->template);
         $page->set_template('profile_row');
-        $page->add_text('profile_title', html::clean_text($this->profile_settings[$key]['hrtext']) .':');
+        $page->add_text('profile_title', html::clean_text($this->profile_settings[$key]['hrtext']) . ':');
         switch ($this->profile_settings[$key]['type']) {
             case "text":
                 $page->add_text('profile_text', '<input class="profile_input" type="text" name="profile[' . html::clean_text($key) . ']" value="' . html::clean_input_text($this->full_profile[$key]) . '" />');
@@ -258,7 +253,7 @@ class profile_page extends page {
     protected function display_profile_view($key) {
         $page = new page($this->template);
         $page->set_template('profile_row');
-        $page->add_text('profile_title', html::clean_text($this->profile_settings[$key]['hrtext']) .':');
+        $page->add_text('profile_title', html::clean_text($this->profile_settings[$key]['hrtext']) . ':');
         switch ($this->profile_settings[$key]['type']) {
             case "text":
                 switch ($key) {
@@ -300,7 +295,11 @@ class profile_page extends page {
                         break;
 
                     case "user_level":
-                        $text = $this->access_list[$this->full_profile[$key]];
+                        if (array_key_exists($this->full_profile[$key], $this->access_list)) {
+                            $text = $this->access_list[$this->full_profile[$key]];
+                        } else {
+                            $text = 'Hidden';
+                        }
                         break;
                 }
 
