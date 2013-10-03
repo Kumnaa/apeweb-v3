@@ -25,7 +25,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class menu_item {
+class menu_item
+{
 
     private $text;
     private $id;
@@ -34,29 +35,35 @@ class menu_item {
     private $children;
     private $children_id;
 
-    public function __construct($text, $link = '') {
+    public function __construct($text, $link = '')
+    {
         $this->text = $text;
         $this->link = $link;
         $this->children = array();
     }
 
-    public function add_id($id) {
+    public function add_id($id)
+    {
         $this->id = $id;
     }
 
-    public function add_child($child) {
+    public function add_child($child)
+    {
         $this->children[] = $child;
     }
 
-    public function add_child_id($id) {
+    public function add_child_id($id)
+    {
         $this->children_id = $id;
     }
 
-    public function add_link_id($id) {
+    public function add_link_id($id)
+    {
         $this->link_id = $id;
     }
 
-    public function generate($use_container = true) {
+    public function generate($use_container = true, $ul_id = '')
+    {
         $id = '';
         $html = '';
         if ($this->id) {
@@ -77,19 +84,19 @@ class menu_item {
         } else {
             $html .= '<a>' . $this->text . '</a>';
         }
+
+        $has_children = false;
+
         if (count($this->children) > 0) {
+            $has_children = true;
             $id = '';
             if ($this->children_id) {
                 $id = ' id="' . $this->children_id . '"';
             }
-            $html .= '<ul'. $id . '>
-                ';
+
             foreach ($this->children AS $child) {
-                $html .= $child->generate();
+                $html .= $child->generate(true, $id);
             }
-            
-            $html .= '</ul>
-                ';
         }
 
         if ($use_container == true) {
@@ -97,7 +104,7 @@ class menu_item {
             ';
         }
 
-        return $html;
+        return '<ul' . $ul_id . '>' . $html . '</ul>';
     }
 
 }

@@ -34,7 +34,8 @@ if (file_exists(RELATIVE_PATH . 'components/page.php')) {
 
 // end for unit testing
 
-class forum_page extends page {
+class forum_page extends page
+{
 
     protected $forum_id;
     protected $page_id;
@@ -46,7 +47,8 @@ class forum_page extends page {
     protected $breadcrumb;
     protected $forum_bl;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->enable_component(component_types::$forums);
         $this->enable_component(component_types::$breadcrumbs);
         $this->enable_component(component_types::$paging);
@@ -58,11 +60,13 @@ class forum_page extends page {
         $this->initialise_bl();
     }
 
-    public function generate_display() {
+    public function generate_display()
+    {
         $this->display();
     }
 
-    protected function action() {
+    protected function action()
+    {
         try {
             if ($this->forum_id > 0) {
                 $this->get_forum_details();
@@ -90,11 +94,13 @@ class forum_page extends page {
         }
     }
 
-    protected function initialise_bl() {
+    protected function initialise_bl()
+    {
         $this->forum_bl = new forum_bl();
     }
 
-    protected function display_new_topic() {
+    protected function display_new_topic()
+    {
         return '
                 <a href="' . html::gen_url('post.php', array('forum_id' => $this->forum_id)) . '">
                     <img src="' . forum_images::make_post(page::$user->get_style()) . '" alt="" />
@@ -102,11 +108,13 @@ class forum_page extends page {
             ';
     }
 
-    protected function display_paging() {
+    protected function display_paging()
+    {
         $this->add_text('paging', $this->pages->display());
     }
 
-    protected function get_forum_details() {
+    protected function get_forum_details()
+    {
         $details = $this->forum_bl->get_forum_details($this->forum_id);
         $this->breadcrumb->add_crumb('Portal', html::gen_url('index.php'));
         $this->breadcrumb->add_crumb('Forums', html::gen_url('forums.php'));
@@ -125,7 +133,8 @@ class forum_page extends page {
         }
     }
 
-    protected function display_forum_details() {
+    protected function display_forum_details()
+    {
         $page = new page($this->template);
         $page->set_template('forums/forum_details');
         $page->add_text('forum_description', html::clean_text($this->forum_description));
@@ -136,11 +145,13 @@ class forum_page extends page {
         $this->add_text('main', $page->display());
     }
 
-    protected function list_topics($topics) {
-        return $page->display();
+    protected function list_topics($topics)
+    {
+        return $this->display();
     }
 
-    protected function display_topics($topics, $header) {
+    protected function display_topics($topics, $header)
+    {
         if (count($topics) > 0) {
             $topic_page = new page($this->template);
 
@@ -157,7 +168,8 @@ class forum_page extends page {
         }
     }
 
-    protected function display_topic($topic) {
+    protected function display_topic($topic)
+    {
         $read_topics = $this->forum_bl->get_read_topics(page::$user->get_user_id(), page::$user->get_last_visit());
         $mark_read = forum_images::topic(page::$user->get_style());
         if (page::$user->get_level() > userlevels::$guest && $topic['post_time'] > page::$user->get_last_visit()) {

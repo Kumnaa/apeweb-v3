@@ -34,26 +34,42 @@ if (file_exists(RELATIVE_PATH . 'components/page.php')) {
 
 // end for unit testing
 
-class administrate_forums_page extends page {
+class administrate_forums_page extends page
+{
 
-    public function __construct() {
+    private $forum_bl;
+    private $forum_id;
+    private $category_id;
+    private $direction;
+    private $category_name;
+
+    public function __construct()
+    {
         parent::__construct();
         $this->enable_component(component_types::$forums);
+        $this->enable_component(component_types::$breadcrumbs);
+        $this->enable_component(component_types::$tables);
         $this->forum_id = input::validate('forum_id', 'int');
-        $this->category_id = input::validate('page_id', 'int');
+        $this->category_id = input::validate('category_id', 'int');
+        $this->direction = input::validate('direction', 'string');
+        $this->category_name = input::validate('category_name', 'message');
+
         $this->breadcrumb = new breadcrumb();
         $this->add_text('title', 'Forum Administration');
+        $this->forum_bl = new forum_bl();
         $this->initialise_bl();
     }
 
-    public function generate_display() {
+    public function generate_display()
+    {
         $this->display();
     }
 
-    protected function action() {
+    protected function action()
+    {
         try {
             if (page::$user->get_level() >= userlevels::$administrator) {
-                if ($this->category_id > 0) {
+                if ($this->category_id > 0 && $this->action != 'move' && $this->action != 'delete') {
 
                 } else if ($this->forum_id > 0) {
 
@@ -67,11 +83,82 @@ class administrate_forums_page extends page {
             $this->notice($ex->getMessage());
         }
     }
-    
-    protected function administrate_categories() {
+
+    protected function administrate_categories()
+    {
+        switch ($this->action) {
+            case "delete":
+                try {
+                    $this->forum_bl->delete_category($this->category_id);
+                } catch (Exception $ex) {
+                    $this->add_text('main', $ex->getMessage());
+                }
+                $this->category_default();
+                break;
+            case "new":
+                try {
+                    $this->forum_bl->add_category($this->category_name);
+                } catch (Exception $ex) {
+                    $this->add_text('main', $ex->getMessage());
+                }
+                $this->category_default();
+                break;
+            case "move":
+                switch ($this->direction) {
+                    case "up":
+                        try {
+                            $this->forum_bl->move_category_up($this->category_id);
+                        } catch (Exception $ex) {
+                            $this->add_text('main', $ex->getMessage());
+                        }
+                        $this->category_default();
+                        break;
+                    case "down":
+                        try {
+                            $this->forum_bl->move_category_down($this->category_id);
+                        } catch (Exception $ex) {
+                            $this->add_text('main', $ex->getMessage());
+                        }
+                        $this->category_default();
+                        break;
+                }
+                break;
+
+            default:
+                $this->category_default();
+                break;
+        }
+    }
+
+    protected function category_default()
+    {
         $categories = $this->forum_bl->get_categories();
         if (is_array($categories) && count($categories) > 0) {
-            
+            $table = new table('', 'categories');
+            $table->add_aligns(array('left', 'right', 'right'));
+            $table_header = array(
+                'Name',
+                'Position',
+                'Delete');
+            $table->add_header($table_header);
+
+            foreach ($categories AS $category) {
+                $data = array(
+                    html::clean_text($category['cat_title']),
+                    '<a href="' . html::gen_url('administrate_forums.php', array('action' => 'move', 'direction' => 'up', 'category_id' => html::clean_text($category['cat_id']))) . '">[Up]</a> - <a href="' . html::gen_url('administrate_forums.php', array('action' => 'move', 'direction' => 'down', 'category_id' => html::clean_text($category['cat_id']))) . '">[Down]</a>',
+                    '<a href="' . html::gen_url('administrate_forums.php', array('action' => 'delete', 'category_id' => html::clean_text($category['cat_id']))) . '">[Delete]</a>'
+                );
+
+                $table->add_data($data);
+            }
+
+            $this->add_text('main', $table->v_display());
+
+            $this->add_text('main', '<form action="' . html::gen_url('administrate_forums.php', array('action' => 'new')) . '" method="post">
+                <input type="text" name="category_name" value="" /><br />
+                <input type="submit" value="Add" />
+            </form>
+            ');
         }
     }
 }

@@ -25,9 +25,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class forum_bl extends businesslogic_base {
+class forum_bl extends businesslogic_base
+{
 
-    public function insert_post($post, $subject, $user_id, $user_ip, $forum, $topic, $icon = 0) {
+    public function insert_post($post, $subject, $user_id, $user_ip, $forum, $topic, $icon = 0)
+    {
         $this->db->begin_transaction();
         try {
             // insert post details
@@ -57,14 +59,14 @@ class forum_bl extends businesslogic_base {
                     break;
             }
             $this->db->sql_query(
-                    $query, array(
-                ':poster_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
-                ':post_time' => array('value' => time(), 'type' => PDO::PARAM_INT),
-                ':poster_ip' => array('value' => $user_ip, 'type' => PDO::PARAM_INT),
-                ':forum_id' => array('value' => $forum, 'type' => PDO::PARAM_INT),
-                ':topic_id' => array('value' => $topic, 'type' => PDO::PARAM_INT),
-                ':status' => array('value' => 1, 'type' => PDO::PARAM_INT)
-                    )
+                $query, array(
+                    ':poster_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
+                    ':post_time' => array('value' => time(), 'type' => PDO::PARAM_INT),
+                    ':poster_ip' => array('value' => $user_ip, 'type' => PDO::PARAM_INT),
+                    ':forum_id' => array('value' => $forum, 'type' => PDO::PARAM_INT),
+                    ':topic_id' => array('value' => $topic, 'type' => PDO::PARAM_INT),
+                    ':status' => array('value' => 1, 'type' => PDO::PARAM_INT)
+                )
             );
 
             // get post id
@@ -91,11 +93,11 @@ class forum_bl extends businesslogic_base {
                     break;
             }
             $this->db->sql_query(
-                    $query, array(
-                ':post_id' => array('value' => $last_post, 'type' => PDO::PARAM_INT),
-                ':post_text' => array('value' => $post, 'type' => PDO::PARAM_STR),
-                ':post_subject' => array('value' => $subject, 'type' => PDO::PARAM_STR)
-                    )
+                $query, array(
+                    ':post_id' => array('value' => $last_post, 'type' => PDO::PARAM_INT),
+                    ':post_text' => array('value' => $post, 'type' => PDO::PARAM_STR),
+                    ':post_subject' => array('value' => $subject, 'type' => PDO::PARAM_STR)
+                )
             );
 
             // if this is a new topic
@@ -131,16 +133,16 @@ class forum_bl extends businesslogic_base {
                         break;
                 }
                 $this->db->sql_query(
-                        $query, array(
-                    ':topic_title' => array('value' => $subject, 'type' => PDO::PARAM_STR),
-                    ':topic_poster' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
-                    ':topic_time' => array('value' => time(), 'type' => PDO::PARAM_INT),
-                    ':topic_first_post_id' => array('value' => $last_post, 'type' => PDO::PARAM_INT),
-                    ':topic_last_post_id' => array('value' => $last_post, 'type' => PDO::PARAM_INT),
-                    ':forum_id' => array('value' => $forum, 'type' => PDO::PARAM_INT),
-                    ':topic_icon' => array('value' => $icon, 'type' => PDO::PARAM_INT),
-                    ':topic_replies' => array('value' => 0, 'type' => PDO::PARAM_INT)
-                        )
+                    $query, array(
+                        ':topic_title' => array('value' => $subject, 'type' => PDO::PARAM_STR),
+                        ':topic_poster' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
+                        ':topic_time' => array('value' => time(), 'type' => PDO::PARAM_INT),
+                        ':topic_first_post_id' => array('value' => $last_post, 'type' => PDO::PARAM_INT),
+                        ':topic_last_post_id' => array('value' => $last_post, 'type' => PDO::PARAM_INT),
+                        ':forum_id' => array('value' => $forum, 'type' => PDO::PARAM_INT),
+                        ':topic_icon' => array('value' => $icon, 'type' => PDO::PARAM_INT),
+                        ':topic_replies' => array('value' => 0, 'type' => PDO::PARAM_INT)
+                    )
                 );
 
                 // get topic id
@@ -160,10 +162,10 @@ class forum_bl extends businesslogic_base {
                         break;
                 }
                 $this->db->sql_query(
-                        $query, array(
-                    ':topic' => array('value' => $topic, 'type' => PDO::PARAM_INT),
-                    ':post' => array('value' => $last_post, 'type' => PDO::PARAM_INT)
-                        )
+                    $query, array(
+                        ':topic' => array('value' => $topic, 'type' => PDO::PARAM_INT),
+                        ':post' => array('value' => $last_post, 'type' => PDO::PARAM_INT)
+                    )
                 );
             }
 
@@ -182,10 +184,10 @@ class forum_bl extends businesslogic_base {
                     break;
             }
             $this->db->sql_query(
-                    $query, array(
-                ':topic' => array('value' => $topic, 'type' => PDO::PARAM_INT),
-                ':post' => array('value' => $last_post, 'type' => PDO::PARAM_INT)
-                    )
+                $query, array(
+                    ':topic' => array('value' => $topic, 'type' => PDO::PARAM_INT),
+                    ':post' => array('value' => $last_post, 'type' => PDO::PARAM_INT)
+                )
             );
 
             // update forum details
@@ -202,10 +204,10 @@ class forum_bl extends businesslogic_base {
                     break;
             }
             $this->db->sql_query(
-                    $query, array(
-                ':forum' => array('value' => $forum, 'type' => PDO::PARAM_INT),
-                ':post' => array('value' => $last_post, 'type' => PDO::PARAM_INT)
-                    )
+                $query, array(
+                    ':forum' => array('value' => $forum, 'type' => PDO::PARAM_INT),
+                    ':post' => array('value' => $last_post, 'type' => PDO::PARAM_INT)
+                )
             );
 
             $this->update_last_read_post_id($user_id, $topic, $last_post);
@@ -217,49 +219,8 @@ class forum_bl extends businesslogic_base {
         }
     }
 
-    public function update_user_post_count($user_id) {
-        switch (config::db_engine()) {
-            default:
-                $query = "
-                    UPDATE
-                        users
-                    SET
-                    	user_posts = user_posts + 1
-                    WHERE
-                    	id = :user_id
-                ";
-                break;
-        }
-        $this->db->sql_query(
-                $query, array(
-            ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT)
-                )
-        );
-    }
-
-    public function delete_last_read_post($user_id, $topic) {
-        // delete read topic details for user
-        switch (config::db_engine()) {
-            default:
-                $query = "
-                    DELETE FROM
-                        read_topics
-                    WHERE
-                    	user_id = :user_id
-                    	AND
-                    	topic_id = :topic_id
-                ";
-                break;
-        }
-        $this->db->sql_query(
-                $query, array(
-            ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
-            ':topic_id' => array('value' => $topic, 'type' => PDO::PARAM_INT)
-                )
-        );
-    }
-
-    public function update_last_read_post_id($user_id, $topic, $last_post) {
+    public function update_last_read_post_id($user_id, $topic, $last_post)
+    {
         $this->delete_last_read_post($user_id, $topic);
         // add read topic details for user
         switch (config::db_engine()) {
@@ -284,16 +245,61 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         $this->db->sql_query(
-                $query, array(
-            ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
-            ':topic_id' => array('value' => $topic, 'type' => PDO::PARAM_INT),
-            ':last_post_id' => array('value' => $last_post, 'type' => PDO::PARAM_INT),
-            ':timestamp' => array('value' => time(), 'type' => PDO::PARAM_INT)
-                )
+            $query, array(
+                ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
+                ':topic_id' => array('value' => $topic, 'type' => PDO::PARAM_INT),
+                ':last_post_id' => array('value' => $last_post, 'type' => PDO::PARAM_INT),
+                ':timestamp' => array('value' => time(), 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function get_latest_topics($last_visit, $level) {
+    public function delete_last_read_post($user_id, $topic)
+    {
+        // delete read topic details for user
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    DELETE FROM
+                        read_topics
+                    WHERE
+                    	user_id = :user_id
+                    	AND
+                    	topic_id = :topic_id
+                ";
+                break;
+        }
+        $this->db->sql_query(
+            $query, array(
+                ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
+                ':topic_id' => array('value' => $topic, 'type' => PDO::PARAM_INT)
+            )
+        );
+    }
+
+    public function update_user_post_count($user_id)
+    {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    UPDATE
+                        users
+                    SET
+                    	user_posts = user_posts + 1
+                    WHERE
+                    	id = :user_id
+                ";
+                break;
+        }
+        $this->db->sql_query(
+            $query, array(
+                ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT)
+            )
+        );
+    }
+
+    public function get_latest_topics($last_visit, $level)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -328,16 +334,17 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':post_time' => array('value' => $last_visit, 'type' => PDO::PARAM_INT),
-                    ':forum_level' => array('value' => $level, 'type' => PDO::PARAM_INT),
-                    ':topic_id' => array('value' => 0, 'type' => PDO::PARAM_INT),
-                    ':forum_status' => array('value' => 0, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':post_time' => array('value' => $last_visit, 'type' => PDO::PARAM_INT),
+                ':forum_level' => array('value' => $level, 'type' => PDO::PARAM_INT),
+                ':topic_id' => array('value' => 0, 'type' => PDO::PARAM_INT),
+                ':forum_status' => array('value' => 0, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function get_topic_posts($topic_id, $page, $status) {
+    public function get_topic_posts($topic_id, $page, $status)
+    {
         if ($page > 0) {
             $page = $page - 1;
         }
@@ -399,16 +406,17 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT),
-                    ':limit' => array('value' => forum_config::$page_limit, 'type' => PDO::PARAM_INT),
-                    ':offset' => array('value' => forum_config::$page_limit * $page, 'type' => PDO::PARAM_INT),
-                    ':status' => array('value' => $status, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT),
+                ':limit' => array('value' => forum_config::$page_limit, 'type' => PDO::PARAM_INT),
+                ':offset' => array('value' => forum_config::$page_limit * $page, 'type' => PDO::PARAM_INT),
+                ':status' => array('value' => $status, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function update_post($post_id, $post_text, $time, $user_id) {
+    public function update_post($post_id, $post_text, $time, $user_id)
+    {
         $this->db->begin_transaction();
         try {
             // update post text
@@ -424,10 +432,10 @@ class forum_bl extends businesslogic_base {
                     break;
             }
             $this->db->sql_query(
-                    $query, array(
-                ':post_text' => array('value' => $post_text, 'type' => PDO::PARAM_STR),
-                ':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
-                    )
+                $query, array(
+                    ':post_text' => array('value' => $post_text, 'type' => PDO::PARAM_STR),
+                    ':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
+                )
             );
 
             // update post details
@@ -445,11 +453,11 @@ class forum_bl extends businesslogic_base {
                     break;
             }
             $this->db->sql_query(
-                    $query, array(
-                ':post_edit_time' => array('value' => $time, 'type' => PDO::PARAM_INT),
-                ':post_edit_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
-                ':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
-                    )
+                $query, array(
+                    ':post_edit_time' => array('value' => $time, 'type' => PDO::PARAM_INT),
+                    ':post_edit_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
+                    ':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
+                )
             );
 
             $this->db->end_transaction();
@@ -459,7 +467,8 @@ class forum_bl extends businesslogic_base {
         }
     }
 
-    public function update_topic_views($topic_id) {
+    public function update_topic_views($topic_id)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -473,13 +482,14 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         $this->db->sql_query(
-                $query, array(
-            ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
-                )
+            $query, array(
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function get_post_details($post_id) {
+    public function get_post_details($post_id)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -514,11 +524,12 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT))
+            $query, array(':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT))
         );
     }
 
-    public function get_topic_details($topic_id) {
+    public function get_topic_details($topic_id)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -541,13 +552,14 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function move_topic($topic_id, $old_forum_id, $new_forum_id) {
+    public function move_topic($topic_id, $old_forum_id, $new_forum_id)
+    {
         // get post count
         switch (config::db_engine()) {
             default:
@@ -563,9 +575,9 @@ class forum_bl extends businesslogic_base {
         }
 
         $result = $this->db->sql_select(
-                $query, array(
-            ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
-                )
+            $query, array(
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
+            )
         );
 
         $posts = $result[0]['posts'];
@@ -584,10 +596,10 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         $this->db->sql_query(
-                $query, array(
-            ':forum_id' => array('value' => $new_forum_id, 'type' => PDO::PARAM_INT),
-            ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
-                )
+            $query, array(
+                ':forum_id' => array('value' => $new_forum_id, 'type' => PDO::PARAM_INT),
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
+            )
         );
 
         // update posts
@@ -604,17 +616,18 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         $this->db->sql_query(
-                $query, array(
-            ':forum_id' => array('value' => $new_forum_id, 'type' => PDO::PARAM_INT),
-            ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
-                )
+            $query, array(
+                ':forum_id' => array('value' => $new_forum_id, 'type' => PDO::PARAM_INT),
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT)
+            )
         );
 
         $this->update_last_post_id_for_forum($new_forum_id, 1, $posts);
         $this->update_last_post_id_for_forum($old_forum_id, -1, -$posts);
     }
 
-    public function update_last_post_id_for_forum($forum_id, $topics_change = 0, $posts_change = 0) {
+    public function update_last_post_id_for_forum($forum_id, $topics_change = 0, $posts_change = 0)
+    {
         // get current last post id
         switch (config::db_engine()) {
             default:
@@ -636,9 +649,9 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         $post = $this->db->sql_select(
-                $query, array(
-            ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
-                )
+            $query, array(
+                ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
+            )
         );
 
         if (is_array($post) && count($post) > 0) {
@@ -657,17 +670,18 @@ class forum_bl extends businesslogic_base {
                     break;
             }
             $this->db->sql_query(
-                    $query, array(
-                ':post_id' => array('value' => $post[0]['post_id'], 'type' => PDO::PARAM_INT),
-                ':topics' => array('value' => $topics_change, 'type' => PDO::PARAM_INT),
-                ':posts' => array('value' => $posts_change, 'type' => PDO::PARAM_INT),
-                ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
-                    )
+                $query, array(
+                    ':post_id' => array('value' => $post[0]['post_id'], 'type' => PDO::PARAM_INT),
+                    ':topics' => array('value' => $topics_change, 'type' => PDO::PARAM_INT),
+                    ':posts' => array('value' => $posts_change, 'type' => PDO::PARAM_INT),
+                    ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
+                )
             );
         }
     }
 
-    public function get_topic_id_from_post_id($post_id) {
+    public function get_topic_id_from_post_id($post_id)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -681,14 +695,15 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         $post = $this->db->sql_select(
-                $query, array(
-            ':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
-                )
+            $query, array(
+                ':post_id' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
+            )
         );
         return ($post[0]['topic_id']);
     }
 
-    public function count_posts_in_topic($topic_id, $status, $post_id = 2000000000) {
+    public function count_posts_in_topic($topic_id, $status, $post_id = 2000000000)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -706,16 +721,17 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         $count = $this->db->sql_select(
-                $query, array(
-            ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT),
-            ':status' => array('value' => $status, 'type' => PDO::PARAM_INT),
-            ':post' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
-                )
+            $query, array(
+                ':topic_id' => array('value' => $topic_id, 'type' => PDO::PARAM_INT),
+                ':status' => array('value' => $status, 'type' => PDO::PARAM_INT),
+                ':post' => array('value' => $post_id, 'type' => PDO::PARAM_INT)
+            )
         );
         return ($count[0]['total_posts']);
     }
 
-    public function get_forum_list($user_level) {
+    public function get_forum_list($user_level)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -767,14 +783,15 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':forum_status' => array('value' => 0, 'type' => PDO::PARAM_INT),
-                    ':user_level' => array('value' => $user_level, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':forum_status' => array('value' => 0, 'type' => PDO::PARAM_INT),
+                ':user_level' => array('value' => $user_level, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function get_forum_details($forum_id) {
+    public function get_forum_details($forum_id)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -792,13 +809,14 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function get_global_topics($user) {
+    public function get_global_topics($user)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -871,14 +889,15 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':topic_type' => array('value' => forum_config::$globalannouncement, 'type' => PDO::PARAM_INT),
-                    ':user_level' => array('value' => $user->get_level(), 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':topic_type' => array('value' => forum_config::$globalannouncement, 'type' => PDO::PARAM_INT),
+                ':user_level' => array('value' => $user->get_level(), 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function count_forum_topics($forum_id) {
+    public function count_forum_topics($forum_id)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -892,13 +911,14 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function get_read_topics($user_id, $last_visit) {
+    public function get_read_topics($user_id, $last_visit)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -917,14 +937,15 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
-                    ':last_visit' => array('value' => $last_visit, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
+                ':last_visit' => array('value' => $last_visit, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function get_read_private_topics($user_id, $last_visit) {
+    public function get_read_private_topics($user_id, $last_visit)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -943,14 +964,15 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
-                    ':last_visit' => array('value' => $last_visit, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
+                ':last_visit' => array('value' => $last_visit, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function get_read_group_topics($user_id, $last_visit) {
+    public function get_read_group_topics($user_id, $last_visit)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -969,14 +991,15 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
-                    ':last_visit' => array('value' => $last_visit, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT),
+                ':last_visit' => array('value' => $last_visit, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function clear_read_topics($user_id) {
+    public function clear_read_topics($user_id)
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -988,13 +1011,254 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         $this->db->sql_query(
-                $query, array(
-            ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT)
-                )
+            $query, array(
+                ':user_id' => array('value' => $user_id, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 
-    public function get_categories() {
+    public function move_category_up($category_id)
+    {
+        $category = $this->get_category($category_id);
+        $category_replace = $this->get_category_position_before($category_id);
+
+        $this->update_category_position($category_id, $category_replace['cat_order']);
+        $this->update_category_position($category_replace['cat_id'], $category['cat_order']);
+    }
+
+    public function move_category_down($category_id)
+    {
+        $category = $this->get_category($category_id);
+        $category_replace = $this->get_category_position_after($category_id);
+
+        $this->update_category_position($category_id, $category_replace['cat_order']);
+        $this->update_category_position($category_replace['cat_id'], $category['cat_order']);
+    }
+
+    public function delete_category($category_id)
+    {
+        if ($this->get_category_forum_count($category_id) > 0) {
+            throw new Exception('Category still contains forums');
+        } else {
+            switch (config::db_engine()) {
+                default:
+                    $query = "
+                    DELETE FROM
+                        categories
+                    WHERE
+                        cat_id = :cat_id
+                ";
+                    break;
+            }
+
+            $this->db->sql_query($query,
+                array(
+                    ':cat_id' => array('value' => $category_id, 'type' => PDO::PARAM_INT)
+                )
+            );
+        }
+    }
+
+    public function get_category_forum_count($category_id)
+    {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        COUNT(cat_id) AS cat_id
+                    FROM
+                        forums
+                    WHERE
+                        cat_id = :cat_id
+                    GROUP BY
+                        cat_id
+                ";
+                break;
+        }
+
+        $result = $this->db->sql_select($query,
+            array(
+                ':cat_id' => array('value' => $category_id, 'type' => PDO::PARAM_INT)
+            )
+        );
+
+        if (is_array($result) && count($result) > 0) {
+            return $result[0]['cat_id'];
+        } else {
+            return 0;
+        }
+    }
+
+    public function add_category($category_name)
+    {
+        $category_position = $this->get_next_category_position();
+
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    INSERT INTO
+                        categories
+                    (cat_title, cat_order)
+                    VALUES
+                    (:name, :order)
+                ";
+                break;
+        }
+
+        $this->db->sql_query($query,
+            array(
+                ':name' => array('value' => $category_name, 'type' => PDO::PARAM_STR),
+                ':order' => array('value' => $category_position, 'type' => PDO::PARAM_INT)
+            )
+        );
+    }
+
+    private function update_category_position($category_id, $position)
+    {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    UPDATE
+                        categories
+                    SET
+                        cat_order = :order
+                    WHERE
+                        cat_id = :category
+                ";
+                break;
+        }
+
+        $this->db->sql_query($query,
+            array(
+                ':order' => array('value' => $position, 'type' => PDO::PARAM_INT),
+                ':category' => array('value' => $category_id, 'type' => PDO::PARAM_INT)
+            )
+        );
+    }
+
+    public function get_next_category_position()
+    {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        cat_order
+                    FROM
+                        categories
+                    ORDER BY
+                        cat_order DESC
+                    LIMIT 1
+                ";
+                break;
+        }
+
+        $result = $this->db->sql_select($query);
+
+        if (is_array($result) && count($result) > 0) {
+            return $result[0]['cat_order'] + 10;
+        } else {
+            return 10;
+        }
+    }
+
+    public function get_category_position_after($category_id)
+    {
+        $category = $this->get_category($category_id);
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        cat_id,
+                        cat_order
+                    FROM
+                        categories
+                    WHERE
+                        cat_order > :cat_order
+                    ORDER BY
+                        cat_order ASC
+                    LIMIT 1
+                ";
+                break;
+        }
+
+        $result = $this->db->sql_select($query,
+            array(
+                ':cat_order' => array('value' => $category['cat_order'], 'type' => PDO::PARAM_INT)
+            )
+        );
+
+        if (is_array($result) && count($result) > 0) {
+            return $result[0];
+        } else {
+            throw new Exception("No category before");
+        }
+    }
+
+    public function get_category_position_before($category_id)
+    {
+        $category = $this->get_category($category_id);
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        cat_id,
+                        cat_order
+                    FROM
+                        categories
+                    WHERE
+                        cat_order < :cat_order
+                    ORDER BY
+                        cat_order DESC
+                    LIMIT 1
+                ";
+                break;
+        }
+
+        $result = $this->db->sql_select($query,
+            array(
+                ':cat_order' => array('value' => $category['cat_order'], 'type' => PDO::PARAM_INT)
+            )
+        );
+
+        if (is_array($result) && count($result) > 0) {
+            return $result[0];
+        } else {
+            throw new Exception("No category before");
+        }
+    }
+
+    public function get_category($category_id)
+    {
+        switch (config::db_engine()) {
+            default:
+                $query = "
+                    SELECT
+                        cat_id,
+                        cat_title,
+                        cat_order
+                    FROM
+                        categories
+                    WHERE
+                        cat_id = :category
+                ";
+                break;
+        }
+
+        $result = $this->db->sql_select($query,
+            array(
+                ':category' => array('value' => $category_id, 'type' => PDO::PARAM_INT)
+            )
+        );
+
+        if (is_array($result) && count($result) > 0) {
+            return $result[0];
+        } else {
+            throw new Exception("Category not found");
+        }
+    }
+
+    public function get_categories()
+    {
         switch (config::db_engine()) {
             default:
                 $query = "
@@ -1009,10 +1273,12 @@ class forum_bl extends businesslogic_base {
                 ";
                 break;
         }
-        $this->db->sql_query($query);
+
+        return $this->db->sql_select($query);
     }
 
-    public function get_forum_by_id($user, $forum_id, $page) {
+    public function get_forum_by_id($user, $forum_id, $page)
+    {
         if ($page > 0) {
             $page = $page - 1;
         }
@@ -1087,12 +1353,12 @@ class forum_bl extends businesslogic_base {
                 break;
         }
         return $this->db->sql_select(
-                        $query, array(
-                    ':user_level' => array('value' => $user->get_level(), 'type' => PDO::PARAM_INT),
-                    ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT),
-                    ':limit' => array('value' => forum_config::$page_limit, 'type' => PDO::PARAM_INT),
-                    ':offset' => array('value' => forum_config::$page_limit * $page, 'type' => PDO::PARAM_INT)
-                        )
+            $query, array(
+                ':user_level' => array('value' => $user->get_level(), 'type' => PDO::PARAM_INT),
+                ':forum_id' => array('value' => $forum_id, 'type' => PDO::PARAM_INT),
+                ':limit' => array('value' => forum_config::$page_limit, 'type' => PDO::PARAM_INT),
+                ':offset' => array('value' => forum_config::$page_limit * $page, 'type' => PDO::PARAM_INT)
+            )
         );
     }
 

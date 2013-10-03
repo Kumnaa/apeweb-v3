@@ -25,22 +25,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// for unit testing
 if (file_exists(RELATIVE_PATH . 'components/page.php')) {
     require_once(RELATIVE_PATH . 'components/page.php');
 } else {
     require_once('components/core/page.php');
 }
-// end for unit testing
 
-require('bl/core/contact_list_bl.php');
+initialiser::LoadApeWebCoreElement('bl/core/contact_list_bl.php');
 
-class contact_list_page extends page {
+class contact_list_page extends page
+{
 
     protected $contact_list_bl;
     protected $user_id;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->enable_component(component_types::$tables);
         parent::__construct();
         $this->contact_list_bl = new contact_list_bl();
@@ -48,11 +48,13 @@ class contact_list_page extends page {
         $this->add_text('title', 'Contact List');
     }
 
-    public function generate_display() {
+    public function generate_display()
+    {
         $this->display();
     }
 
-    protected function action() {
+    protected function action()
+    {
         try {
             switch ($this->action) {
                 case "up":
@@ -72,19 +74,23 @@ class contact_list_page extends page {
         }
     }
 
-    protected function gen_profile_link_url($id, $name) {
+    protected function gen_profile_link_url($id, $name)
+    {
         return '<a href="' . html::gen_url('contactlist.php', array('user_id' => $id)) . '">' . $name . '</a>';
     }
 
-    protected function move_up() {
+    protected function move_up()
+    {
         $this->contact_list_bl->move_up($this->user_id);
     }
-    
-    protected function move_down() {
+
+    protected function move_down()
+    {
         $this->contact_list_bl->move_down($this->user_id);
     }
-    
-    protected function default_action() {
+
+    protected function default_action()
+    {
         $contacts = $this->contact_list_bl->get_contact_list();
         if (is_array($contacts) && count($contacts) > 0) {
             $table = new table('', 'contactlist');
@@ -103,11 +109,11 @@ class contact_list_page extends page {
             $table->add_header($table_header);
 
             foreach ($contacts AS $_mem) {
-               
+
                 $data = array(
-                    $this->gen_profile_link_url($_mem['id'], $_mem['lastname'] . ', '. $_mem['firstname']),
+                    $this->gen_profile_link_url($_mem['id'], $_mem['lastname'] . ', ' . $_mem['firstname']),
                     html::clean_text($_mem['position']),
-                    html::clean_text("T: ". $_mem['phone_number']) ."<br />M: ". html::clean_text($_mem['mobile_number']),
+                    html::clean_text("T: " . $_mem['phone_number']) . "<br />M: " . html::clean_text($_mem['mobile_number']),
                     '<a href="mailto:' . html::clean_text($_mem['email']) . '">' . html::clean_text($_mem['email']) . '</a>',
                     html::clean_text($_mem['location'])
                 );

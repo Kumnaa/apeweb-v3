@@ -32,45 +32,46 @@ if (file_exists(RELATIVE_PATH . 'config/_config.php')) {
     require(RELATIVE_PATH . 'config/userlevels.php');
     require(RELATIVE_PATH . 'config/bbcode.php');
 } else {
-    require('config/core/_config.php');
-    require('config/core/messages.php');
-    require('config/core/userlevels.php');
-    require('config/core/bbcode.php');
+    initialiser::LoadApeWebCoreElement('config/core/_config.php');
+    initialiser::LoadApeWebCoreElement('config/core/messages.php');
+    initialiser::LoadApeWebCoreElement('config/core/userlevels.php');
+    initialiser::LoadApeWebCoreElement('config/core/bbcode.php');
 }
 // end for unit testing
 
 config::set_timezone();
 
-require('components/core/_templates.php');
-require('components/core/apetech.php');
-require('components/core/input.php');
-require('components/core/smtp.php');
-require('components/core/socket.php');
-require('components/core/sql.php');
-require('components/core/validator.php');
-require('components/core/exceptions.php');
-require('components/core/security_type.php');
-require('components/core/businesslogic_base.php');
-require('components/core/component_types.php');
+initialiser::LoadApeWebCoreElement('components/core/_templates.php');
+initialiser::LoadApeWebCoreElement('components/core/apetech.php');
+initialiser::LoadApeWebCoreElement('components/core/input.php');
+initialiser::LoadApeWebCoreElement('components/core/smtp.php');
+initialiser::LoadApeWebCoreElement('components/core/socket.php');
+initialiser::LoadApeWebCoreElement('components/core/sql.php');
+initialiser::LoadApeWebCoreElement('components/core/validator.php');
+initialiser::LoadApeWebCoreElement('components/core/exceptions.php');
+initialiser::LoadApeWebCoreElement('components/core/security_type.php');
+initialiser::LoadApeWebCoreElement('components/core/businesslogic_base.php');
+initialiser::LoadApeWebCoreElement('components/core/component_types.php');
 
 // for unit testing
 if (file_exists(RELATIVE_PATH . 'components/user.php')) {
     require(RELATIVE_PATH . 'components/user.php');
 } else {
-    require('components/core/user.php');
+    initialiser::LoadApeWebCoreElement('components/core/user.php');
 }
 // end for unit testing
 
-require('bl/core/user_bl.php');
-require('bl/core/setup_bl.php');
-require('html/core/html.php');
-require('html/core/login.php');
+initialiser::LoadApeWebCoreElement('bl/core/user_bl.php');
+initialiser::LoadApeWebCoreElement('bl/core/setup_bl.php');
+initialiser::LoadApeWebCoreElement('html/core/html.php');
+initialiser::LoadApeWebCoreElement('html/core/login.php');
 
 html::$site_url = config::site_url() . RELATIVE_URL;
 
 set_error_handler(array('apetech', 'error_handler'));
 
-abstract class _page {
+abstract class _page
+{
 
     protected $template_name = 'default';
     protected $replace_text = array();
@@ -93,11 +94,18 @@ abstract class _page {
     protected $recaptcha_challenge_field;
     protected $recaptcha_response_field;
 
-    public function __construct($template = false) {
+    public function __construct($template = false, $includes = array())
+    {
         if ($template !== false) {
             $this->template = $template;
             $this->inner = true;
         } else {
+            if (is_array($includes) && count($includes) > 0) {
+                foreach ($includes AS $include) {
+                    require_once($include);
+                }
+            }
+
             $this->template = new template();
             _page::$db_connection = new sql_db();
             $this->action = input::validate('action', 'string');
@@ -116,7 +124,8 @@ abstract class _page {
         }
     }
 
-    public function execute() {
+    public function execute()
+    {
         $this->create_user();
         $this->pre_action();
         if ($this->perform_action == true) {
@@ -127,18 +136,19 @@ abstract class _page {
         $this->generate_display();
     }
 
-    public function enable_component($component) {
+    public function enable_component($component)
+    {
         switch ($component) {
             case component_types::$recaptcha:
                 if (class_exists('recaptcha') == false) {
-                    require('components/core/recaptcha.php');
+                    initialiser::LoadApeWebCoreElement('components/core/recaptcha.php');
                     require(RELATIVE_PATH . 'config/recaptcha.php');
                 }
                 break;
 
             case component_types::$forums:
                 if (class_exists('forum_bl') == false) {
-                    require('bl/core/forum_bl.php');
+                    initialiser::LoadApeWebCoreElement('bl/core/forum_bl.php');
                     require(RELATIVE_PATH . 'config/forum_config.php');
                     require(RELATIVE_PATH . 'config/forum_images.php');
                     require(RELATIVE_PATH . 'config/forumlevels.php');
@@ -147,79 +157,83 @@ abstract class _page {
 
             case component_types::$images:
                 if (class_exists('images_bl') == false) {
-                    require('bl/core/images_bl.php');
-                    require('components/core/image_manager.php');
+                    initialiser::LoadApeWebCoreElement('bl/core/images_bl.php');
+                    initialiser::LoadApeWebCoreElement('components/core/image_manager.php');
                 }
                 break;
 
             case component_types::$portal:
                 if (class_exists('portal_bl') == false) {
-                    require('bl/core/portal_bl.php');
-                    require('components/core/portal/portal_columns.php');
+                    initialiser::LoadApeWebCoreElement('bl/core/portal_bl.php');
+                    initialiser::LoadApeWebCoreElement('components/core/portal/portal_columns.php');
                     require(RELATIVE_PATH . 'config/portal_images.php');
                 }
                 break;
 
             case component_types::$shoutbox:
                 if (class_exists('shoutbox_bl') == false) {
-                    require('bl/core/shoutbox_bl.php');
-                    require('html/core/shoutbox.php');
+                    initialiser::LoadApeWebCoreElement('bl/core/shoutbox_bl.php');
+                    initialiser::LoadApeWebCoreElement('html/core/shoutbox.php');
                 }
                 break;
 
             case component_types::$calendar:
                 if (class_exists('calendar_bl') == false) {
-                    require('bl/core/calendar_bl.php');
-                    require('html/core/calendar.php');
+                    initialiser::LoadApeWebCoreElement('bl/core/calendar_bl.php');
+                    initialiser::LoadApeWebCoreElement('html/core/calendar.php');
                 }
                 break;
 
             case component_types::$apeweb_menu:
                 if (class_exists('menu_item') == false) {
-                    require('components/core/menu_item.php');
+                    initialiser::LoadApeWebCoreElement('components/core/menu_item.php');
                 }
                 break;
 
             case component_types::$breadcrumbs:
                 if (class_exists('breadcrumb') == false) {
-                    require('html/core/breadcrumb.php');
+                    initialiser::LoadApeWebCoreElement('html/core/breadcrumb.php');
                 }
                 break;
 
             case component_types::$tables:
                 if (class_exists('table') == false) {
-                    require('html/core/table.php');
+                    initialiser::LoadApeWebCoreElement('html/core/table.php');
                 }
                 break;
 
             case component_types::$paging:
                 if (class_exists('paging') == false) {
-                    require('html/core/paging.php');
+                    initialiser::LoadApeWebCoreElement('html/core/paging.php');
                 }
                 break;
 
             case component_types::$streamline:
                 if (class_exists('streamline') == false) {
-                    require('apis/core/streamline_api.php');
+                    initialiser::LoadApeWebCoreElement('apis/core/streamline_api.php');
                     require(RELATIVE_PATH . 'config/streamline.php');
                 }
                 break;
         }
     }
 
-    public function redirect($url) {
+    public function redirect($url)
+    {
         header('Location: ' . $url);
     }
 
-    public function set_template($template) {
+    public function set_template($template)
+    {
         $this->template_name = $template;
     }
 
-    public function add_debug($text) {
+    public function add_debug($text)
+    {
         $this->debug_list .= $text;
     }
 
-    public function add_text($var, $text) {
+    public function add_text($var, $text)
+    {
         $var = strtolower($var);
         if (!isset($this->replace_text[$var])) {
             $this->replace_text[$var] = $text;
@@ -228,12 +242,14 @@ abstract class _page {
         }
     }
 
-    public function add_data($var, $data) {
+    public function add_data($var, $data)
+    {
         $var = strtolower($var);
         $this->data[$var] = $data;
     }
 
-    public function display_block($text, $title = '') {
+    public function display_block($text, $title = '')
+    {
         $page = new page($this->template);
         $page->set_template('styled_block');
         $page->add_text('title', $title);
@@ -241,7 +257,8 @@ abstract class _page {
         return $page->display();
     }
 
-    public function display() {
+    public function display()
+    {
         if ($this->inner == false) {
             $debug = _page::$db_connection->debug;
             $this->add_debug(_page::$db_connection->sql_close());
@@ -269,7 +286,8 @@ abstract class _page {
         }
     }
 
-    public function display_csv() {
+    public function display_csv()
+    {
         if (isset($this->replace_text['text'])) {
             header("Content-Type: text/csv");
             header('Content-Disposition: attachment; filename="export.csv"');
@@ -277,13 +295,15 @@ abstract class _page {
         }
     }
 
-    public function display_plain() {
+    public function display_plain()
+    {
         if (isset($this->replace_text['html'])) {
             echo $this->replace_text['html'];
         }
     }
 
-    public function display_png() {
+    public function display_png()
+    {
         if (isset($this->data['png'])) {
             header("Content-Type: image/png");
             ImagePNG($this->data['png']);
@@ -291,7 +311,8 @@ abstract class _page {
         }
     }
 
-    public function display_xml() {
+    public function display_xml()
+    {
         header("Content-Type: text/xml");
         if (isset($this->replace_text['xml'])) {
             echo $this->replace_text['xml'];
@@ -300,7 +321,8 @@ abstract class _page {
         }
     }
 
-    protected function pre_action() {
+    protected function pre_action()
+    {
         $this->add_text('copyright', 'Powered by <a href="http://www.amplifycreative.net/" target="_blank">apetechv3</a> | &#169;2008-2012 <a href="http://www.amplifycreative.net">Amplify</a>');
         if ($this->perform_login == true && strlen($this->login) > 0) {
             if ($this->login == 'true') {
